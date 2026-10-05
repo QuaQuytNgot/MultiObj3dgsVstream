@@ -32,15 +32,20 @@ Draco. Dependency decisions and pinned commits are recorded in
 
 See [docs/REQUEST_HANDLER.md](docs/REQUEST_HANDLER.md) for API examples, protocol
 configuration, Range validation, metrics, error handling, and integration points.
+Application modules use the stable public interface in `src/client/request_api.py`:
+`NetworkClient`, `TransferClient`, `RequestSpec`, `TransferResult`, and
+`to_bandwidth_sample`. `request_handler.py` remains the low-level transport.
+The project assumes an existing static HTTP server supporting H2/H3 and Range
+requests; this phase does not add a custom web server.
 [configs/client.yaml](configs/client.yaml) is an example configuration; the handler
 does not load YAML itself.
 
 Run validation from the project root:
 
 ```bash
-python -m py_compile src/client/request_handler.py
-python -m pytest tests/test_request_handler.py
-python -c "from src.client.request_handler import RequestHandler, RequestSpec"
+python -m py_compile src/client/request_api.py src/client/request_handler.py
+python -m pytest
+python -c "from src.client.request_api import NetworkClient, RequestSpec, TransferClient"
 git diff --check
 ```
 

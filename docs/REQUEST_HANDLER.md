@@ -9,7 +9,119 @@ It does not parse MPD/XML or Gaussian/Draco payloads, select LoD, calculate
 visibility or quality utility, render frames, predict bandwidth, schedule
 priorities, or choose retries.
 
-## API
+## Public API and module integration
+
+Application modules should import `src.client.request_api`. It defines the
+canonical `RequestSpec`, `TransferResult`, `TransferError`, `ErrorKind`, and
+`ProtocolUnavailableError` using Python's standard library. The original imports
+from `request_handler.py` remain compatible aliases to these same types.
+Importing the public contracts does not import `curl_cffi`; constructing
+`NetworkClient` loads and owns the low-level `RequestHandler` internally.
+
+`TransferClient` is a runtime-checkable structural protocol with the minimum
+interface `async fetch(spec: RequestSpec) -> TransferResult`. A scheduler can
+depend on it without accessing sessions, curl constants, or backend response
+objects. Alternative backends and test doubles can implement the same method.
+Consumer error handling should use `error.kind` and `error.message`; the optional
+`curl_code` is a legacy backend diagnostic, not a portable decision rule.
+
+```python
+from src.client.request_api import (
+    NetworkClient,
+    RequestSpec,
+    TransferClient,
+    TransferResult,
+    to_bandwidth_sample,
+)
+
+
+async def execute_resolved_request(
+    client: TransferClient, spec: RequestSpec
+) -> TransferResult:
+    return await client.fetch(spec)
+
+
+async def example():
+    samples = []  # Raw observations only; no estimator is implemented here.
+    async with NetworkClient(http_version="h3", concurrency=1) as client:
+        unsubscribe = client.subscribe(
+            lambda result: samples.append(to_bandwidth_sample(result))
+        )
+        spec = RequestSpec(
+            request_id="ld_q1_seg_0001",
+            url="https://your-server.example/longdress/q1/seg_0001.bin",
+            object_id="longdress",
+            representation_id="q1",
+            segment_id=1,
+            metadata={"quality_profile_uri": "profiles/longdress-q1.json"},
+        )
+        result = await execute_resolved_request(client, spec)
+        if result.success:
+            payload_bytes = result.body
+        unsubscribe()  # Idempotent; also safe after the client closes.
+```
+
+The facade provides these methods, all returning `TransferResult`:
+
+| Method | Input and behavior |
+| --- | --- |
+| `fetch(spec, *, output_path=None)` | A fully resolved `RequestSpec`; optional atomic file output |
+| `get(url, *, request_id=None, metadata=None)` | A resolved resource URL; memory output |
+| `get_segment(url, *, object_id, representation_id, segment_id, ...)` | Segment context, optional `layer_id`, `byte_range`, `priority`, and metadata; memory output |
+| `get_range(url, start, end, *, request_id=None, metadata=None)` | One inclusive byte range; memory output |
+| `download_to_file(request, output_path, ...)` | A `RequestSpec` or resolved URL; streamed atomic file output |
+
+Helpers generate a unique request ID when one is omitted. Explicit request IDs
+are validated unchanged. With a supplied `RequestSpec`, set identity and metadata
+on that spec rather than overriding them in `download_to_file`. All URL resolution,
+representation choice, dependencies, and priority decisions remain with the
+caller. The facade forwards protocol, concurrency, timeout, and TLS settings;
+`async with` or `aclose()` closes the owned handler. Existing transport failure,
+Range validation, timing, and cancellation behavior is preserved.
+
+`to_bandwidth_sample(result)` copies exactly these nine fields into a frozen
+`BandwidthSample`: `timestamp`, `received_bytes`, `ttfb`, `transfer_duration`,
+`total_duration`, `body_goodput_bps`, `effective_goodput_bps`, `http_version`, and
+`success`. It does not recompute metrics, estimate capacity, aggregate concurrent
+requests, or filter failures. Missing measurements stay `None`; timestamp and
+units retain the definitions below. The future estimator chooses which samples
+to use.
+
+`subscribe(callback)` supports sync and async callbacks and returns an
+idempotent unsubscribe function. `on_transfer_complete=callback` in the constructor
+registers an initial subscriber. Subscribers receive the complete result, so a
+consumer can convert it to a bandwidth sample or inspect request context.
+Each registration is independent. Delivery is sequential in registration order,
+using a snapshot; subscription changes affect the next event. Ordinary subscriber
+exceptions are logged and do not prevent other subscribers from receiving the
+event or change the result. Task cancellation propagates. Subscriber work remains
+outside network metrics, and the client does not import `bandwidth.py`.
+
+A future PayloadParser can select its input using standard Python values:
+
+```python
+# The application supplies payload_parser; codec/parsing logic is not implemented.
+if result.success:
+    if result.body is not None:
+        payload_parser.parse_bytes(result.body)
+    elif result.output_path is not None:
+        payload_parser.parse_file(result.output_path)
+```
+
+For file output, create the parent directory first and use
+`await client.download_to_file(spec, "downloads/segment.bin")`. On success,
+`body` is `None` and `output_path` identifies the published file; the parser can
+open that file without loading a duplicate full payload. Always check `success`
+before parsing. Failed results can contain partial or error response bytes.
+
+The project currently assumes an existing **static HTTP server supporting H2/H3
+and Range requests**. It serves offline-prepared binary assets, returns `206`
+with a valid `Content-Range` for supported ranges, and provides consistent length
+information. This phase adds no custom web server. The new public API tests use
+an offline session double through the real handler; the existing HTTP/1.1 transport
+tests remain separate from real H2/H3 negotiation checks.
+
+## Low-level API
 
 ```python
 import asyncio
@@ -252,11 +364,17 @@ time intervals when constructing aggregate measurements.
 The intended flow remains:
 
 ```text
-MPD Parser -> ContentIndex -> Request Scheduler -> RequestSpec -> RequestHandler
-                                                                  |
-                                                            TransferResult
-                                                                  |
-                                                  caller / BandwidthEstimator
+MPD Parser -> ContentIndex -> Request Scheduler -> RequestSpec
+                                                       |
+                                           TransferClient / NetworkClient
+                                                       |
+                                                 RequestHandler
+                                                       |
+                                                 TransferResult
+                                                   /       \
+                                    BandwidthSample       body / output_path
+                                           |                    |
+                                  BandwidthEstimator       PayloadParser
 ```
 
 The content index or scheduler resolves URLs, ranges, dependencies, and object
