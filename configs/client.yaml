@@ -1,0 +1,8 @@
+# Example only: application code loads this file and passes network values to
+# RequestHandler. YAML loading and request planning are outside the handler.
+network:
+  http_version: h2  # h1, h2, h3 (fallback allowed), or h3-only (strict)
+  concurrency: 1
+  connect_timeout_s: 5
+  total_timeout_s: 30
+  verify_tls: true

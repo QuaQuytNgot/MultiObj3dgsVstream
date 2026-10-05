@@ -1,0 +1,7 @@
+# Direct runtime dependency: reusable async HTTP/2 and HTTP/3 transport.
+# Versions below were installed and tested in conda environment Hoang (Python 3.11.16).
+curl_cffi==0.16.3
+
+# Test dependencies; production deployments can install curl_cffi alone.
+pytest==9.1.1
+pytest-asyncio==1.4.0
