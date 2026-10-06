@@ -23,7 +23,7 @@ if str(ROOT) not in sys.path:
 
 from tools.content_preparation.assets import load_state, state_hash
 from tools.content_preparation.checkpoint import Journal, file_lock, input_hashes, sha256, write_json
-from tools.content_preparation.config import resolve_path
+from tools.content_preparation.config import configure_runtime, resolve_path
 from tools.content_preparation.metrics import MetricEvaluator
 from tools.content_preparation.renderer_adapter import camera_parameters, render
 from tools.content_preparation.validation import safe_relative_path
@@ -66,10 +66,14 @@ def evaluate(object_root, source_template, poses, frames, views, output, resume=
     if output == object_root or output.is_relative_to(object_root):
         raise ValueError("GT diagnostic output must be outside the prepared object directory")
     cfg = json.loads((object_root.parent/".preparation/resolved_config.json").read_text())
+    configure_runtime(cfg)
     settings = dict(cfg["renderer"])
     settings.update(up_axis="z", fov_degrees=math.degrees(json.loads(Path(poses).read_text())["camera_angle_x"]))
-    extension = resolve_path(cfg["runtime"]["extension_path"])
-    sys.path.insert(0, str(extension))
+    extension = resolve_path(cfg["runtime"]["extension_path"]) if cfg["runtime"].get("extension_path") else None
+    if extension is not None:
+        if not extension.is_dir():
+            raise FileNotFoundError(f"Configured extension_path does not exist: {extension}")
+        sys.path.insert(0, str(extension))
     camera_list = json.loads(Path(poses).read_text())["frames"]
     if any(i < 0 or i >= len(camera_list) for i in views):
         raise ValueError("GT view index is outside the provided pose list")

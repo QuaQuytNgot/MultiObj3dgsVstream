@@ -13,21 +13,24 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from tools.content_preparation.checkpoint import Journal, file_lock, sha256, write_json
-from tools.content_preparation.config import load_config, resolve_path
-from tools.content_preparation.prepared_validation import PreparedValidator, VALIDATION_STAGES
-from tools.content_preparation.upstream import source_snapshot, runtime_provenance
+from tools.content_preparation.config import VALIDATION_STAGES, configure_runtime, read_config, resolve_path, validate_config
 
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--config", required=True, type=Path)
+    parser.add_argument("--runtime-config", type=Path, help="Execution-only machine settings; research fields are rejected")
     parser.add_argument("--stage", choices=("all",) + VALIDATION_STAGES, default="all")
     parser.add_argument("--report", type=Path, help="Default: prepared-root/checks/<stage>.json")
     parser.add_argument("--resume", action="store_true")
     parser.add_argument("--overwrite", action="store_true")
     args = parser.parse_args(argv)
     try:
-        config = load_config(args.config)
+        raw = read_config(args.config, args.runtime_config)
+        configure_runtime(raw)
+        config = validate_config(raw)
+        from tools.content_preparation.prepared_validation import PreparedValidator
+        from tools.content_preparation.upstream import source_snapshot, runtime_provenance
         extension = config["runtime"].get("extension_path")
         if extension:
             sys.path.insert(0, str(resolve_path(extension)))
@@ -49,6 +52,8 @@ def main(argv=None):
         with file_lock(journal_root / ".preparation/run.lock"), gpu_lock:
             journal = Journal(journal_root, args.resume, args.overwrite)
             inputs = [args.config.resolve(), *validator.inputs(args.stage)]
+            if args.runtime_config is not None:
+                inputs.append(args.runtime_config.resolve())
             def action():
                 result = validator.validate(args.stage)
                 write_json(report, result)

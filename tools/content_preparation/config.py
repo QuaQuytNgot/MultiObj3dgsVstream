@@ -5,11 +5,15 @@ from pathlib import Path
 import hashlib
 import json
 import math
+import os
 import re
+import sys
 import yaml
 
 ROOT = PROJECT_ROOT
 STAGES = ("preprocess", "train", "export", "encode", "package", "decode", "profile", "proxy", "manifest")
+VALIDATION_STAGES = ("environment", "dataset", "preprocess", "checkpoints", "export",
+                     "encoding", "package", "decode", "profile", "final")
 
 
 def config_hash(value):
@@ -39,11 +43,51 @@ def frame_records(obj):
     return [{"frame": f, "timestamp": float(times[i] if times else (f-origin)/fps)} for i, f in enumerate(frames)]
 
 
-def load_config(path):
+RUNTIME_OVERRIDE_FIELDS = {"runtime": {"gpu_batch_size", "extension_path", "cpu_threads"},
+                           "metrics": {"device", "batch_size"}}
+
+
+def apply_runtime_override(raw, override):
+    """Merge execution settings only; research configuration cannot be replaced."""
+    if not isinstance(override, dict) or set(override) - set(RUNTIME_OVERRIDE_FIELDS):
+        raise ValueError("Runtime configuration accepts only runtime and metrics execution settings")
+    cfg = deepcopy(raw)
+    for section, values in override.items():
+        if not isinstance(values, dict) or set(values) - RUNTIME_OVERRIDE_FIELDS[section]:
+            raise ValueError(f"Unsupported runtime override fields in {section}; research parameters cannot be overridden")
+        cfg.setdefault(section, {})
+        if section == "metrics" and isinstance(cfg[section].get("lpips"), dict):
+            nested = cfg[section]["lpips"]
+            for key in ("device", "batch_size"):
+                if key in values and key in nested and values[key] != nested[key]:
+                    raise ValueError(f"Runtime metrics.{key} conflicts with metrics.lpips.{key}")
+        cfg[section].update(deepcopy(values))
+    return cfg
+
+
+def configure_runtime(config):
+    """Set CPU thread limits before numeric imports, including loaded PyTorch."""
+    threads = config.get("runtime", {}).get("cpu_threads", 2)
+    if not isinstance(threads, int) or isinstance(threads, bool) or threads <= 0:
+        raise ValueError("runtime.cpu_threads must be a positive integer")
+    for name in ("OMP_NUM_THREADS", "MKL_NUM_THREADS", "OPENBLAS_NUM_THREADS"):
+        os.environ[name] = str(threads)
+    if "torch" in sys.modules:
+        sys.modules["torch"].set_num_threads(threads)
+
+
+def read_config(path, runtime_path=None):
+    """Read and merge YAML without importing numeric libraries or changing state."""
     raw = yaml.safe_load(Path(path).read_text())
     if not isinstance(raw, dict):
         raise ValueError("Configuration must be a YAML mapping")
-    return validate_config(raw)
+    if runtime_path is not None:
+        raw = apply_runtime_override(raw, yaml.safe_load(Path(runtime_path).read_text()))
+    return raw
+
+
+def load_config(path, runtime_path=None):
+    return validate_config(read_config(path, runtime_path))
 
 
 def validate_config(raw):
@@ -64,16 +108,24 @@ def validate_config(raw):
                 "renderer": {"backend": "upstream_cuda", "width": 256, "height": 256, "fov_degrees": 45., "background": [0., 0., 0.], "center": [0., 0., 0.], "up_axis": "y"},
                 "metrics": {"lpips": True, "lpips_net": "vgg", "device": "cpu", "batch_size": 1, "distortion": "mse"},
                 "proxy": {"enabled": True, "external_descriptor": None, "backend": "fixed_gaussian_subset", "max_gaussians": 256, "alpha_threshold": .01},
-                "runtime": {"seed": 0, "gpu_batch_size": 1, "extension_path": None}}
+                "runtime": {"seed": 0, "gpu_batch_size": 1, "extension_path": None, "cpu_threads": 2}}
     for name, default in defaults.items():
         cfg[name] = dict(default, **cfg.get(name, {}))
     from .codec_adapter import get_codec
     get_codec(cfg["encoding"])
+    threads=cfg["runtime"]["cpu_threads"]
+    if not isinstance(threads,int) or isinstance(threads,bool) or threads<=0:
+        raise ValueError("runtime.cpu_threads must be a positive integer")
+    extension=cfg["runtime"].get("extension_path")
+    if extension is not None and (not isinstance(extension,str) or not extension):
+        raise ValueError("runtime.extension_path must be a directory path or null")
     for key in ("initial_iterations","dynamic_iterations"):
         value=cfg["training"][key]
         if not isinstance(value,int) or isinstance(value,bool) or value<=0:
             raise ValueError(f"training.{key} must be a positive integer")
     lpips_config=cfg["metrics"]["lpips"] if isinstance(cfg["metrics"]["lpips"],dict) else {}
+    if cfg["metrics"]["device"] not in {"cpu","cuda"} or lpips_config.get("device",cfg["metrics"]["device"]) not in {"cpu","cuda"}:
+        raise ValueError("metrics.device must be cpu or cuda")
     if cfg["metrics"]["batch_size"] != 1 or lpips_config.get("batch_size",1)!=1 or cfg["runtime"]["gpu_batch_size"] != 1:
         raise ValueError("Sequential preparation requires GPU and LPIPS batch_size = 1")
     if cfg["metrics"]["distortion"] not in {"mse", "lpips"}:

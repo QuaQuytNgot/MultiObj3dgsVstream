@@ -13,6 +13,9 @@ from .paths import UPSTREAM_ROOT
 from .config import ROOT, STAGES, config_hash, frame_records, resolve_path
 from .checkpoint import Journal, file_lock, sha256, write_json
 from .upstream import build_training_command, run_command, source_snapshot, verify_checkpoint_lineage,runtime_provenance
+# BEGIN PROGRESS DISPLAY ONLY
+from tools.content_preparation_progress import implementation_hash, observe_stages
+# END PROGRESS DISPLAY ONLY
 
 
 def fixture_state(frame, quality_index, seed=0):
@@ -39,6 +42,9 @@ class Pipeline:
         self.output=resolve_path(config["output"])
         self.resume,self.overwrite=resume,overwrite
         self.code_hash=config_hash({p.name:sha256(p) for p in sorted(Path(__file__).parent.glob("*.py"))})
+        # BEGIN PROGRESS DISPLAY ONLY
+        self.code_hash=implementation_hash(Path(__file__).parent)
+        # END PROGRESS DISPLAY ONLY
         self.snapshot=source_snapshot()
         runtime=runtime_provenance(config)
         self.runtime_signature={k:v for k,v in runtime.items() if k not in {"gpu","cuda_runtime"}}
@@ -73,6 +79,9 @@ class Pipeline:
                     raise RuntimeError("Upstream sources changed since preparation; use a new output or explicit --overwrite")
             write_json(marker,{"pipeline_version":__version__,"upstream_sources":self.snapshot})
             self.journal=Journal(self.output,self.resume,self.overwrite)
+            # BEGIN PROGRESS DISPLAY ONLY
+            observe_stages(self)
+            # END PROGRESS DISPLAY ONLY
             write_json(self.output/".preparation"/"resolved_config.json",self.cfg)
             try:
                 for obj in self.cfg["objects"]:

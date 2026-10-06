@@ -25,6 +25,7 @@ def runtime_provenance(config):
     import zlib
     import importlib.metadata
     value={"python":sys.version.split()[0],"numpy":np.__version__,"zlib":zlib.ZLIB_VERSION,"upstream_training_rng_seed":0,
+           "cpu_threads":config["runtime"].get("cpu_threads",2),
            "initialization_rng_seed":config["runtime"]["seed"]}
     value["compatibility"] = {
         "adapter_sha256": sha256(Path(__file__).with_name("compatibility.py")),
@@ -69,7 +70,8 @@ def runtime_provenance(config):
 
 
 def execution_environment(config):
-    env = dict(os.environ, OMP_NUM_THREADS="2", MKL_NUM_THREADS="2", WANDB_MODE="offline", EGL_PLATFORM="surfaceless")
+    threads=str(config["runtime"].get("cpu_threads",2))
+    env = dict(os.environ, OMP_NUM_THREADS=threads, MKL_NUM_THREADS=threads, OPENBLAS_NUM_THREADS=threads, WANDB_MODE="offline", EGL_PLATFORM="surfaceless")
     extension = ROOT / config["runtime"]["extension_path"] if config["runtime"].get("extension_path") else None
     if extension is not None and not extension.is_dir():
         raise FileNotFoundError(f"Configured extension_path does not exist: {extension}")

@@ -16,14 +16,10 @@ import numpy as np
 from .assets import GaussianState, load_state, read_ply, save_state, state_hash
 from .checkpoint import sha256
 from .codec_adapter import _quantize, get_codec, get_decoder, inspect_payload
-from .config import config_hash, frame_records, resolve_path
+from .config import VALIDATION_STAGES, config_hash, frame_records, resolve_path
 from .quality_profile import QualityProfile
 from .upstream import runtime_provenance, source_snapshot, verify_checkpoint_lineage
 from .validation import safe_relative_path, validate_asset, validate_dependency_graph, validate_manifest, validate_package_index
-
-VALIDATION_STAGES = ("environment", "dataset", "preprocess", "checkpoints", "export",
-                     "encoding", "package", "decode", "profile", "final")
-
 
 def read_json(path):
     return json.loads(Path(path).read_text(encoding="utf8"))

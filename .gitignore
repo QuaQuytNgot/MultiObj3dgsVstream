@@ -5,8 +5,10 @@ __pycache__/
 
 
 tools/content_trial_viewer/vendor/
+tools/content_trial_viewer/vendor
 # Offline preparation artifacts; source/config/docs remain versioned.
 /output/
+/output
 /datasets/
 /raw_dataset/
 /source/
