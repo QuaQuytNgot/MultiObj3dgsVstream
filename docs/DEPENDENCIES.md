@@ -1,5 +1,86 @@
 # Dependency and third-party setup
 
+## Clean-machine setup — RTX 5060 Ti
+
+The historical `Hoang` version table below describes the GTX 1660 machine and is
+not a CUDA setup to copy to Blackwell. The RTX 5060 Ti is compute capability
+12.0 ([NVIDIA GPU table](https://developer.nvidia.com/cuda/gpus)). As of
+2026-10-06, use an NVIDIA Linux driver at least 580.65.06, the CUDA 13.0 toolkit
+for compiling extensions, and the matching PyTorch CUDA 13.0 wheels. PyTorch
+2.12+ moved its Blackwell guidance to CUDA 13.0+ and documents the Linux driver
+floor; follow the [official PyTorch release guidance](https://pytorch.org/blog/pytorch-2-12-release-blog/)
+and [current installer selector](https://pytorch.org/get-started/locally/) if
+the versions have advanced. The old GTX 1660 `torch==2.3.1+cu118` extensions
+must not be copied to this machine.
+
+From a recursive clone and project root:
+
+```bash
+conda create -n multiobj3dgs-cp python=3.11 pip
+conda activate multiobj3dgs-cp
+python -m pip install torch==2.14.0 torchvision==0.29.0 \
+  --index-url https://download.pytorch.org/whl/cu130
+python -m pip install -r requirements.txt -r requirements-content-preparation.txt
+git submodule update --init --recursive
+```
+
+Install the system NVIDIA driver, CUDA Toolkit 13.0, a supported host C++
+compiler, CMake 3.16+, and Git before building. Verify the selected device and
+compiler/runtime match, then build both pinned upstream extensions for `sm_120`:
+
+On Ubuntu/Debian, also install the project build and MPD/XSD test tools:
+
+```bash
+sudo apt-get update
+sudo apt-get install -y build-essential cmake libxml2-utils
+```
+
+```bash
+nvidia-smi
+nvcc --version
+python -c 'import torch; print(torch.__version__, torch.version.cuda, torch.cuda.get_device_name(0), torch.cuda.get_device_capability(0)); assert torch.cuda.is_available() and torch.cuda.get_device_capability(0) == (12, 0)'
+TORCH_CUDA_ARCH_LIST=12.0 python -m pip install --no-build-isolation --no-deps \
+  ./third_party/dynamic-lapis-gs/submodules/simple-knn \
+  ./third_party/dynamic-lapis-gs/submodules/diff-gaussian-rasterization
+python -c 'import diff_gaussian_rasterization, simple_knn; print("pinned CUDA extensions import")'
+git submodule status --recursive
+```
+
+The top-level Dynamic-LapisGS and Draco gitlinks, plus Dynamic-LapisGS's nested
+rasterizer/simple-knn/GLM gitlinks, provide the exact source pins. This build
+uses those source trees and writes installed binaries into the active conda
+environment; do not reuse binaries built for the GTX 1660. A successful import
+does not prove the original renderer kernels execute correctly with CUDA 13:
+the pinned upstream extensions are older code, so the bounded GPU smoke and
+two-frame pilot are mandatory compatibility gates before a full run.
+
+Draco also declares pinned Eigen/filesystem/googletest/tinygltf submodules.
+The current bridge CMake disables Draco tests, command-line tools and the
+transcoder, so those optional children are not needed to build this bridge;
+`git clone --recursive` may initialize them anyway.
+
+Build the project CPU Draco bridge and fetch the locked viewer modules after
+installing Python dependencies:
+
+```bash
+cmake -S tools/content_preparation/native \
+  -B output/build/content_preparation -DCMAKE_BUILD_TYPE=Release
+cmake --build output/build/content_preparation --target draco_byte_codec --parallel 2
+output/build/content_preparation/draco_byte_codec --version
+python tools/content_trial_viewer/vendor_dependencies.py \
+  --lock tools/content_trial_viewer/dependencies.lock.json
+python tools/content_trial_viewer/vendor_dependencies.py --verify
+```
+
+Build and vendor outputs live under ignored `output/` and `tools/content_trial_viewer/vendor/`.
+For optional automated web checks, install Playwright/Chromium separately with
+`python -m pip install playwright` and `python -m playwright install chromium`.
+Then follow [the bounded smoke and decoded viewer steps](CONTENT_PREPARATION_BATCH1.md),
+followed by [the native pilot and full Longdress guide](CONTENT_PREPARATION_STEP_BY_STEP.md).
+The smoke import requires the checkpoint bundle described in that runbook; the
+native pilot requires only Longdress frames 1051–1052 and trains the configured
+two-frame pilot. No full run is part of setup.
+
 ## Project Python dependencies
 
 The Request Handler uses `curl_cffi` for reusable asynchronous HTTP sessions,
@@ -7,7 +88,8 @@ HTTP/2, HTTP/3, Range headers, and transport timing. Tests use `pytest` and
 `pytest-asyncio`. `requirements.txt` lists these three direct dependencies only;
 it is not a dump of the existing experiment environment.
 
-The environment was inspected before installation on 2026-10-05:
+The environment was inspected before installation on 2026-10-05. This is a
+historical GTX 1660 setup record, not the new-machine environment:
 
 | Component | Initial state in conda `Hoang` | Tested version |
 | --- | --- | --- |

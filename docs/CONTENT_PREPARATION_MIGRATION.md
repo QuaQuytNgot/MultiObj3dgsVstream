@@ -1,5 +1,12 @@
 # Content preparation migration
 
+> **Current status (2026-10-06):** the first implementation batch has since
+> added the Draco bridge/adapter, validator, experimental MPD writer and decoded
+> Gaussian browser viewer. This migration record below describes the original
+> copy operation; use [the current dependency runbook](DEPENDENCIES.md#clean-machine-setup-rtx-5060-ti)
+> and [current execution order](CONTENT_PREPARATION_STEP_BY_STEP.md#14-new-machine-execution-order-visual-gate-native-pilot-full-longdress)
+> to prepare a new machine.
+
 On 2026-10-05 the project-owned offline preparation pipeline and experiment tools
 were copied from the sibling `dynamic-lapis-gs` workspace into this repository.
 The original workspace is retained. This repository owns the pipeline code;
@@ -11,14 +18,14 @@ external trainer, Gaussian model and renderer source remain in pinned submodules
 | --- | --- |
 | `tools/content_preparation/` | Nine-stage preparation pipeline, codec/state/package helpers, profiles, proxies, journals, self-tests and backend path resolution |
 | `tools/*.py` | Dataset acquisition, composability/correction/temporal experiments, quality-ladder training wrappers and validation/reporting CLIs |
-| `tools/content_trial_viewer/` | Static offline PNG/metadata viewer; it does not render 3DGS in the browser |
+| `tools/content_trial_viewer/` | Existing PNG/metadata viewer, extended with a decoded-Gaussian WebGL viewport |
 | `scripts/` | Development/smoke utilities and project-owned publication inventory |
 | `configs/content_prepare_*.yaml` | Smoke, raw preparation and historical checkpoint-import configurations |
 | `docs/CONTENT_PREPARATION_*.md` | Preparation design, codec boundary, run guide and status |
 | `docs/validation/*_summary.json` | Unchanged compact evidence from the source workspace |
 | `third_party/dynamic-lapis-gs/` | Original training/preprocessing/Gaussian/renderer backend |
 | `third_party/dynamic-lapis-gs/submodules/` | Backend's pinned `diff-gaussian-rasterization`, `simple-knn` and nested GLM sources |
-| `third_party/draco/` | Pinned codec source for future work; current preparation codec is `gaussian_attribute_zlib` |
+| `third_party/draco/` | Pinned public Draco source used by `gaussian_attribute_draco_byteplanes`; the legacy zlib codec remains supported |
 
 The Dynamic-LapisGS dependency already supplies the Gaussian model and 3DGS CUDA
 extensions used here. A second copy of the complete `gaussian-splatting`
@@ -39,21 +46,19 @@ unchanged; provenance records adapter and launcher hashes explicitly.
 
 ## Installation and first checks
 
-Run from the project root:
+For a clean NVIDIA machine use the exact environment and CUDA extension steps in
+[DEPENDENCIES.md](DEPENDENCIES.md#clean-machine-setup-rtx-5060-ti). The project
+Python-level first checks remain:
 
 ```bash
 git submodule update --init --recursive
-conda activate Hoang
-python -m pip install -r requirements.txt
-python -m pip install -r requirements-content-preparation.txt
 python tools/content_preparation/prepare_content.py \
   --config configs/content_prepare_smoke.yaml --dry-run
 python tools/content_preparation/self_test.py
 ```
 
 The transport requirements remain separate from the optional preparation stack.
-Use the existing compatible PyTorch/CUDA environment; recursive submodule
-initialization downloads source without building it. Follow
+Recursive submodule initialization downloads source without building it. Follow
 [dependencies](DEPENDENCIES.md) before a CUDA build or GPU pipeline run.
 `scripts/smoke_test.py` exercises upstream preprocessing/training/rendering on tiny
 fixtures and needs the GPU/backend stack; it is not a prerequisite for reading a
@@ -66,9 +71,10 @@ require a `zstd` command-line executable on `PATH`; browser verification additio
 requires separately installed Playwright and Chromium. Neither is needed for the
 core network client or a preparation dry-run.
 
-This migration does not run full training, rebuild CUDA extensions, acquire a
-dataset or regenerate the Longdress media/profile/viewer artifacts. Validation
-in the destination consists of bounded tests, import/CLI/config checks and
+The original migration did not run full training, rebuild CUDA extensions,
+acquire a dataset or regenerate Longdress artifacts. Later first-batch validation
+and its scope are recorded in [readiness](CONTENT_PREPARATION_READINESS.md).
+Validation in that destination migration consisted of bounded tests, import/CLI/config checks and
 whitespace checks. The historical PASS counts in the copied reports are evidence
 for the source workspace, rather than results of those destination checks.
 

@@ -1,21 +1,22 @@
-# Two-frame checkpoint import only. No training or dataset acquisition.
+# Four-quality import from the verified five-frame Longdress checkpoint manifest.
+# This is an encoding/decoding/rendering visual gate; training.backend=existing.
 version: 1
-output: output/content_preparation/smoke
+output: output/content_preparation/longdress_visual
 delivery_modes: [progressive]
 objects:
   - id: longdress
     dataset:
       kind: checkpoints
       checkpoint_manifest: output/imports/longdress_4level_training/manifest.json
-    frames: {start: 1051, end: 1052}
+    frames: {start: 1051, end: 1055}
     fps: 30
     qualities:
       - {id: Q0, resolution_scale: 8}
       - {id: Q1, resolution_scale: 4}
+      - {id: Q2, resolution_scale: 2}
+      - {id: Q3, resolution_scale: 1}
 training:
   backend: existing
-  initial_iterations: 6000
-  dynamic_iterations: 1500
 encoding:
   name: gaussian_attribute_draco_byteplanes
   precision: f32
@@ -23,20 +24,20 @@ encoding:
   encoder_speed: 3
   decoder_speed: 3
 packaging:
-  gof_frames: 2
-  segment_frames: 1
-  refresh_frames: {Base: 2, E1: 1}
+  gof_frames: 180
+  segment_frames: 15
+  refresh_frames: {Base: 90, E1: 60, E2: 30, E3: 15}
 sampling:
   azimuth: [-120, 0, 120]
   elevation: [0]
   scales: [1]
   distance: 4.0311287
-  times: all
+  times: [1051, 1055]
 renderer:
   backend: upstream_cuda
   up_axis: z
-  width: 128
-  height: 128
+  width: 1024
+  height: 1024
   fov_degrees: 39.5978
   center: [0, 0, -0.1]
   background: [0, 0, 0]

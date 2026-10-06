@@ -12,12 +12,14 @@ Làm việc tại project root `MultiObj3dgsVstream/`. Hướng dẫn này dành
 
 ## 0. Bắt đầu từ checkout mới
 
+Thiết lập CUDA/PyTorch, compiler và pinned Dynamic-LapisGS extensions cho máy
+mới theo [dependency runbook](DEPENDENCIES.md#clean-machine-setup-rtx-5060-ti)
+trước các lệnh dưới đây. Không dùng môi trường `Hoang`/CUDA 11.8 từ GTX 1660.
+
 ```bash
 git clone --recursive https://github.com/QuaQuytNgot/MultiObj3dgsVstream.git
 cd MultiObj3dgsVstream
-conda activate Hoang
-python -m pip install -r requirements.txt
-python -m pip install -r requirements-content-preparation.txt
+conda activate multiobj3dgs-cp
 python tools/content_preparation/prepare_content.py \
   --config configs/content_prepare_smoke.yaml --dry-run
 python tools/content_preparation/self_test.py
@@ -63,18 +65,22 @@ Kiểm tra theo thứ tự: chọn highest **trained** quality → f32 decoded �
 
 ```bash
 cd MultiObj3dgsVstream
-conda activate Hoang
+conda activate multiobj3dgs-cp
 python --version
 nvidia-smi
+nvcc --version
 python tools/content_preparation/self_test.py
 ```
 
-Môi trường Hoang của experiment nguồn có PyTorch/CUDA extensions của backend.
-Config migrated mặc định `runtime.extension_path: null`, dùng extensions đã cài
-trong environment. Nếu dùng binary vendor đã xác minh, đặt `runtime.extension_path`
-rõ ràng; checkout mới cần extensions đúng pinned source. Không lấy binary của
-renderer khác chỉ vì package có cùng tên. Original Python modules đến từ
-`third_party/dynamic-lapis-gs`; project helpers dùng `tools/content_preparation/paths.py`. Chỉ một process preparation dùng GPU; không mở nhiều object/quality/view jobs đồng thời. LPIPS mặc định CPU, batch 1. Hai config native bốn quality đặt `metrics.device: cuda` sau preflight trên GTX 1660: VGG 1024 px batch 1 vừa VRAM; Gaussian renderer và LPIPS GPU chạy lần lượt, criterion được trả về CPU sau từng batch. Không đổi device giữa một run mà bỏ qua fingerprint checks.
+RTX 5060 Ti requires its own PyTorch/CUDA/extension build for compute capability
+12.0; use the commands and acceptance checks in `DEPENDENCIES.md`. All current
+configs set `runtime.extension_path: null`, so Python imports the extensions
+installed from the pinned submodule source in this environment. Do not copy
+GTX 1660 binaries or extensions from another renderer. Original Python modules
+come from `third_party/dynamic-lapis-gs`; project helpers use
+`tools/content_preparation/paths.py`. Run one preparation process at a time.
+LPIPS uses batch size 1; the new pilot config uses CPU LPIPS. CUDA training and
+renderer memory must be measured on the new card before full-sequence execution.
 
 Encode, package và decode baseline dùng NumPy/CPU và disk, không chịu giới hạn VRAM theo cách training/render chịu. Higher quality vẫn tăng RAM, dung lượng checkpoint/payload và thời gian CPU. Training res1, foundation merge/densification và render độ phân giải lớn có thể vượt **6 GB** dù encode cùng state thành công.
 
@@ -90,12 +96,16 @@ trạng thái complete/audit trong bảng chỉ mô tả workspace nguồn:
 | `configs/content_prepare_longdress_trial_f16.yaml` | Historical cùng checkpoint, encoding f16 | `output/content_prepare_longdress_trial/f16/` |
 | `configs/content_prepare_longdress_4level_f32.yaml` | `checkpoints` / `existing`; 1051–1055, Q0/Q1/Q2/Q3, cần manifest verified | `output/content_prepare_longdress_4level/f32_lossless/`; complete, audit passed |
 | `configs/content_prepare_longdress_4level_f16.yaml` | Cùng manifest bốn quality, encoding f16 | `output/content_prepare_longdress_4level/f16/`; complete, audit passed |
-| `configs/content_prepare_longdress.yaml` | `raw` / `upstream`; 1051–1080, bốn quality 8/4/2/1 | `output/content_prepare_longdress/`; full 30-frame training chưa chạy |
+| `configs/content_preparation/smoke.yaml` | Imported Q0/Q1, 1051–1052, Draco, 3 views, 128²; cần checkpoint bundle | `output/content_preparation/smoke/` |
+| `configs/content_preparation/longdress_visual.yaml` | Imported Q0–Q3, 1051–1055, Draco, 3 views, 1024²; cần checkpoint bundle | `output/content_preparation/longdress_visual/` |
+| `configs/content_preparation/longdress_native_pilot.yaml` | Raw/upstream, 1051–1052, Q0–Q3, original 30k/30k schedule, Draco | `output/content_preparation/longdress_native_pilot/` |
+| `configs/content_preparation/longdress.yaml` | Raw/upstream, 1051–1350, Q0–Q3 progressive Draco, 21 times × 24 views × 3 scales | `output/content_preparation/longdress_full/`; prepared here, **not run** |
+| `configs/content_prepare_longdress.yaml` | Historical raw/upstream baseline; 1051–1080, four qualities, zlib and both delivery modes | `output/content_prepare_longdress/`; not the current progressive full-run config |
 
 Trong các lệnh stage dưới đây, dùng một biến duy nhất. Ví dụ import bốn quality
-chỉ chạy sau khi `output/longdress_4level_training/manifest.json` và checkpoint paths
-trong manifest tồn tại. Nếu chưa có inputs, dùng smoke config hoặc raw config và
-thực hiện acquisition/preprocessing trước:
+chỉ chạy sau khi `output/imports/longdress_4level_training/manifest.json` và mọi
+checkpoint paths trong manifest tồn tại. Nếu chưa có inputs, chuyển checkpoint
+bundle từ máy cũ hoặc dùng raw pilot/full config sau acquisition/preprocessing:
 
 ```bash
 CP_CONFIG=configs/content_prepare_longdress_4level_f32.yaml
@@ -125,15 +135,18 @@ assert len(d['frames']) == 300
 PY
 ```
 
-Reproduce/resume downloader, nếu thực sự cần acquisition/verification lại:
+Tải/tiếp tục tải verified source frames, nếu cần acquisition:
 
 ```bash
 python tools/download_8i_object.py --object longdress --all-frames \
-  --output output/datasets/8i --cache output/progressive_gap_real/raw \
-  --allow-http-fallback --download-workers 4
+  --output output/datasets/8i --cache output/cache/8i/longdress \
+  --download-workers 4
 ```
 
-Command trên giữ setting transport của trial: HTTP fallback được cho phép rõ ràng khi official HTTPS certificate verification lỗi; inventory ghi transport. Download workers chỉ là network/CPU. Lệnh resume xác minh lại raw files, có thể mất thời gian đọc khoảng 5.69 GB; không cần lặp acquisition cho mỗi encoding variant.
+Downloader giữ HTTPS certificate verification mặc định; không dùng HTTP fallback
+trừ khi có lỗi TLS đã điều tra và cho phép rõ ràng. Download workers chỉ dùng
+network/CPU. `--all-frames` lấy 300 frame Longdress (~5.69 GB point clouds); giữ
+output này, không download lại cho mỗi codec/config variant.
 
 ## 6. Chạy preprocess rồi kiểm tra đầu vào
 
@@ -452,3 +465,89 @@ Nếu báo artifact/config/input/runtime changed, kiểm tra nguyên nhân. Ch�
 Nếu thiếu prerequisites: chạy stage còn thiếu theo thứ tự 6–10. Nếu imported lineage sai: cung cấp argv/hash gốc và đúng checkpoint chain; không sửa manifest để “pass”. Nếu OOM: giữ log/stage/config, rồi thay memory setting hoặc render resolution **rõ ràng trong một run riêng**; không silently giảm iterations, số quality, batch hoặc tắt LPIPS để báo thành công.
 
 Hướng dẫn không triển khai LoD/ABR selection, viewport/bandwidth prediction, runtime scheduler, HTTP client, DRL hoặc full DASH. Artifact server-side có thể dùng cho các phase đó sau khi content preparation đã được validate.
+
+## 14. New-machine execution order: visual gate, native pilot, full Longdress
+
+Lệnh cài môi trường Blackwell nằm trong
+[DEPENDENCIES.md](DEPENDENCIES.md#clean-machine-setup-rtx-5060-ti). Từ project
+root chạy lần lượt:
+
+1. Clone bằng `git clone --recursive`, cài dependencies, build `draco_byte_codec`
+   và pinned CUDA extensions; các command cụ thể ở dependency runbook.
+2. Chạy `python tools/content_preparation/self_test.py` và
+   `prepare_content.py --config configs/content_prepare_smoke.yaml --dry-run`.
+   Với actual two-quality Draco smoke, chuyển checkpoint bundle vào
+   `output/imports/longdress_4level_training/`, rồi làm đúng các bước 1–9 trong
+   [batch runbook](CONTENT_PREPARATION_BATCH1.md). Resume bằng đúng lệnh stage
+   `--resume`; audit phải cho 0 task recompute.
+3. Nếu cần raw inputs, tải một lần:
+
+   ```bash
+   python tools/download_8i_object.py --object longdress --all-frames \
+     --output output/datasets/8i --cache output/cache/8i/longdress \
+     --download-workers 4
+   ```
+
+   Chờ inventory báo đủ 300 frame và giữ tất cả PLY dưới `output/datasets/8i/`.
+4. Nếu old checkpoint bundle có Q0–Q3 cho 1051–1055, kiểm tra `longdress_visual`
+   bằng `--dry-run`, rồi chạy `--stage all --resume`. Expected: 20 decoded
+   quality/frame states và 24 profile rows. Xuất decoded assets và MPD theo các
+   bước 5–6 của batch runbook; mở local viewer, thử mọi Q0–Q3 ở frame 1051/1055,
+   xoay/pan/zoom, rồi chạy browser validator. Không tiếp tục nếu một quality
+   thiếu, hash sai, mesh rỗng hoặc có lỗi JS/HTTP.
+5. Chạy native two-frame pilot trên raw data:
+
+   ```bash
+   python tools/content_preparation/prepare_content.py \
+     --config configs/content_preparation/longdress_native_pilot.yaml --dry-run
+   python tools/content_preparation/prepare_content.py \
+     --config configs/content_preparation/longdress_native_pilot.yaml \
+     --stage all --resume
+   python tools/validate_prepared_content.py \
+     --config configs/content_preparation/longdress_native_pilot.yaml \
+     --stage all --resume
+   ```
+
+   Dry-run phải hiện hai frames và Q0–Q3. Pilot giữ nguyên 30k/30k schedule,
+   renderer 1024², sequential GPU work, CPU LPIPS batch 1 và không chạy proxy.
+   Kiểm tra đủ 8 checkpoints và progressive lineage trước khi tin kết quả;
+   lưu task timings/logs, peak GPU allocation/driver memory, RAM peak, disk deltas,
+   per-state encode/decode throughput và wall time. Pilot PASS là gate bắt buộc;
+   OOM/build/render failure dừng ở đây, không hạ cài đặt huấn luyện tự động.
+6. Full config đã chuẩn bị tại `configs/content_preparation/longdress.yaml`.
+   Đảm bảo dataset inventory có frames 1051–1350, extensions import được, và
+   dry-run hiển thị 300 frames, 4 qualities, progressive-only, 1,200 checkpoint
+   jobs và **6,048 profile renders**. Chỉ sau khi visual gate/pilot và resource
+   review đều đạt mới bắt đầu:
+
+   ```bash
+   python tools/content_preparation/prepare_content.py \
+     --config configs/content_preparation/longdress.yaml --stage all --resume
+   python tools/validate_prepared_content.py \
+     --config configs/content_preparation/longdress.yaml --stage all --resume
+   ```
+
+   Resume sau crash bằng đúng hai lệnh trên; checkpoint, frame/view tasks và
+   output hashes còn hợp lệ sẽ skip. `--stage train --resume` hoặc stage khác chỉ
+   chạy riêng khi prerequisites của stage đó đã có. Không dùng config
+   `configs/content_prepare_longdress.yaml` cho run này: config lịch sử đó chỉ có
+   30 frames, zlib và independent+progressive modes.
+7. Sau khi full validation pass, xuất server MPD và decoded viewer assets:
+
+   ```bash
+   python tools/export_content_mpd.py \
+     --prepared-root output/content_preparation/longdress_full --resume
+   python tools/export_decoded_viewer_assets.py \
+     --prepared-root output/content_preparation/longdress_full \
+     --mode progressive --frames all --resume
+   python -m http.server 8766 --bind 127.0.0.1 \
+     --directory output/content_preparation/longdress_full
+   ```
+
+   Mở `http://127.0.0.1:8766/?object=longdress&quality=Q3&display=gaussians`.
+   Kiểm tra Q0–Q3, đầu/cuối sequence, camera navigation, frame/quality labels,
+   decoded hash/count, asset load và PNG reference renders. Local viewer là
+   inspection UI; nó không decode payload trong browser.
+
+Không có lệnh nào trong bước này được chạy trong lượt chuẩn bị migration; full
+Longdress chỉ bắt đầu khi người dùng yêu cầu riêng.

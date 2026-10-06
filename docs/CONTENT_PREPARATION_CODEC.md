@@ -1,5 +1,20 @@
 # Codec inspection and implementation
 
+## Current addition — 2026-10-06
+
+The first batch adds `gaussian_attribute_draco_byteplanes` 1.0.0 / `CPDRAC01`.
+The project C++ bridge uses verified public Draco 1.5.7 sequential byte attributes
+to preserve exact f32 state/IDs and sparse shared-state replacements. It has no
+temporal prediction and does not reproduce the unpublished enhanced LTS encoder.
+The legacy zlib packet remains unchanged. Per-quality codec dispatch and an
+explicit local decoder runtime are tested, including decoding after relocating
+the bridge. See [the batch runbook](CONTENT_PREPARATION_BATCH1.md) for the native
+policy, actual smoke commands and codec limits, and
+[current evidence](validation/content_preparation_batch1_smoke_summary.json).
+
+The sections below preserve the inspected historical zlib baseline and source
+boundary; their statements about missing Draco/DASH describe that earlier state.
+
 > **Migration note (2026-10-05):** project-owned preparation code and this document
 > were migrated from the sibling `dynamic-lapis-gs` workspace. Measured results,
 > PASS counts and hardware observations below describe that historical workspace;

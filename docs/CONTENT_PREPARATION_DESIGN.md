@@ -1,5 +1,11 @@
 # Content preparation for Dynamic-LapisGS
 
+> Architecture reference. Its early CLI examples and historical `Hoang`
+> environment describe the original GTX 1660 workspace. For a clean machine,
+> use [the current CUDA/dependency setup](DEPENDENCIES.md#clean-machine-setup-rtx-5060-ti),
+> [the bounded Draco/viewer smoke](CONTENT_PREPARATION_BATCH1.md), and
+> [the current Longdress execution order](CONTENT_PREPARATION_STEP_BY_STEP.md#14-new-machine-execution-order-visual-gate-native-pilot-full-longdress).
+
 > **Migration note (2026-10-05):** project-owned preparation code and this document
 > were migrated from the sibling `dynamic-lapis-gs` workspace. Measured results,
 > PASS counts and hardware observations below describe that historical workspace;

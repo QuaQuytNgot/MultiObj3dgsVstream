@@ -1,5 +1,62 @@
 # Content Preparation Readiness
 
+## Current first-batch result — 2026-10-06
+
+**PASS in `MultiObj3dgsVstream`**, limited to the approved first implementation
+batch. All six components are operational: Draco native bridge/adapter, codec
+integration, proxy-off orchestration, generic validator, MPD writer and the
+decoded Gaussian extension to the existing viewer.
+
+- **139 preparation self-tests passed, no failures/skips**, including real
+  pretrained LPIPS and the legacy Chromium viewer check. Syntax/import checks
+  and config dry-run passed.
+- Actual smoke used **Longdress Q0/Q1, frames 1051–1052**, imported from existing
+  checkpoints. No new training, native pilot or full sequence was started.
+- Export → Draco → CPSEG → decode → original CUDA renderer → metrics → profile
+  → MPD → decoded PLY → WebGL passed. There are 4 exported/encoded/decoded states,
+  4 segments, 12 view-conditioned metric samples and 6 transition gain samples.
+- `gaussian_attribute_draco_byteplanes` **1.0.0** uses pinned public Draco 1.5.7.
+  Numeric f32 state is bit-exact. It is project code, not unpublished LTS.
+  Progressive shared-state replacements and arbitrary quality counts are
+  supported. Production smoke selected only progressive mode; legacy codec and
+  representation behavior remain covered by tests.
+- Actual media is **39,486,478 bytes**, including 973 bytes of CPSEG container
+  overhead. No temporal prediction/history is introduced. The decoded Q1 is
+  this smoke's highest-quality adaptation reference; GT quality is not measured
+  by this smoke.
+- MPD writer **1.1.0** passed pinned offline XSD and file/timing/dependency checks.
+  Q1's exact required cumulative peak is **4,895,983,920 bits/s**, carried by a
+  mandatory extended-rate property/JSON because the standard bandwidth field is
+  uint32. This experimental CPSEG profile is not ordinary DASH video playback.
+- Real WebGL browser audit passed **4/4 quality/frame assets** with verified
+  served PLY/UI/vendor hashes, rotation/pan/zoom, camera preservation, rapid
+  switches and one resident mesh. There were no JS/HTTP errors. The screenshot
+  was inspected; personal visual acceptance remains the user's browser review.
+- GPU guard recorded `peak_active=1`, `active=0`, 12 views. Peak **PyTorch CUDA
+  allocation** was **58,848,768 bytes**, at 128×128. This excludes driver/context
+  memory and does not establish full/native training capacity on 6 GB.
+  LPIPS ran on CPU, batch 1. Proxy preparation was disabled.
+- Resume executed **0 tasks**: pipeline skipped 49, MPD 1, viewer export 17 and
+  validator 1. Original upstream source hashes stayed unchanged.
+
+Run root: `output/content_preparation/smoke/`. Final audit is `checks/all.json`;
+browser evidence is `viewer_validation.json`. Open
+[decoded Gaussian smoke viewer](http://127.0.0.1:8766/?object=longdress&quality=Q1&display=gaussians)
+while its local server is running. Exact commands and bounds are in
+[first-batch runbook](CONTENT_PREPARATION_BATCH1.md), with portable evidence in
+[batch1 smoke summary](validation/content_preparation_batch1_smoke_summary.json).
+
+For a clean RTX 5060 Ti checkout, follow the CUDA 13/PyTorch and pinned extension
+setup in [DEPENDENCIES.md](DEPENDENCIES.md#clean-machine-setup-rtx-5060-ti), then
+the new-machine run order in
+[CONTENT_PREPARATION_STEP_BY_STEP.md](CONTENT_PREPARATION_STEP_BY_STEP.md#14-new-machine-execution-order-visual-gate-native-pilot-full-longdress).
+The runtime counts below are historical GTX 1660 measurements, not a forecast
+for the RTX 5060 Ti.
+
+**Stopping condition reached.** Grouped aggregation, progressive GT diagnostics,
+refresh ablation and native/full-run configs/execution remain deferred. The
+material below preserves historical migration/source-workspace observations.
+
 > **Migration note (2026-10-05):** project-owned preparation code and this document
 > were migrated from the sibling `dynamic-lapis-gs` workspace. Measured results,
 > PASS counts and hardware observations below describe that historical workspace;
@@ -8,7 +65,7 @@
 > use this project root and the pinned backend in `third_party/dynamic-lapis-gs`.
 > See [migration/status](CONTENT_PREPARATION_MIGRATION.md) before reproducing a run.
 
-## Trạng thái sau migration
+## Trạng thái tại thời điểm migration — 2026-10-05
 
 Code project-owned nằm trong `tools/`, `scripts/`, `configs/`; Dynamic-LapisGS và
 CUDA-extension source nằm trong pinned submodule `third_party/dynamic-lapis-gs`.

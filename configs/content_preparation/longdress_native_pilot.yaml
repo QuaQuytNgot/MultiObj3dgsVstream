@@ -1,0 +1,64 @@
+# Native Dynamic-LapisGS two-frame pilot. Keeps the upstream 30k/30k schedule,
+# Q0-Q3 resolution ladder, full train/test pose sets and progressive lineage.
+version: 1
+output: output/content_preparation/longdress_native_pilot
+delivery_modes: [progressive]
+objects:
+  - id: longdress
+    dataset:
+      kind: raw
+      raw_template: output/datasets/8i/longdress/Ply/longdress_vox10_{frame:04d}.ply
+      train_poses: third_party/dynamic-lapis-gs/transforms_train.json
+      test_poses: third_party/dynamic-lapis-gs/transforms_test.json
+      width: 1024
+    frames: {start: 1051, end: 1052}
+    fps: 30
+    qualities:
+      - {id: Q0, resolution_scale: 8}
+      - {id: Q1, resolution_scale: 4}
+      - {id: Q2, resolution_scale: 2}
+      - {id: Q3, resolution_scale: 1}
+training:
+  backend: upstream
+  initial_iterations: 30000
+  dynamic_iterations: 30000
+  lambda_dssim: 0.8
+  sh_degree: 3
+  extra_args: ["-r", "1"]
+encoding:
+  name: gaussian_attribute_draco_byteplanes
+  precision: f32
+  executable: output/build/content_preparation/draco_byte_codec
+  encoder_speed: 3
+  decoder_speed: 3
+packaging:
+  gof_frames: 180
+  segment_frames: 15
+  refresh_frames: {Base: 90, E1: 60, E2: 30, E3: 15}
+sampling:
+  azimuth: [-120, 0, 120]
+  elevation: [0]
+  scales: [1]
+  distance: 4.0311287
+  times: [1051, 1052]
+renderer:
+  backend: upstream_cuda
+  up_axis: z
+  width: 1024
+  height: 1024
+  fov_degrees: 39.5978
+  center: [0, 0, -0.1]
+  background: [0, 0, 0]
+metrics:
+  lpips: true
+  lpips_net: vgg
+  device: cpu
+  batch_size: 1
+  distortion: mse
+proxy:
+  enabled: false
+  external_descriptor: null
+runtime:
+  seed: 0
+  gpu_batch_size: 1
+  extension_path: null

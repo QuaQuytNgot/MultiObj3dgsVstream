@@ -16,6 +16,34 @@ tools/content_trial_viewer/vendor/
 /build/
 /dist/
 *.egg-info/
+
+# Large generated content/training artifacts must stay out of Git even if a
+# command is accidentally pointed outside output/.
+**/datasets/
+**/checkpoints/
+**/cache/
+**/logs/
+**/renders/
+**/rendered/
+**/profiles/
+**/viewer_assets/
+**/build/
+*.ply
+*.npz
+*.npy
+*.pt
+*.pth
+*.ckpt
+*.cpgs
+*.cpseg
+*.tfevents.*
+*.log
+*.mp4
+*.webm
+*.exr
+*.zip
+
+# Native build products and Python bytecode.
 *.so
 *.o
 *.a

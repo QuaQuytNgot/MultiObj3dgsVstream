@@ -10,8 +10,6 @@ for subsequent work.
 ```bash
 git clone --recursive https://github.com/QuaQuytNgot/MultiObj3dgsVstream.git
 cd MultiObj3dgsVstream
-conda activate Hoang
-python -m pip install -r requirements.txt
 ```
 
 For an existing checkout whose submodules have not been initialized:
@@ -38,20 +36,35 @@ Original Gaussian/trainer/renderer
 source comes from `third_party/dynamic-lapis-gs`, including its pinned nested
 3DGS extensions; it is not copied into the project source.
 
-Start with [the migration note](docs/CONTENT_PREPARATION_MIGRATION.md) and
-[the step-by-step guide](docs/CONTENT_PREPARATION_STEP_BY_STEP.md). Optional
-preparation dependencies stay separate from the networking requirements:
+Create the Python/CUDA environment by following
+[docs/DEPENDENCIES.md](docs/DEPENDENCIES.md#clean-machine-setup-rtx-5060-ti).
+Networking and content-preparation requirements stay in separate files. Start
+with [the migration note](docs/CONTENT_PREPARATION_MIGRATION.md) and
+[the step-by-step guide](docs/CONTENT_PREPARATION_STEP_BY_STEP.md). After setup,
+verify the source/config path with:
 
 ```bash
-python -m pip install -r requirements-content-preparation.txt
 python tools/content_preparation/prepare_content.py \
   --config configs/content_prepare_smoke.yaml --dry-run
 python tools/content_preparation/self_test.py
 ```
 
-Use the existing compatible PyTorch/CUDA environment; see the dependency note for
-backend setup. This migration validates source/CLI/configs and bounded tests. It
-does not build CUDA extensions, train or regenerate the full Longdress pipeline.
+For a clean NVIDIA Blackwell machine, install the CUDA-compatible PyTorch build,
+CUDA toolkit, and pinned upstream extensions using
+[the clean-machine dependency steps](docs/DEPENDENCIES.md#clean-machine-setup-rtx-5060-ti).
+Then follow the exact Draco build, checkpoint transfer, smoke, viewer, and resume
+commands in [the first-batch runbook](docs/CONTENT_PREPARATION_BATCH1.md). The
+two-frame native training pilot and later Longdress run are documented in
+[the step-by-step guide](docs/CONTENT_PREPARATION_STEP_BY_STEP.md). The current
+300-frame config is `configs/content_preparation/longdress.yaml`; the older
+`configs/content_prepare_longdress.yaml` remains a 30-frame zlib baseline.
+
+The source checkout does not include historical datasets, checkpoints, pretrained
+weights, browser vendor files, binaries or generated outputs. Checkpoint-import
+smoke/visual runs therefore need the checkpoint bundle copied to the ignored
+`output/imports/longdress_4level_training/` location; native training uses the
+pinned backend and raw data under ignored `output/`. The migration checks do not
+start the native pilot or full Longdress run.
 Generated datasets, checkpoints, binaries and media stay under ignored `output/`
 or external storage. A fresh clone contains no historical run outputs.
 

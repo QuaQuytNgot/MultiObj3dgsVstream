@@ -1,0 +1,175 @@
+{
+  "adaptation_reference": "decoded Q1 (highest quality selected in this bounded smoke)",
+  "artifacts": {
+    "codec_packet_bytes": 39485505,
+    "container_overhead_bytes": 973,
+    "decoded_states": 4,
+    "decoded_viewer_assets": 4,
+    "encoded_packets": 4,
+    "exported_states": 4,
+    "media_bytes": 39486478,
+    "render_samples": 12,
+    "requestable_segments": 4,
+    "transition_gain_samples": 6
+  },
+  "browser": {
+    "backend": "headless Chromium / ANGLE SwiftShader",
+    "catalog_sha256": "4ffd640b5609afd6f402e197bac86312d34febed10c6af9920de32a317f543d0",
+    "conditions_checked": 4,
+    "conditions_expected": 4,
+    "http_errors": [],
+    "implementation_files_verified": 10,
+    "javascript_errors": [],
+    "navigation": {
+      "pan": true,
+      "rotation": true,
+      "zoom": true
+    },
+    "rapid_switch": {
+      "final_quality": "Q1",
+      "passed": true,
+      "single_mesh": true
+    },
+    "screenshot": "output/content_preparation/smoke/viewer_validation_gaussians.png",
+    "status": "passed",
+    "visual_review": "agent inspected screenshot; human acceptance not assumed"
+  },
+  "codec": {
+    "config": {
+      "attribute_precision": {},
+      "decoder_speed": 3,
+      "encoder_speed": 3,
+      "executable": "output/build/content_preparation/draco_byte_codec",
+      "name": "gaussian_attribute_draco_byteplanes",
+      "precision": "f32",
+      "version": "1.0.0"
+    },
+    "name": "gaussian_attribute_draco_byteplanes",
+    "version": "1.0.0"
+  },
+  "codec_classification": "new project lossless Gaussian adapter using public Draco; not unpublished LTS encoder",
+  "config": "configs/content_preparation/smoke.yaml",
+  "config_sha256": "ff34223f321725cf635002a27ab40c0f41b11cc784a9c5b508109a92dc471681",
+  "date": "2026-10-06",
+  "evidence": [
+    {
+      "path": "output/content_preparation/smoke/checks/all.json",
+      "sha256": "49a3c39ff2da7b204df68e856c67d8e37f95de4b3a49837a69f0a3cd49a72d73"
+    },
+    {
+      "path": "output/content_preparation/smoke/viewer_validation.json",
+      "sha256": "fa652bb205a8b5b6f56fbc554a945a83ee771922ed440d5a3c1bc6e5eb5667ca"
+    },
+    {
+      "path": "output/content_preparation/smoke/mpd_validation.json",
+      "sha256": "fb96619f68fec0b6dd444838d0a8a91b534497be611303346ac5d1b1cb671faf"
+    },
+    {
+      "path": "output/content_preparation/smoke/longdress/validation.json",
+      "sha256": "83cb1647737d5c20158e727d36fed7ecef87cc8eb01ce285da81e1ff74105a0f"
+    },
+    {
+      "path": "output/content_preparation/smoke/validation_upstream.json",
+      "sha256": "ef0b3e36c53708ad0c4fc7636cb41da35e672994a48c5839e5bc200db91b5589"
+    }
+  ],
+  "frames": [
+    1051,
+    1052
+  ],
+  "gpu_guard": {
+    "active": 0,
+    "peak_active": 1,
+    "views": 12
+  },
+  "implementation_sha256": "d130e3d54df4a0dcf9d42ed3e76c8297768b1a4b4e7f0825f49ea2cc8d8f3e8c",
+  "lpips_batch_size": 1,
+  "lpips_device": "cpu",
+  "media_duration_seconds": 0.06666666666666667,
+  "memory_note": "PyTorch allocator peak for 128px smoke; excludes driver/context and does not certify full/native training on 6GB",
+  "metrics": [
+    "mse",
+    "psnr",
+    "lpips"
+  ],
+  "mpd": {
+    "bandwidths": [
+      {
+        "bandwidth": 2379763920,
+        "bandwidth_saturated": false,
+        "quality": "Q0",
+        "required_bandwidth_bits_per_second": 2379763920
+      },
+      {
+        "bandwidth": 4294967295,
+        "bandwidth_saturated": true,
+        "quality": "Q1",
+        "required_bandwidth_bits_per_second": 4895983920
+      }
+    ],
+    "schema_validated": true,
+    "standard_video_interoperability": false,
+    "writer_version": "1.1.0"
+  },
+  "new_training_started": false,
+  "object": "longdress",
+  "objective_renderer": "original gaussian_renderer.render from pinned Dynamic-LapisGS",
+  "output_root": "output/content_preparation/smoke",
+  "peak_pytorch_cuda_allocated_bytes": 58848768,
+  "proxy_preparation": "disabled",
+  "qualities": [
+    "Q0",
+    "Q1"
+  ],
+  "repository_commits": {
+    "draco": "15bdb3a4f15a7a8d77489ac348a7a50d93de17a3",
+    "dynamic_lapisgs": "da8efaa42a9d021b5ff2958c0a87eba6ed7a47c4",
+    "project": "8ce7ba76a5942556d776eb243389bdc0978167db",
+    "rasterizer": "59f5f77e3ddbac3ed9db93ec2cfe99ed6c5d121d",
+    "simple_knn": "86710c2d4b46680c02301765dd79e465819c8f19"
+  },
+  "resume": {
+    "mpd": {
+      "executed": 0,
+      "skipped": 1
+    },
+    "pipeline": {
+      "executed": 0,
+      "skipped": 49
+    },
+    "validator": {
+      "executed": 0,
+      "skipped": 1
+    },
+    "viewer_export": {
+      "executed": 0,
+      "skipped": 17
+    }
+  },
+  "schema_version": "content-preparation.batch1-smoke-evidence.v1",
+  "scope": "Recommended first implementation batch only; no native pilot/full Longdress or new training",
+  "self_tests": {
+    "failed": 0,
+    "passed": 139,
+    "skipped": 0,
+    "strict_optional": true
+  },
+  "stages": [
+    "checkpoints",
+    "dataset",
+    "decode",
+    "encoding",
+    "environment",
+    "export",
+    "final",
+    "package",
+    "preprocess",
+    "profile"
+  ],
+  "status": "passed",
+  "stopping_condition": "End-to-end smoke passed. No native/full Longdress execution started.",
+  "syntax_import_checks": "passed",
+  "temporal_prediction": false,
+  "training_backend": "existing",
+  "upstream_unchanged": true
+}
