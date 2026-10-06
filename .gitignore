@@ -2,3 +2,21 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 .coverage
+
+
+tools/content_trial_viewer/vendor/
+# Offline preparation artifacts; source/config/docs remain versioned.
+/output/
+/datasets/
+/raw_dataset/
+/source/
+/model/
+/checkpoints/
+/vendor/
+/build/
+/dist/
+*.egg-info/
+*.so
+*.o
+*.a
+*.part

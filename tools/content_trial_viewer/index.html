@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>8i · Content preparation trial</title>
+<style>
+:root{color-scheme:dark;--bg:#11151a;--panel:#1a2027;--border:#303943;--muted:#a8b3be;--accent:#80d8b7}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#edf2f6;font:15px/1.5 system-ui,sans-serif}main{max-width:1180px;margin:auto;padding:36px 24px}header{margin-bottom:28px}.eyebrow{font-size:12px;color:var(--accent);letter-spacing:.15em;text-transform:uppercase}h1{font-size:32px;margin:8px 0}h2{font-size:18px;margin:0 0 14px}p{margin:8px 0;color:var(--muted)}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0}.card,.panel{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:20px}.card strong{display:block;font-size:25px;margin:8px 0}.label,small{color:var(--muted);font-size:12px}.workspace{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:18px}.workspace>.panel{min-width:0}.controls{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}label{display:block;font-size:12px;color:var(--muted)}select{width:100%;margin-top:5px;border:1px solid var(--border);border-radius:6px;padding:9px;background:var(--bg);color:#edf2f6;font:inherit}.image{display:grid;place-items:center;background:#070b10;border:1px solid var(--border);border-radius:9px;min-height:320px;overflow:hidden}.image img{max-width:100%;width:auto;height:auto;image-rendering:auto}.image.native-pixels{display:block;max-height:720px;overflow:auto;padding:12px}.image.native-pixels img:not(.hidden){display:block;max-width:none;margin:0 auto}.preview-tools{display:flex;flex-wrap:wrap;align-items:center;gap:16px;margin-top:12px}.preview-tools label{font-size:13px}.preview-tools input{margin-right:7px}.image span{padding:24px;color:var(--muted)}.caption{margin-top:12px;font-size:13px;color:var(--muted)}dl{margin:0}dt{color:var(--muted);font-size:12px;margin:14px 0 3px}dd{margin:0;overflow-wrap:anywhere}ul{padding-left:20px;font-size:13px}a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}.links{display:flex;flex-wrap:wrap;gap:12px;margin-top:20px}.status{font-size:12px;display:inline-block;border:1px solid var(--border);border-radius:30px;padding:5px 10px;color:var(--accent)}.error{color:#ffbcac}.note{margin-top:22px;border-top:1px solid var(--border);padding-top:16px;font-size:13px}code{font-size:12px}.hidden{display:none}@media(max-width:820px){.workspace{grid-template-columns:1fr}.cards{grid-template-columns:1fr}.controls{grid-template-columns:repeat(2,1fr)}main{padding:22px 16px}.image{min-height:260px}}
+.gaussian-viewport{height:420px;position:relative;background:#000;border:1px solid var(--border);border-radius:9px;overflow:hidden}.gaussian-viewport canvas{display:block;width:100%;height:100%;touch-action:none}.viewer-tools{overflow-wrap:anywhere;display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:12px}button{background:var(--bg);color:#edf2f6;border:1px solid var(--border);border-radius:6px;padding:8px 12px;cursor:pointer}
+</style>
+</head>
+<body>
+<main>
+<header><div class="eyebrow">Server-side content preparation</div><h1 id="title">8i · Longdress trial</h1><p>Kiểm tra nội dung đã decode: Gaussian với camera tự do hoặc PNG từ renderer upstream.</p><span id="status" class="status">Đang đọc catalog…</span></header>
+<div id="error" class="error hidden" role="alert"></div>
+<section id="content" class="hidden">
+<div class="cards">
+<div class="card"><div class="label">Dữ liệu raw trong archive</div><strong id="rawDuration">—</strong><small id="rawFrames">—</small></div>
+<div class="card"><div class="label">Clip checkpoint đã encode</div><strong id="clipDuration">—</strong><small id="clipFrames">—</small></div>
+<div class="card"><div class="label">Thời gian encode-task ghi nhận</div><strong id="encodeDuration">—</strong><small>Đo xử lý offline; không phải thời lượng playback.</small></div>
+</div>
+<div class="workspace">
+<section class="panel"><h2>Preview theo điều kiện</h2>
+<div class="controls">
+<label>Object<select id="object"></select></label><label>Display<select id="display"><option value="png">Upstream PNG</option><option value="gaussians">Decoded Gaussians · free camera</option></select></label><label>Biến thể<select id="variant"></select></label><label>Delivery mode<select id="mode"></select></label><label>Quality<select id="quality"></select></label>
+<label>Frame được lấy mẫu<select id="frame"></select></label><label>Góc nhìn<select id="view"></select></label><label>Projected scale<select id="scale"></select></label>
+</div>
+<div id="gaussianContainer" class="gaussian-viewport hidden"></div>
+<div id="gaussianTools" class="viewer-tools hidden"><button id="resetCamera" type="button">Reset camera</button><a id="decodedPLY" target="_blank" rel="noopener">Decoded PLY</a><span id="loadedRepresentation" role="status">Chưa load Gaussian</span></div>
+<p id="gaussianNote" class="note hidden">Drag: rotate · right-drag: pan · wheel: zoom. SparkJS 2.2.0, extSplats xyz float32, LoD off. Browser packs other attributes for visual inspection; objective metrics and PNG use the original upstream renderer.</p>
+<div id="imageContainer" class="image"><img id="preview" class="hidden" alt="Ảnh render từ payload đã decode"><span id="noPreview">Chọn một điều kiện có ảnh preview.</span></div>
+<div id="previewTools" class="preview-tools"><label><input id="nativePixels" type="checkbox">Xem PNG tỉ lệ 1:1</label><a id="originalPNG" class="hidden" target="_blank" rel="noopener">Mở PNG đầy đủ</a></div>
+<div id="caption" class="caption"></div>
+<p id="samplingNote" class="note"></p>
+</section>
+<section class="panel"><h2>Payload và điều kiện truy cập</h2>
+<dl>
+<dt>Codec / decoded state</dt><dd id="codec">—</dd>
+<dt>Chi phí toàn clip tại quality này</dt><dd id="qualityBytes">—</dd>
+<dt>Chi phí riêng layer</dt><dd id="layerBytes">—</dd>
+<dt>Cold access tại frame được chọn</dt><dd id="accessBytes">—</dd>
+<dt>Thứ tự dependency để decode</dt><dd id="dependencies">—</dd>
+<dt>Gaussian count của decoded state</dt><dd id="gaussians">—</dd>
+<dt>Encoder task / latest stage</dt><dd id="timing">—</dd>
+<dt>Training image resolution</dt><dd id="trainingResolution">—</dd>
+<dt>Distortion của sampled upstream view so với highest decoded</dt><dd id="viewMetrics">—</dd>
+<dt>Render resolution / exact timestamp</dt><dd id="renderTime">—</dd>
+<dt>Segments cần request</dt><dd><ul id="segments"></ul></dd>
+</dl>
+<div id="links" class="links"></div>
+</section>
+</div>
+<p class="note">Bytes là kích thước đầy đủ của segment, gồm codec/container headers. Progressive quality bao gồm parent layers; independent quality tự chứa state của mình. Mỗi biến thể dùng highest-quality decoded representation của chính nó làm reference. Gaussian viewport hiển thị PLY đã export từ payload được project decoder decode offline. PNG giữ renderer upstream dùng cho metrics; web không decode Draco hoặc chạy adaptation.</p>
+</section>
+</main>
+<script type="importmap">{"imports":{"three":"./vendor/three/build/three.module.js","three/addons/":"./vendor/three/examples/jsm/"}}</script>
+<script>
+"use strict";
+const byId = id => document.getElementById(id);
+const selections = ["variant", "object", "display", "mode", "quality", "frame", "view", "scale"];
+const catalogURL = new URL(new URLSearchParams(location.search).get("catalog") || "./catalog.json", location.href);
+let catalog;
+let gaussianViewport, gaussianCreation, gaussianRequest = 0;
+async function refreshGaussian(asset, obj) {
+  const request = ++gaussianRequest;
+  if (byId("display").value !== "gaussians") { if (gaussianViewport) gaussianViewport.select(null); return; }
+  if (!asset) { text("loadedRepresentation", "Không có decoded asset cho frame này."); return; }
+  text("loadedRepresentation", `Đang load ${obj.id} · ${asset.quality} · frame ${asset.frame}…`);
+  try {
+    if (!gaussianCreation) gaussianCreation = import("./gaussian_viewport.js").then(module => {
+      gaussianViewport = new module.GaussianViewport(byId("gaussianContainer"), result => {
+        if (result.status === "loaded") {
+          const row = result.asset;
+          text("loadedRepresentation", `Loaded ${row.object} · ${row.mode} ${row.quality} · frame ${row.frame} · ${row.gaussian_count.toLocaleString("en-US")} Gaussians · SH${row.sh_degree} · state ${row.decoded_state_hash}`);
+          byId("loadedRepresentation").dataset.stateHash = row.decoded_state_hash;
+        } else if (result.status === "error") { text("loadedRepresentation", `Gaussian error: ${result.error}`); }
+      });
+      return gaussianViewport;
+    });
+    const viewport = await gaussianCreation;
+    if (request !== gaussianRequest) return;
+    byId("loadedRepresentation").removeAttribute("data-state-hash");
+    byId("decodedPLY").href = assetURL(asset.path);
+    viewport.select(asset, assetURL(asset.path), obj.renderer_settings);
+    viewport.resize();
+  } catch (error) { if (request === gaussianRequest) text("loadedRepresentation", `Gaussian error: ${error.message}`); }
+}
+const unique = list => [...new Set(list)];
+const text = (id, value) => { byId(id).textContent = value; };
+const seconds = value => typeof value === "number" ? `${value.toFixed(6)} s` : "không có số đo";
+const bytes = value => typeof value === "number" ? `${value.toLocaleString("en-US")} bytes (${(value/1e6).toFixed(3)} MB)` : "không có số đo";
+const assetURL = path => new URL(path, catalogURL).href;
+const qualityLabel = rep => rep.quality_metadata?.label || rep.quality;
+const metricValue = value => value === "inf" ? "∞" : typeof value === "number" ? value.toPrecision(6) : "chưa đo";
+function options(id, values, label = value => value) {
+  const previous = byId(id).value;
+  byId(id).replaceChildren(...values.map(value => {
+    const option = document.createElement("option"); option.value = String(value); option.textContent = label(value); return option;
+  }));
+  if (values.some(value => String(value) === previous)) byId(id).value = previous;
+}
+function currentVariant() { return catalog.variants.find(item => item.id === byId("variant").value); }
+function viewKey(row) { return row.view_bin || `${row.azimuth}/${row.elevation}`; }
+function selectedRepresentation(obj) { return obj.representations.find(row => row.mode === byId("mode").value && row.quality === byId("quality").value); }
+function refresh() {
+  const variant = currentVariant();
+  options("object", variant.objects.map(item => item.id));
+  const obj = variant.objects.find(item => item.id === byId("object").value);
+  options("mode", unique(obj.representations.map(row => row.mode)));
+  const modeRepresentations = obj.representations.filter(row => row.mode === byId("mode").value);
+  options("quality", modeRepresentations.map(row => row.quality), quality => qualityLabel(modeRepresentations.find(row => row.quality === quality)));
+  const rep = selectedRepresentation(obj); const previews = rep.thumbnails || [];
+  const gaussianDisplay = byId("display").value === "gaussians";
+  const viewerAssets = rep.viewer_assets || [];
+  options("frame", unique((gaussianDisplay && viewerAssets.length ? viewerAssets : previews.length ? previews : obj.timeline.samples).map(row => row.frame)).sort((a,b) => a-b));
+  const frame = Number(byId("frame").value);
+  const framePreviews = previews.filter(row => row.frame === frame);
+  options("view", unique(framePreviews.map(viewKey)), value => {
+    const row = framePreviews.find(item => viewKey(item) === value); return `${row.azimuth}° / ${row.elevation}°`;
+  });
+  const viewPreviews = framePreviews.filter(row => viewKey(row) === byId("view").value);
+  options("scale", unique(viewPreviews.map(row => row.scale)).sort((a,b) => a-b));
+  const preview = viewPreviews.find(row => String(row.scale) === byId("scale").value);
+  const sample = obj.timeline.samples.find(row => row.frame === frame);
+  const access = rep.cold_access.find(row => row.frame === frame);
+  const count = rep.gaussian_counts.find(row => row.frame === frame);
+  const raw = catalog.raw_source || {}; const timing = obj.encode_timings;
+  for (const id of ["gaussianContainer", "gaussianTools", "gaussianNote"]) byId(id).classList.toggle("hidden", !gaussianDisplay);
+  for (const id of ["imageContainer", "previewTools"]) byId(id).classList.toggle("hidden", gaussianDisplay);
+  for (const id of ["view", "scale"]) byId(id).disabled = gaussianDisplay;
+  refreshGaussian(viewerAssets.find(row => row.frame === frame), obj);
+  text("title", `8i · ${obj.id} trial`);
+  text("rawDuration", seconds(raw.source_raw_samples_duration_seconds));
+  text("rawFrames", raw.source_archive_frame_count == null ? "Raw source metadata chưa được cung cấp trong run này." : `${raw.source_archive_frame_count} archive frames · ${raw.capture_fps} FPS · ${raw.inventoried_frame_count} frames có trong inventory`);
+  text("clipDuration", seconds(obj.timeline.media_duration_seconds));
+  text("clipFrames", `${obj.timeline.frame_count} encoded frames · span ${seconds(obj.timeline.time_span_seconds)} · frame ${obj.timeline.frame_range.join("–")}`);
+  text("encodeDuration", seconds(timing.recorded_successful_encode_task_wall_seconds));
+  text("status", raw.source_archive_frame_count == null ? "Decoded assets đã chuẩn bị" : raw.recorded_complete_for_selection ? "Raw inventory: hoàn thành selection" : "Raw inventory: selection chưa hoàn thành");
+  const codecConfig = rep.codec.config || {};
+  const attributeOverrides = Object.entries(codecConfig.attribute_precision || {}).map(([key,value]) => `${key}:${value}`).join(", ");
+  text("codec", `${rep.codec.name} / ${rep.codec.version} · precision ${codecConfig.precision || "unavailable"}${attributeOverrides ? ` (${attributeOverrides})` : ""} · ${codecConfig.compression || "compression unavailable"}${codecConfig.level !== undefined ? ` level ${codecConfig.level}` : ""} · ${rep.decoded_state_version}`);
+  text("qualityBytes", bytes(rep.cumulative_quality_segment_bytes));
+  text("layerBytes", bytes(rep.stored_layer_segment_bytes));
+  text("accessBytes", access ? `${bytes(access.request_bytes)}; payload cần thiết ${bytes(access.required_payload_bytes)}` : "không có metadata");
+  text("dependencies", access ? access.dependencies_in_decode_order.join(" → ") : "—");
+  text("gaussians", count && count.gaussian_count !== null ? count.gaussian_count.toLocaleString("en-US") : "không có CPU state cache");
+  text("timing", `Layer tasks: ${seconds(rep.recorded_successful_encode_task_wall_seconds)} · variant tasks: ${seconds(timing.recorded_successful_encode_task_wall_seconds)} · latest stage: ${seconds(timing.latest_recorded_encode_stage_wall_seconds)}`);
+  const training = rep.quality_metadata || {};
+  const iterations = training.training_iterations;
+  const trainingSteps = iterations?.first_frame_iterations != null ? ` · first frame ${iterations.first_frame_iterations} iterations${iterations.later_frame_iteration_values.length ? `; later frames ${iterations.later_frame_iteration_values.join("/")}` : ""}` : "";
+  text("trainingResolution", `${training.resolution_label || "res chưa được ghi nhận"} · ${training.training_image_size ? training.training_image_size.join("×") : "chưa xác minh kích thước ảnh training"}${trainingSteps}`);
+  const metrics = preview?.metrics;
+  text("viewMetrics", metrics ? `MSE ${metricValue(metrics.mse)} · PSNR ${metricValue(metrics.psnr)} dB · LPIPS ${metricValue(metrics.lpips)} · reference ${preview.reference_quality || "highest decoded"}` : "Không có measurement cho preview này.");
+  text("renderTime", `${obj.renderer_settings.width || "?"}×${obj.renderer_settings.height || "?"} · timestamp ${sample ? String(sample.timestamp) : "?"} s`);
+  text("samplingNote", gaussianDisplay ? "Camera tự do hiển thị decoded Gaussian asset. Objective metrics bên cạnh thuộc sampled upstream view; chúng không thay đổi theo camera browser." : `${obj.sampled_frame_ids.length} keyframes có sample preview (${obj.sampled_frame_ids.join(", ")}); đây là ảnh tĩnh theo view/scale, không phải toàn bộ ${raw.source_archive_frame_count} raw frames hay video liên tục.`);
+  byId("preview").classList.toggle("hidden", !preview); byId("noPreview").classList.toggle("hidden", !!preview);
+  byId("originalPNG").classList.toggle("hidden", !preview);
+  if (preview) {
+    const url = assetURL(preview.path);
+    byId("preview").src = url;
+    byId("preview").width = preview.preview_size[0]; byId("preview").height = preview.preview_size[1];
+    byId("originalPNG").href = url;
+    text("caption", gaussianDisplay ? "Decoded Gaussian viewport; camera tự do. PNG và metric samples có thể xem bằng Display: Upstream PNG." : `${variant.id} · ${rep.mode} ${qualityLabel(rep)} · frame ${frame} · ${preview.azimuth}°/${preview.elevation}° · scale ${preview.scale} · render ${preview.original_size.join("×")} → PNG ${preview.preview_size.join("×")}${preview.was_downsampled ? " (đã thu nhỏ khi export)" : " (giữ kích thước render)"}`);
+  } else {
+    byId("preview").removeAttribute("src"); byId("originalPNG").removeAttribute("href");
+    text("caption", "Không có PNG cache cho điều kiện này.");
+  }
+  byId("segments").replaceChildren();
+  const allSegments = obj.representations.flatMap(row => row.segments);
+  for (const id of access ? access.segment_ids : []) {
+    const segment = allSegments.find(row => row.id === id); if (!segment) continue;
+    const item = document.createElement("li"); const link = document.createElement("a"); link.href = assetURL(segment.path); link.textContent = id; item.append(link, ` · ${bytes(segment.bytes)} · ${seconds(segment.media_duration_seconds)} media`); byId("segments").append(item);
+  }
+  byId("links").replaceChildren();
+  for (const [label, path] of [["Manifest", obj.manifest_path], ["Profile", obj.quality_profile_path], ["Proxy", obj.proxy_path], ["Run report", variant.run_report_path], ["Trial report", catalog.schema_version.endsWith(".v1") ? "trial_report.md" : null]]) {
+    if (!path) continue; const link = document.createElement("a"); link.href = assetURL(path); link.textContent = label; byId("links").append(link);
+  }
+}
+async function start() {
+  try {
+    const response = await fetch(catalogURL); if (!response.ok) throw new Error(`Catalog HTTP ${response.status}`);
+    catalog = await response.json();
+    if (!["content-preparation.8i-trial-catalog.v1", "content-preparation.8i-trial-catalog.v2"].includes(catalog.schema_version) || !catalog.variants.length) throw new Error("Catalog schema không được hỗ trợ hoặc chưa có variant.");
+    options("variant", catalog.variants.map(item => item.id));
+    for (const id of selections) byId(id).addEventListener("change", refresh);
+    byId("nativePixels").addEventListener("change", () => byId("imageContainer").classList.toggle("native-pixels", byId("nativePixels").checked));
+    const query = new URLSearchParams(location.search);
+    byId("display").value = query.get("display") || catalog.default_display || "png";
+    if (catalog.schema_version.endsWith(".v1")) { byId("display").value = "png"; byId("display").disabled = true; }
+    options("object", currentVariant().objects.map(item => item.id));
+    if ([...byId("object").options].some(option => option.value === query.get("object"))) byId("object").value = query.get("object");
+    byId("resetCamera").addEventListener("click", () => gaussianViewport?.resetCamera());
+    refresh();
+    const requestedQuality = new URLSearchParams(location.search).get("quality");
+    if ([...byId("quality").options].some(option => option.value === requestedQuality)) {
+      byId("quality").value = requestedQuality; refresh();
+    }
+    byId("content").classList.remove("hidden");
+    if (gaussianViewport) gaussianViewport.resize();
+  } catch (error) {
+    text("status", "Catalog chưa sẵn sàng"); text("error", `${error.message}. Mở thư mục trial qua HTTP server cục bộ, ví dụ: python -m http.server 8765 --directory output/content_prepare_longdress_4level. Có thể chọn catalog bằng ?catalog=PATH.`); byId("error").classList.remove("hidden");
+  }
+}
+start();
+</script>
+</body>
+</html>

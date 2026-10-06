@@ -1,0 +1,55 @@
+# Two-frame checkpoint import only. No training or dataset acquisition.
+version: 1
+output: output/content_preparation/smoke
+delivery_modes: [progressive]
+objects:
+  - id: longdress
+    dataset:
+      kind: checkpoints
+      checkpoint_manifest: ../dynamic-lapis-gs/output/longdress_4level_training/manifest.json
+    frames: {start: 1051, end: 1052}
+    fps: 30
+    qualities:
+      - {id: Q0, resolution_scale: 8}
+      - {id: Q1, resolution_scale: 4}
+training:
+  backend: existing
+  initial_iterations: 6000
+  dynamic_iterations: 1500
+encoding:
+  name: gaussian_attribute_draco_byteplanes
+  precision: f32
+  executable: output/build/content_preparation/draco_byte_codec
+  encoder_speed: 3
+  decoder_speed: 3
+packaging:
+  gof_frames: 2
+  segment_frames: 1
+  refresh_frames: {Base: 2, E1: 1}
+sampling:
+  azimuth: [-120, 0, 120]
+  elevation: [0]
+  scales: [1]
+  distance: 4.0311287
+  times: all
+renderer:
+  backend: upstream_cuda
+  up_axis: z
+  width: 128
+  height: 128
+  fov_degrees: 39.5978
+  center: [0, 0, -0.1]
+  background: [0, 0, 0]
+metrics:
+  lpips: true
+  lpips_net: vgg
+  device: cpu
+  batch_size: 1
+  distortion: mse
+proxy:
+  enabled: false
+  external_descriptor: null
+runtime:
+  seed: 0
+  gpu_batch_size: 1
+  extension_path: ../dynamic-lapis-gs/output/progressive_gap_real/vendor

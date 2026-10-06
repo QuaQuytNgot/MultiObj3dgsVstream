@@ -1,0 +1,53 @@
+# Same real checkpoint assets and cameras as f32; only coded precision differs.
+version: 1
+output: output/content_prepare_longdress_trial/f16
+delivery_modes: [independent, progressive]
+objects:
+  - id: longdress
+    fps: 30
+    dataset:
+      kind: checkpoints
+      checkpoint_manifest: output/progressive_gap_real/manifest.json
+    frames: {start: 1051, end: 1055}
+    qualities:
+      - {id: Q0, resolution_scale: 8}
+      - {id: Q1, resolution_scale: 4}
+training:
+  backend: existing
+encoding:
+  name: gaussian_attribute_zlib
+  precision: f16
+  compression: zlib
+  level: 6
+packaging:
+  gof_frames: 5
+  segment_frames: 2
+  refresh_frames: {Base: 4, E1: 2}
+sampling:
+  azimuth: [-120, 0, 120]
+  elevation: [0]
+  scales: [0.75, 1.0]
+  distance: 4.0311287
+  times: [1051, 1053, 1055]
+renderer:
+  backend: upstream_cuda
+  up_axis: z
+  width: 256
+  height: 256
+  fov_degrees: 39.5978
+  center: [0, 0, -0.1]
+  background: [0, 0, 0]
+metrics:
+  lpips: true
+  lpips_net: vgg
+  device: cpu
+  batch_size: 1
+  distortion: mse
+proxy:
+  backend: fixed_gaussian_subset
+  max_gaussians: 256
+  alpha_threshold: 0.01
+runtime:
+  seed: 0
+  gpu_batch_size: 1
+  extension_path: null

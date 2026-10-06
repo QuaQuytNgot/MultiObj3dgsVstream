@@ -1,0 +1,102 @@
+{
+  "cuda_smoke": {
+    "delivery_modes": [
+      "independent",
+      "progressive"
+    ],
+    "frames": 2,
+    "independent_progressive_states_identical": true,
+    "media_bytes": 29202,
+    "nontrivial_rendered_images": true,
+    "profile_rows": 24,
+    "proxy_descriptor_load_all_frames": true,
+    "qualities": 2,
+    "resolution": [
+      64,
+      64
+    ],
+    "tasks_executed": 99,
+    "transition_gains": 12,
+    "validation": {
+      "decoded_from_segments": true,
+      "gpu_execution": "serialized process lock + per-view renderer guard",
+      "gpu_guard": {
+        "active": 0,
+        "peak_active": 1,
+        "views": 30
+      },
+      "lpips_batch_size": 1,
+      "passed": true,
+      "profile_rows": 24,
+      "proxy_frames": 2,
+      "render_peak_cuda_allocated_bytes": 8649216,
+      "upstream_unchanged": true
+    },
+    "views": 3
+  },
+  "full_dataset_experiments_run": false,
+  "longdress_dry_run_only": true,
+  "manifest_sha256": "662c7a4a420fef0c5a2d303b7ac9ff4956ef79277d202b2075502a3d68ba06c1",
+  "module_imports": 15,
+  "raw_preprocess_mini": {
+    "base_resolution": [
+      64,
+      64
+    ],
+    "downscaled_images_nonempty": true,
+    "frames": 1,
+    "original_preprocessor": true,
+    "raw_points": 512,
+    "seeded_initialization_points": 100000,
+    "tasks_executed": 2,
+    "test_views": 2,
+    "train_views": 2,
+    "upstream_unchanged": true
+  },
+  "raw_preprocessing_executed": true,
+  "real_dataset_training_executed": false,
+  "real_training_executed": true,
+  "resume": {
+    "tasks_executed": 0,
+    "tasks_skipped": 99
+  },
+  "self_tests": {
+    "command": "OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 CUDA_VISIBLE_DEVICES='' python tools/content_preparation/self_test.py",
+    "elapsed_seconds": 7.192,
+    "failed": 0,
+    "passed": 48,
+    "skipped": 0
+  },
+  "syntax_compileall": "passed",
+  "training_mini": {
+    "dynamic_iterations": 2,
+    "frames": 2,
+    "initial_gaussians": 512,
+    "initial_iterations": 3,
+    "lineage_verified": true,
+    "manifest_sha256": "db11eb79c5746b4cd451149307573bd73cdd8e31962e9dfac1b06903209a1222",
+    "qualities": 2,
+    "tasks_executed": 59,
+    "train_stage_resume": {
+      "tasks_executed": 0,
+      "tasks_skipped": 5
+    },
+    "validation": {
+      "decoded_from_segments": true,
+      "gpu_execution": "serialized process lock + per-view renderer guard",
+      "gpu_guard": {
+        "active": 0,
+        "peak_active": 1,
+        "views": 10
+      },
+      "lpips_batch_size": 1,
+      "passed": true,
+      "profile_rows": 8,
+      "proxy_frames": 2,
+      "render_peak_cuda_allocated_bytes": 8982016,
+      "upstream_unchanged": true
+    }
+  },
+  "upstream_train_help": "passed (read-only CLI; no training)",
+  "upstream_training_executed": true
+}

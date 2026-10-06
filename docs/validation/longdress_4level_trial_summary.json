@@ -1,0 +1,442 @@
+{
+  "codec": {
+    "exact_lts_enhanced_draco": false,
+    "name": "gaussian_attribute_zlib",
+    "packet": "CPGAUS01",
+    "segment": "CPSEG1",
+    "version": "1.0.0"
+  },
+  "encoded_media_duration_seconds": 0.16666666666666666,
+  "fps": 30,
+  "gt_diagnostic": {
+    "camera_world_view_max_absolute_error": 8.221204064184917e-07,
+    "frames": [
+      1051,
+      1055
+    ],
+    "metric_method": {
+      "lpips_backend": "repo_lpipsPyTorch_pretrained_0.1",
+      "lpips_batch_size": 1,
+      "lpips_device": "cuda",
+      "lpips_enabled": true,
+      "lpips_input_range": [
+        -1,
+        1
+      ],
+      "lpips_net": "vgg",
+      "lpips_version": "0.1",
+      "mse_range": "full_image_RGB_mean",
+      "planner_default_distortion": "mse",
+      "psnr_peak": 1,
+      "rgb_range": [
+        0,
+        1
+      ]
+    },
+    "metrics": [
+      {
+        "mean_lpips": 0.06801637448370457,
+        "mean_mse": 0.002604847806544747,
+        "mean_psnr": 25.842748943610214,
+        "quality": "Q0",
+        "sample_count": 4
+      },
+      {
+        "mean_lpips": 0.053844994865357876,
+        "mean_mse": 0.0012214972199188023,
+        "mean_psnr": 29.13197614782767,
+        "quality": "Q1",
+        "sample_count": 4
+      },
+      {
+        "mean_lpips": 0.041992730461061,
+        "mean_mse": 0.0005161188401808643,
+        "mean_psnr": 32.90905839138108,
+        "quality": "Q2",
+        "sample_count": 4
+      },
+      {
+        "mean_lpips": 0.03861932922154665,
+        "mean_mse": 0.00042250354236348693,
+        "mean_psnr": 33.85061531081256,
+        "quality": "Q3",
+        "sample_count": 4
+      }
+    ],
+    "report_path": "gt_diagnostic/report.json",
+    "resume_verified": {
+      "tasks_executed": 0,
+      "tasks_skipped": 16
+    },
+    "samples": 16,
+    "test_camera_indices": [
+      5,
+      10
+    ]
+  },
+  "limits": {
+    "full_300_frame_training_run": false,
+    "full_convergence_claim": false,
+    "native_highest_quality": "Q3, res1/1024 pixels",
+    "proxy_backend": "fixed stable-ID Gaussian subset baseline",
+    "viewer": "offline sampled decoded PNGs; not runtime 3DGS/video rendering"
+  },
+  "memory": {
+    "cpu_cuda_lpips_sample_absolute_difference": 3.725290298461914e-09,
+    "hardware": "NVIDIA GTX 1660 6144 MiB",
+    "lpips_batch_size": 1,
+    "lpips_cuda_preflight_peak_allocated_bytes": 1754546176,
+    "monitor_interval_seconds": 2,
+    "observed_device_peak_mib": 2005,
+    "scope": "sampled device usage during trial; not an instantaneous-peak guarantee"
+  },
+  "object": "longdress",
+  "prepared_frame_range": [
+    1051,
+    1055
+  ],
+  "prepared_frames": 5,
+  "qualities": [
+    {
+      "checkpoint_reused": true,
+      "gaussian_count_first_frame": 41700,
+      "id": "Q0",
+      "resolution_scale": 8,
+      "training_iterations": {
+        "first_frame_iterations": 6000,
+        "later_frame_iteration_values": [
+          1500
+        ],
+        "samples": [
+          {
+            "frame": 1051,
+            "iterations": 6000
+          },
+          {
+            "frame": 1052,
+            "iterations": 1500
+          },
+          {
+            "frame": 1053,
+            "iterations": 1500
+          },
+          {
+            "frame": 1054,
+            "iterations": 1500
+          },
+          {
+            "frame": 1055,
+            "iterations": 1500
+          }
+        ],
+        "scope": "recorded training argv; no optimal-convergence claim"
+      },
+      "verified_training_image_size": [
+        128,
+        128
+      ]
+    },
+    {
+      "checkpoint_reused": true,
+      "gaussian_count_first_frame": 78421,
+      "id": "Q1",
+      "resolution_scale": 4,
+      "training_iterations": {
+        "first_frame_iterations": 6000,
+        "later_frame_iteration_values": [
+          1500
+        ],
+        "samples": [
+          {
+            "frame": 1051,
+            "iterations": 6000
+          },
+          {
+            "frame": 1052,
+            "iterations": 1500
+          },
+          {
+            "frame": 1053,
+            "iterations": 1500
+          },
+          {
+            "frame": 1054,
+            "iterations": 1500
+          },
+          {
+            "frame": 1055,
+            "iterations": 1500
+          }
+        ],
+        "scope": "recorded training argv; no optimal-convergence claim"
+      },
+      "verified_training_image_size": [
+        256,
+        256
+      ]
+    },
+    {
+      "checkpoint_reused": false,
+      "gaussian_count_first_frame": 144612,
+      "id": "Q2",
+      "resolution_scale": 2,
+      "training_iterations": {
+        "first_frame_iterations": 10000,
+        "later_frame_iteration_values": [
+          1500
+        ],
+        "samples": [
+          {
+            "frame": 1051,
+            "iterations": 10000
+          },
+          {
+            "frame": 1052,
+            "iterations": 1500
+          },
+          {
+            "frame": 1053,
+            "iterations": 1500
+          },
+          {
+            "frame": 1054,
+            "iterations": 1500
+          },
+          {
+            "frame": 1055,
+            "iterations": 1500
+          }
+        ],
+        "scope": "recorded training argv; no optimal-convergence claim"
+      },
+      "verified_training_image_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "checkpoint_reused": false,
+      "gaussian_count_first_frame": 231823,
+      "id": "Q3",
+      "resolution_scale": 1,
+      "training_iterations": {
+        "first_frame_iterations": 10000,
+        "later_frame_iteration_values": [
+          1500
+        ],
+        "samples": [
+          {
+            "frame": 1051,
+            "iterations": 10000
+          },
+          {
+            "frame": 1052,
+            "iterations": 1500
+          },
+          {
+            "frame": 1053,
+            "iterations": 1500
+          },
+          {
+            "frame": 1054,
+            "iterations": 1500
+          },
+          {
+            "frame": 1055,
+            "iterations": 1500
+          }
+        ],
+        "scope": "recorded training argv; no optimal-convergence claim"
+      },
+      "verified_training_image_size": [
+        1024,
+        1024
+      ]
+    }
+  ],
+  "raw_duration_seconds": 10.0,
+  "raw_frame_range": [
+    1051,
+    1350
+  ],
+  "raw_frames": 300,
+  "schema_version": "content-preparation.longdress-4level-trial-summary.v1",
+  "tests": {
+    "failed": 0,
+    "passed": 90,
+    "self_test_count": 90,
+    "syntax_import_checks_passed": true,
+    "wall_seconds": 14.452
+  },
+  "training_extension": {
+    "environment_guard_path": "output/.longdress_4level_training.quality-ladder-environment.json",
+    "manifest_sha256": "b6cc088ffc0a1a1961e5916f49b2a8d06494618ff6e68123f0cdd297e337df7f",
+    "new_qualities": [
+      "Q2",
+      "Q3"
+    ],
+    "resume_verified": {
+      "tasks_executed": 0,
+      "tasks_skipped": 32
+    },
+    "unchanged_upstream": true
+  },
+  "trial_root": "output/content_prepare_longdress_4level",
+  "validated_date": "2026-10-05",
+  "variants": [
+    {
+      "audit_passed": true,
+      "audit_report_path": "audit_f32.json",
+      "decoded_state_count": 40,
+      "exported_state_count": 20,
+      "gpu_guard": {
+        "active": 0,
+        "peak_active": 1,
+        "views": 306
+      },
+      "gpu_operation_accounting": {
+        "lpips_batches": 144,
+        "render_views": 162
+      },
+      "id": "f32_lossless",
+      "independent_progressive_numeric_parity": true,
+      "manifest_sha256": "bea2654bac0a2cc63ca9af4962e7960f4dcd6526a6a439b0f2b3c5d483d1f7ed",
+      "numeric_decode_check": "bit-exact original float32 Gaussian attributes",
+      "precision": "f32",
+      "profile_rows": 144,
+      "proxy_count": 256,
+      "proxy_frames": 5,
+      "quality_order": [
+        "Q0",
+        "Q1",
+        "Q2",
+        "Q3"
+      ],
+      "reference_quality": "Q3",
+      "reference_state": "decoded packaged payload",
+      "render_dimensions": [
+        1024,
+        1024
+      ],
+      "renderer_peak_cuda_allocated_bytes": 255027712,
+      "resume_verified": {
+        "tasks_executed": 0,
+        "tasks_skipped": 460
+      },
+      "sampled_distortion_uniform_means": [
+        {
+          "mean_lpips": 0.04325901841123899,
+          "mean_mse": 0.00213748071782152,
+          "quality": "Q0",
+          "sample_count": 18
+        },
+        {
+          "mean_lpips": 0.02792165780233012,
+          "mean_mse": 0.0008862689617087088,
+          "quality": "Q1",
+          "sample_count": 18
+        },
+        {
+          "mean_lpips": 0.01484541300063332,
+          "mean_mse": 0.00027490799705200055,
+          "quality": "Q2",
+          "sample_count": 18
+        },
+        {
+          "mean_lpips": 0.0,
+          "mean_mse": 0.0,
+          "quality": "Q3",
+          "sample_count": 18
+        }
+      ],
+      "segment_count_all_modes": 32,
+      "stored_media_bytes_all_modes": 856942065
+    },
+    {
+      "audit_passed": true,
+      "audit_report_path": "audit_f16.json",
+      "decoded_state_count": 40,
+      "exported_state_count": 20,
+      "gpu_guard": {
+        "active": 0,
+        "peak_active": 1,
+        "views": 306
+      },
+      "gpu_operation_accounting": {
+        "lpips_batches": 144,
+        "render_views": 162
+      },
+      "id": "f16",
+      "independent_progressive_numeric_parity": true,
+      "manifest_sha256": "9d77f1e6349f97bb1410dc22affb2f1238225adb76dcdd49c09d6dbfff4df4b4",
+      "numeric_decode_check": "exact float16-rounded attributes expanded to float32",
+      "precision": "f16",
+      "profile_rows": 144,
+      "proxy_count": 256,
+      "proxy_frames": 5,
+      "quality_order": [
+        "Q0",
+        "Q1",
+        "Q2",
+        "Q3"
+      ],
+      "reference_quality": "Q3",
+      "reference_state": "decoded packaged payload",
+      "render_dimensions": [
+        1024,
+        1024
+      ],
+      "renderer_peak_cuda_allocated_bytes": 255027712,
+      "resume_verified": {
+        "tasks_executed": 0,
+        "tasks_skipped": 460
+      },
+      "sampled_distortion_uniform_means": [
+        {
+          "mean_lpips": 0.04325643626766072,
+          "mean_mse": 0.0021370689941740445,
+          "quality": "Q0",
+          "sample_count": 18
+        },
+        {
+          "mean_lpips": 0.027922275165716808,
+          "mean_mse": 0.000885892421578334,
+          "quality": "Q1",
+          "sample_count": 18
+        },
+        {
+          "mean_lpips": 0.014839912971688641,
+          "mean_mse": 0.0002748001498700074,
+          "quality": "Q2",
+          "sample_count": 18
+        },
+        {
+          "mean_lpips": 0.0,
+          "mean_mse": 0.0,
+          "quality": "Q3",
+          "sample_count": 18
+        }
+      ],
+      "segment_count_all_modes": 32,
+      "stored_media_bytes_all_modes": 449653951
+    }
+  ],
+  "web": {
+    "catalog_sha256": "f0d0eb88f4d9b3ccf981f62651e7442e199558ca96af357eabb8729f92351fdc",
+    "conditions_checked": 288,
+    "fit_does_not_upscale": true,
+    "mobile_overflow_check_passed": true,
+    "native_png_count": 288,
+    "native_png_size": [
+      1024,
+      1024
+    ],
+    "one_to_one_zoom_verified": true,
+    "report_path": "viewer_validation.json",
+    "screenshots": {
+      "desktop": "viewer_validation_desktop.png",
+      "mobile": "viewer_validation_mobile.png"
+    },
+    "url": "http://127.0.0.1:8765/?quality=Q3"
+  }
+}

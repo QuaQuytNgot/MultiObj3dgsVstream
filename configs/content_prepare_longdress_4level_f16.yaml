@@ -1,0 +1,87 @@
+# Four real training resolutions:128/256/512/1024. Q0/Q1 reuse existing checkpoints; Q2/Q3 are trained by extend_quality_ladder.py.
+delivery_modes:
+- independent
+- progressive
+encoding:
+  compression: zlib
+  level: 6
+  name: gaussian_attribute_zlib
+  precision: f16
+metrics:
+  batch_size: 1
+  device: cuda
+  distortion: mse
+  lpips: true
+  lpips_net: vgg
+objects:
+- dataset:
+    checkpoint_manifest: output/longdress_4level_training/manifest.json
+    kind: checkpoints
+  fps: 30
+  frames:
+    end: 1055
+    start: 1051
+  id: longdress
+  qualities:
+  - id: Q0
+    resolution_scale: 8
+  - id: Q1
+    resolution_scale: 4
+  - id: Q2
+    resolution_scale: 2
+  - id: Q3
+    resolution_scale: 1
+output: output/content_prepare_longdress_4level/f16
+packaging:
+  gof_frames: 5
+  refresh_frames:
+    Base: 4
+    E1: 2
+    E2: 1
+    E3: 1
+  segment_frames: 2
+proxy:
+  alpha_threshold: 0.01
+  backend: fixed_gaussian_subset
+  max_gaussians: 256
+renderer:
+  backend: upstream_cuda
+  background:
+  - 0
+  - 0
+  - 0
+  center:
+  - 0
+  - 0
+  - -0.1
+  fov_degrees: 39.5978
+  height: 1024
+  up_axis: z
+  width: 1024
+runtime:
+  extension_path: null
+  gpu_batch_size: 1
+  seed: 0
+sampling:
+  azimuth:
+  - -120
+  - 0
+  - 120
+  distance: 4.0311287
+  elevation:
+  - 0
+  scales:
+  - 0.75
+  - 1.0
+  times:
+  - 1051
+  - 1053
+  - 1055
+training:
+  backend: existing
+  initial_iterations: 10000
+  dynamic_iterations: 1500
+  extra_args:
+  - -r
+  - '1'
+version: 1

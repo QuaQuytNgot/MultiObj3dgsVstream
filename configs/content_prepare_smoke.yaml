@@ -1,0 +1,50 @@
+version: 1
+output: output/content_prepare_smoke
+delivery_modes: [independent, progressive]
+objects:
+  - id: analytic_fixture
+    dataset: {kind: synthetic}
+    frames: [0, 1]
+    fps: 30
+    qualities:
+      - {id: Q0, resolution_scale: 2}
+      - {id: Q1, resolution_scale: 1}
+training:
+  backend: synthetic_fixture
+  sh_degree: 0
+encoding:
+  name: gaussian_attribute_zlib
+  precision: f16
+  compression: zlib
+  level: 6
+packaging:
+  gof_frames: 2
+  segment_frames: 2
+  refresh_frames: {Base: 2, E1: 1}
+sampling:
+  azimuth: [-120, 0, 120]
+  elevation: [0]
+  scales: [1.0]
+  distance: 3.0
+  times: all
+renderer:
+  backend: upstream_cuda
+  width: 64
+  height: 64
+  fov_degrees: 45
+  center: [0, 0, 0]
+  background: [0, 0, 0]
+metrics:
+  lpips: true
+  lpips_net: vgg
+  device: cpu
+  batch_size: 1
+  distortion: mse
+proxy:
+  backend: fixed_gaussian_subset
+  max_gaussians: 6
+  alpha_threshold: 0.01
+runtime:
+  seed: 7
+  gpu_batch_size: 1
+  extension_path: null

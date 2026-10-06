@@ -1,0 +1,20 @@
+# Optional offline content preparation; networking requirements stay separate.
+# Direct dependencies inspected in conda Hoang, Python 3.11.16, on 2026-10-05.
+numpy==2.4.6
+PyYAML==6.0.3
+Pillow==11.3.0
+plyfile==0.8.1
+scipy==1.17.1
+
+# Raw point-cloud preprocessing and the pinned upstream training entry point.
+open3d==0.19.0
+opencv-python-headless==5.0.0.93
+tqdm==4.70.1
+
+# CUDA rendering/training and LPIPS additionally need a matching, separately
+# managed PyTorch/torchvision environment. Inspected Hoang versions:
+# torch==2.3.1+cu118; torchvision==0.18.1+cu118.
+# Keep these out of this file so installing offline-tool dependencies cannot
+# replace a shared CUDA stack or extension binaries. See docs/DEPENDENCIES.md.
+# LPIPS uses the pinned upstream lpipsPyTorch source and cached pretrained
+# weights; the pip package named lpips is not used by these tools.

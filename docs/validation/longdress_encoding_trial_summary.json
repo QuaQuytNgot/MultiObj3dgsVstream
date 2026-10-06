@@ -1,0 +1,230 @@
+{
+  "schema": "longdress-encoding-trial-summary-v1",
+  "generated_at_utc": "2026-10-05T02:39:01.467503+00:00",
+  "object": "longdress",
+  "passed": true,
+  "dataset": {
+    "frame_range": [
+      1051,
+      1350
+    ],
+    "frame_count": 300,
+    "fps": 30,
+    "duration_seconds": 10,
+    "raw_ply_bytes": 5685631637,
+    "inventory_path": "output/datasets/8i/longdress/inventory.json",
+    "inventory_sha256": "2977be6e5237b46d4a9677890c2084af1d5582b5cc19b113060c6d659e9d1d91",
+    "sha256_crc_size_verified_frames": 300,
+    "open3d_io_sample_frames": [
+      1051,
+      1200,
+      1350
+    ],
+    "license_verified": true,
+    "resume_member_bytes": 0,
+    "source_description_url": "https://plenodb.jpeg.org/pc/8ilabs",
+    "transport": "HTTP from same official host after verified HTTPS certificatefailure; SHA/CRC are reproducibility checks, not publisher signature"
+  },
+  "encoded_clip": {
+    "frame_range": [
+      1051,
+      1055
+    ],
+    "frame_count": 5,
+    "fps": 30,
+    "duration_seconds": 0.16666666666666666,
+    "timestamp_span_seconds": 0.13333333333333333,
+    "qualities": [
+      "Q0",
+      "Q1"
+    ],
+    "codec": "gaussian_attribute_zlib",
+    "codec_version": "1.0.0",
+    "codec_lts_bitstream_compatible": false,
+    "compression": {
+      "name": "zlib",
+      "level": 6
+    },
+    "training": "existing checkpoint verification/import; no optimization",
+    "source_manifest_sha256": "f4d93b6798ef1a2f5358da32463bd0210ce7238273da4d900d40b6ec90a9c521"
+  },
+  "tests": {
+    "self_tests_passed": 76,
+    "self_tests_failed": 0,
+    "self_test_wall_seconds": 9.595,
+    "python_imports_passed": 20,
+    "decoded_render_upstream_original": true,
+    "upstream_unchanged": true,
+    "browser_combinations_passed": 144,
+    "browser_page_errors": 0,
+    "mobile_no_horizontal_overflow": true,
+    "missing_catalog_handled": true
+  },
+  "checks": {
+    "all_gpu_views_serialized_peak_active_1": true,
+    "every_profile_view_nonblack": true,
+    "f16_decoded_matches_explicit_half_conversion": true,
+    "f32_checkpoint_export_decoded_bit_exact": true,
+    "frozen_proxy_ids_all_frames_verified": true,
+    "independent_progressive_decoded_equal": true,
+    "manifest_schema_actual_bytes_checksums_verified": true,
+    "progressive_all_attribute_replacements_and_decoded_parent_verified": true
+  },
+  "variants": {
+    "f16": {
+      "audit_path": "audit_f16.json",
+      "gpu_guard": {
+        "active": 0,
+        "peak_active": 1,
+        "views": 90
+      },
+      "independent_catalog_all_quality_bytes": 71860748,
+      "independent_highest_quality_cold_access_bytes": 46850121,
+      "maximum_attribute_absolute_errors": {
+        "opacity": 0.0037012100219726562,
+        "rotation": 0.00048828125,
+        "scale": 0.00390625,
+        "sh": 0.0009758472442626953,
+        "xyz": 0.00048828125
+      },
+      "media_bytes_all_catalog_modes": 122413385,
+      "precision": "f16",
+      "profile_sample_count": 72,
+      "progressive_catalog_all_quality_bytes": 50552637,
+      "progressive_highest_quality_cold_access_bytes": 50552637,
+      "progressive_highest_quality_cold_overhead_percent": 7.90289527747432,
+      "proxy_selected_count": 256,
+      "render_peak_cuda_allocated_bytes": 62297600,
+      "representation_segment_bytes": [
+        {
+          "bytes": 25010627,
+          "layer": "Q0",
+          "mode": "independent",
+          "quality": "Q0"
+        },
+        {
+          "bytes": 46850121,
+          "layer": "Q1",
+          "mode": "independent",
+          "quality": "Q1"
+        },
+        {
+          "bytes": 25010637,
+          "layer": "Base",
+          "mode": "progressive",
+          "quality": "Q0"
+        },
+        {
+          "bytes": 25542000,
+          "layer": "E1",
+          "mode": "progressive",
+          "quality": "Q1"
+        }
+      ],
+      "segment_count": 12,
+      "state_count": 10,
+      "encode_task_wall_seconds": 20.734311999999996,
+      "original_run_tasks_executed": 256,
+      "resume_tasks_executed": 0,
+      "resume_tasks_skipped": 256,
+      "server_manifest_path": "output/content_prepare_longdress_trial/f16/manifest.json",
+      "server_manifest_sha256": "bd4323e869f9ec8d56ff6b398fc4aa3e6d12d3a88ac4cb5920e1edd516d9ea76"
+    },
+    "f32_lossless": {
+      "audit_path": "audit_f32.json",
+      "gpu_guard": {
+        "active": 0,
+        "peak_active": 1,
+        "views": 90
+      },
+      "independent_catalog_all_quality_bytes": 137645565,
+      "independent_highest_quality_cold_access_bytes": 89774787,
+      "maximum_attribute_absolute_errors": {
+        "opacity": 0.0,
+        "rotation": 0.0,
+        "scale": 0.0,
+        "sh": 0.0,
+        "xyz": 0.0
+      },
+      "media_bytes_all_catalog_modes": 233686622,
+      "precision": "f32",
+      "profile_sample_count": 72,
+      "progressive_catalog_all_quality_bytes": 96041057,
+      "progressive_highest_quality_cold_access_bytes": 96041057,
+      "progressive_highest_quality_cold_overhead_percent": 6.979988713312113,
+      "proxy_selected_count": 256,
+      "render_peak_cuda_allocated_bytes": 62297600,
+      "representation_segment_bytes": [
+        {
+          "bytes": 47870778,
+          "layer": "Q0",
+          "mode": "independent",
+          "quality": "Q0"
+        },
+        {
+          "bytes": 89774787,
+          "layer": "Q1",
+          "mode": "independent",
+          "quality": "Q1"
+        },
+        {
+          "bytes": 47870788,
+          "layer": "Base",
+          "mode": "progressive",
+          "quality": "Q0"
+        },
+        {
+          "bytes": 48170269,
+          "layer": "E1",
+          "mode": "progressive",
+          "quality": "Q1"
+        }
+      ],
+      "segment_count": 12,
+      "state_count": 10,
+      "encode_task_wall_seconds": 27.849401999999998,
+      "original_run_tasks_executed": 256,
+      "resume_tasks_executed": 0,
+      "resume_tasks_skipped": 256,
+      "server_manifest_path": "output/content_prepare_longdress_trial/f32_lossless/manifest.json",
+      "server_manifest_sha256": "ff68739d20d523e467d512944346219ba9f7219b327844c873a55b5043868519"
+    }
+  },
+  "codec_comparison": {
+    "reference": "f32 lossless decoded same-quality representation",
+    "sample_count": 36,
+    "aggregates": [
+      {
+        "max_lpips": 8.475491995341145e-06,
+        "mean_lpips": 3.818415519971394e-06,
+        "mean_mse": 3.186862707746033e-08,
+        "mean_psnr_db": 75.29800999807267,
+        "quality": "Q0",
+        "samples": 18,
+        "worst_psnr_db": 71.90502318214531
+      },
+      {
+        "max_lpips": 1.5431734937010333e-05,
+        "mean_lpips": 7.997848645876124e-06,
+        "mean_mse": 1.6056392013943145e-07,
+        "mean_psnr_db": 68.73760641666482,
+        "quality": "Q1",
+        "samples": 18,
+        "worst_psnr_db": 64.88314945579104
+      }
+    ]
+  },
+  "viewer": {
+    "local_url": "http://127.0.0.1:8765/",
+    "png_count": 144,
+    "sampled_frames": [
+      1051,
+      1053,
+      1055
+    ],
+    "kind": "offline decoded-render sampled PNG viewer; no continuous raw-sequence playback",
+    "html_sha256": "159f4b2f8268438936b3c0d2436d02a1d93d288b4c9d988847235b2d31bd9288",
+    "catalog_sha256": "9bc7e87320ae569e5681d7529f12b33759eac3b8c944d1c36e9ca07769d3ed8a"
+  },
+  "artifact_scope": "Git stores code/config/docs/tests and this compact summary; raw/checkpoints/media/cache/viewer outputs under output are ignored and require separate storage."
+}

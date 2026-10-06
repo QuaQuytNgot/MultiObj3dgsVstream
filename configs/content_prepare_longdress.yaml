@@ -1,0 +1,101 @@
+# Future raw preparation:30 frames,4 native training resolutions. NOT run automatically.
+# Raw sequence is already downloaded. Change frames.end to1350 only for an explicitly requested full run.
+version: 1
+output: output/content_prepare_longdress
+delivery_modes:
+- independent
+- progressive
+objects:
+- id: longdress
+  dataset:
+    kind: raw
+    raw_template: output/datasets/8i/longdress/Ply/longdress_vox10_{frame:04d}.ply
+    train_poses: third_party/dynamic-lapis-gs/transforms_train.json
+    test_poses: third_party/dynamic-lapis-gs/transforms_test.json
+    width: 1024
+  frames:
+    start: 1051
+    end: 1080
+  fps: 30
+  qualities:
+  - id: Q0
+    resolution_scale: 8
+  - id: Q1
+    resolution_scale: 4
+  - id: Q2
+    resolution_scale: 2
+  - id: Q3
+    resolution_scale: 1
+training:
+  backend: upstream
+  initial_iterations: 30000
+  dynamic_iterations: 30000
+  lambda_dssim: 0.8
+  sh_degree: 3
+  extra_args: []
+encoding:
+  name: gaussian_attribute_zlib
+  precision: f32
+  compression: zlib
+  level: 6
+packaging:
+  gof_frames: 30
+  segment_frames: 4
+  refresh_frames:
+    Base: 8
+    E1: 4
+    E2: 2
+    E3: 1
+sampling:
+  azimuth:
+  - -180
+  - -135
+  - -90
+  - -45
+  - 0
+  - 45
+  - 90
+  - 135
+  elevation:
+  - -20
+  - 0
+  - 20
+  scales:
+  - 0.5
+  - 1.0
+  - 1.5
+  distance: 3.0
+  times:
+  - 1051
+  - 1058
+  - 1065
+  - 1072
+  - 1080
+renderer:
+  backend: upstream_cuda
+  up_axis: z
+  width: 256
+  height: 256
+  fov_degrees: 45
+  center:
+  - 0
+  - 0
+  - 0
+  background:
+  - 0
+  - 0
+  - 0
+metrics:
+  lpips: true
+  lpips_net: vgg
+  device: cpu
+  batch_size: 1
+  distortion: mse
+proxy:
+  backend: fixed_gaussian_subset
+  max_gaussians: 256
+  alpha_threshold: 0.01
+runtime:
+  seed: 0
+  gpu_batch_size: 1
+  extension_path: null
