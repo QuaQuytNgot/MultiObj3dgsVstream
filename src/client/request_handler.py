@@ -10,16 +10,20 @@ import os
 import re
 import tempfile
 import time
-from collections.abc import Awaitable, Callable, Iterable, Mapping
-from dataclasses import dataclass, field
+from collections.abc import Awaitable, Callable, Iterable
+from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
 from types import MappingProxyType
 from typing import Any, BinaryIO
-from urllib.parse import urlsplit
 
 from curl_cffi import Curl, CurlError, CurlHttpVersion, CurlInfo, CurlOpt
 from curl_cffi.requests import AsyncSession, Response
+
+# Keep the original imports compatible; contracts belong to the public layer.
+from .request_api import (
+    ErrorKind, ProtocolUnavailableError, RequestSpec, TransferError, TransferResult,
+)
 
 __all__ = [
     "ErrorKind", "HttpVersion", "ProtocolCapabilities", "ProtocolUnavailableError",
@@ -45,10 +49,6 @@ class HttpVersion(str, Enum):
             HttpVersion.H3: CurlHttpVersion.V3,
             HttpVersion.H3_ONLY: CurlHttpVersion.V3ONLY,
         }[self]
-
-
-class ProtocolUnavailableError(RuntimeError):
-    """The installed libcurl cannot use the requested protocol mode."""
 
 
 @dataclass(frozen=True, slots=True)
@@ -94,167 +94,6 @@ def _positive_integer(name: str, value: int) -> int:
     if isinstance(value, bool) or not isinstance(value, int) or value < 1:
         raise ValueError(f"{name} must be a positive integer")
     return value
-
-
-@dataclass(frozen=True, slots=True)
-class RequestSpec:
-    """A planner's resolved GET request. Range endpoints are inclusive."""
-
-    request_id: str
-    url: str
-    object_id: str | None = None
-    representation_id: str | None = None
-    segment_id: str | int | None = None
-    layer_id: str | int | None = None
-    byte_range: tuple[int, int] | None = None
-    priority: int | None = None
-    metadata: Mapping[str, Any] = field(default_factory=dict)
-
-    def __post_init__(self) -> None:
-        if not isinstance(self.request_id, str) or not self.request_id.strip():
-            raise ValueError("request_id must be a nonempty string")
-        if not isinstance(self.url, str) or any(c.isspace() for c in self.url):
-            raise ValueError("url must be an absolute HTTP(S) URL without whitespace")
-        try:
-            parsed = urlsplit(self.url)
-            valid = parsed.scheme in {"http", "https"} and bool(parsed.hostname)
-            parsed.port  # Also validate a malformed or out-of-bounds port.
-        except ValueError as exc:
-            raise ValueError("url must be a valid absolute HTTP(S) URL") from exc
-        if not valid:
-            raise ValueError("url must be an absolute HTTP(S) URL")
-        for name in ("object_id", "representation_id"):
-            value = getattr(self, name)
-            if value is not None and (not isinstance(value, str) or not value.strip()):
-                raise ValueError(f"{name} must be a nonempty string or None")
-        for name in ("segment_id", "layer_id"):
-            value = getattr(self, name)
-            if value is not None and (
-                isinstance(value, bool)
-                or not isinstance(value, (str, int))
-                or (isinstance(value, str) and not value.strip())
-                or (isinstance(value, int) and value < 0)
-            ):
-                raise ValueError(f"{name} must be a nonempty string, nonnegative int or None")
-        if self.byte_range is not None:
-            value = self.byte_range
-            if (
-                not isinstance(value, tuple)
-                or len(value) != 2
-                or any(isinstance(v, bool) or not isinstance(v, int) for v in value)
-                or value[0] < 0
-                or value[1] < value[0]
-            ):
-                raise ValueError("byte_range must be an inclusive (start, end) integer tuple")
-        if self.priority is not None and (
-            isinstance(self.priority, bool) or not isinstance(self.priority, int)
-        ):
-            raise ValueError("priority must be an integer or None")
-        if not isinstance(self.metadata, Mapping):
-            raise ValueError("metadata must be a mapping")
-        # Snapshot the outer mapping; nested context remains caller-owned.
-        object.__setattr__(self, "metadata", MappingProxyType(dict(self.metadata)))
-
-    @property
-    def range_header(self) -> str | None:
-        if self.byte_range is None:
-            return None
-        return f"bytes={self.byte_range[0]}-{self.byte_range[1]}"
-
-
-class ErrorKind(str, Enum):
-    TIMEOUT = "timeout"
-    HTTP = "http"
-    CONNECTION = "connection"
-    INCOMPLETE = "incomplete"
-    RANGE_IGNORED = "range_ignored"
-    INVALID_RANGE = "invalid_range"
-    PROTOCOL = "protocol"
-    FILE = "file"
-    CANCELLED = "cancelled"
-
-
-@dataclass(frozen=True, slots=True)
-class TransferError:
-    kind: ErrorKind
-    message: str
-    curl_code: int | None = None
-
-
-@dataclass(frozen=True, slots=True)
-class TransferResult:
-    """Network measurements. Times are seconds; goodput values are bits/second."""
-
-    spec: RequestSpec
-    status_code: int | None
-    body: bytes | None
-    output_path: Path | None
-    received_bytes: int
-    start_time: float
-    first_byte_time: float | None
-    end_time: float
-    ttfb: float | None
-    transfer_duration: float | None
-    total_duration: float
-    body_goodput_bps: float | None
-    effective_goodput_bps: float | None
-    http_version: str | None
-    response_headers: Mapping[str, str]
-    success: bool
-    error: TransferError | None
-    range_honored: bool | None
-    timestamp: float
-    timing_source: str
-
-    @property
-    def request_id(self) -> str:
-        return self.spec.request_id
-
-    @property
-    def url(self) -> str:
-        return self.spec.url
-
-    @property
-    def object_id(self) -> str | None:
-        return self.spec.object_id
-
-    @property
-    def representation_id(self) -> str | None:
-        return self.spec.representation_id
-
-    @property
-    def segment_id(self) -> str | int | None:
-        return self.spec.segment_id
-
-    @property
-    def layer_id(self) -> str | int | None:
-        return self.spec.layer_id
-
-    @property
-    def metadata(self) -> Mapping[str, Any]:
-        return self.spec.metadata
-
-    @property
-    def requested_range(self) -> tuple[int, int] | None:
-        return self.spec.byte_range
-
-    @property
-    def content_range(self) -> str | None:
-        return self.response_headers.get("content-range")
-
-    @property
-    def content_length(self) -> int | None:
-        value = self.response_headers.get("content-length")
-        if value is None or not re.fullmatch(r"[0-9]+", value):
-            return None
-        try:
-            return int(value)
-        except ValueError:
-            return None
-
-    @property
-    def accept_ranges(self) -> str | None:
-        return self.response_headers.get("accept-ranges")
 
 
 class _BodySink:
