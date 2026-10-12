@@ -68,6 +68,12 @@ start the native pilot or full Longdress run.
 Generated datasets, checkpoints, binaries and media stay under ignored `output/`
 or external storage. A fresh clone contains no historical run outputs.
 
+For Soldier preparation on the local GTX 1660 SSD, follow
+[the local SSD runbook](docs/CONTENT_PREPARATION_LOCAL_SSD.md). It provides portable
+Soldier full/pilot configs and a sequential stage runner with logs, resume, MPD,
+decoded viewer, per-stage task progress with ETA, and final validation gates; full
+training starts only when requested.
+
 The preserved source-workspace trial covers **Longdress 1051–1055, four trained
 qualities Q0–Q3**, f32/f16 and independent/progressive variants. Its sampled f32
 decoded matching-GT diagnostic is retained as historical evidence:
