@@ -246,9 +246,14 @@ are released between phases, and prepared GPU models are released before public
 API measurements. The benchmark does not call `empty_cache` inside timing loops;
 reserved memory therefore includes allocator caches from earlier phases.
 
-GPU correctness and timing results are pending. On the implementation machine,
-NVIDIA reports a driver/library mismatch (`NVML 595.99`) and the configured
-PyTorch environment reports CUDA unavailable. The benchmark fails explicitly
-without producing measurements in that condition. Run the CUDA checks and the
-synthetic/existing-asset benchmark in a working pinned CUDA environment before
-accepting a performance baseline; no timing or GPU-memory values are inferred.
+CUDA correctness has now been checked on GTX 1660 with PyTorch 2.3.1+cu118:
+the renderer suite passed all 60 tests, including its 20 GPU cases. A real
+two/three-object trained Longdress demonstration also passed all four scene
+layouts and records per-phase timings, memory, and reconstruction errors.
+See [VISIBILITY_DEMO.md](VISIBILITY_DEMO.md) for the ready-to-run visualization,
+actual measured baseline, and generated report locations. The general benchmark
+matrix above remains available for other object counts and resolutions.
+
+Earlier attempts were blocked by driver/library mismatch and sandbox GPU
+access. When CUDA is inaccessible, the benchmark still fails explicitly and
+does not invent measurements; run it in the configured GPU environment.
