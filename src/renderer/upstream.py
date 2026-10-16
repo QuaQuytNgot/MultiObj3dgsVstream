@@ -23,10 +23,18 @@ from tools.content_preparation.spatial_rendering import validate_camera
 
 
 @dataclass(frozen=True, slots=True)
-class ProxySnapshot:
+class GaussianSnapshot:
     object_id: str
-    proxy: GaussianState
+    gaussian_state: GaussianState
     timestamp: float
+
+    @property
+    def proxy(self):
+        """Compatibility alias for existing proxy demo/benchmark callers."""
+        return self.gaussian_state
+
+
+ProxySnapshot = GaussianSnapshot
 
 
 def _finite_number(value, name):
@@ -95,7 +103,7 @@ def _transformed_state(state, transform):
 
 def validate_and_snapshot(objects: Sequence, camera: Mapping[str, Any],
                           timestamp: float, settings: Mapping[str, Any] | None = None):
-    """Copy timestamp-resolved proxies and transform them once for all passes."""
+    """Copy resolved Gaussian states and transform them once for all passes."""
     timestamp = _finite_number(timestamp, "timestamp")
     validated_camera = validate_camera(camera)
     for field in ("near", "far"):
@@ -123,13 +131,13 @@ def validate_and_snapshot(objects: Sequence, camera: Mapping[str, Any],
         seen.add(object_id)
         object_time = _finite_number(getattr(obj, "timestamp", None), f"{object_id} timestamp")
         if abs(object_time - timestamp) > 1e-9:
-            raise ValueError(f"{object_id}: proxy timestamp does not match requested timestamp")
-        state = getattr(obj, "proxy", None)
+            raise ValueError(f"{object_id}: Gaussian timestamp does not match requested timestamp")
+        state = getattr(obj, "gaussian_state", None)
         if not isinstance(state, GaussianState):
-            raise ValueError(f"{object_id}: proxy must be a resolved GaussianState")
+            raise ValueError(f"{object_id}: gaussian_state must be a resolved GaussianState")
         state.validate()
         transformed = _transformed_state(state, obj.object_to_world)
-        snapshots.append(ProxySnapshot(object_id, transformed, object_time))
+        snapshots.append(GaussianSnapshot(object_id, transformed, object_time))
     return tuple(snapshots), validated_camera, options
 
 
@@ -216,10 +224,10 @@ def prepare_scene(snapshots, camera, settings):
     """Upload a validated scene. Caller owns the GPU guard and no-grad context."""
     torch, render, model_type, camera_type, projection_fn, metadata = _load_runtime(settings)
     device = torch.device("cuda")
-    degree = max((snapshot.proxy.sh_degree for snapshot in snapshots), default=0)
+    degree = max((snapshot.gaussian_state.sh_degree for snapshot in snapshots), default=0)
     models = []
     for snapshot in snapshots:
-        arrays = snapshot.proxy.arrays
+        arrays = snapshot.gaussian_state.arrays
         model = model_type(degree)
         model.active_sh_degree = degree
         model._xyz = torch.as_tensor(arrays["xyz"], dtype=torch.float32, device=device)
@@ -227,7 +235,7 @@ def prepare_scene(snapshots, camera, settings):
         model._scaling = torch.as_tensor(arrays["scale"], dtype=torch.float32, device=device)
         model._opacity = torch.as_tensor(arrays["opacity"], dtype=torch.float32, device=device)
         # Zero padding preserves each object's SH when scene degrees differ.
-        features = torch.zeros((snapshot.proxy.count, (degree + 1)**2, 3),
+        features = torch.zeros((snapshot.gaussian_state.count, (degree + 1)**2, 3),
                                dtype=torch.float32, device=device)
         features[:, :arrays["sh"].shape[2]] = torch.as_tensor(
             arrays["sh"].transpose(0, 2, 1).copy(), dtype=torch.float32, device=device)
@@ -237,7 +245,7 @@ def prepare_scene(snapshots, camera, settings):
     joint.active_sh_degree = degree
     for name in ("_xyz", "_rotation", "_scaling", "_opacity", "_features_dc", "_features_rest"):
         setattr(joint, name, torch.cat([getattr(model, name) for model in models], dim=0))
-    counts = [snapshot.proxy.count for snapshot in snapshots]
+    counts = [snapshot.gaussian_state.count for snapshot in snapshots]
     slots = torch.repeat_interleave(torch.arange(len(snapshots), device=device),
                                     torch.tensor(counts, device=device))
     world = torch.as_tensor(np.asarray(camera["world_view"], dtype=np.float32).T.copy(), device=device)
