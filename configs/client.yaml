@@ -6,3 +6,24 @@ network:
   connect_timeout_s: 5
   total_timeout_s: 30
   verify_tls: true
+
+# Application-owned settings. RequestHandler does not load this file.
+bandwidth:
+  window_size: 5
+  max_sample_age_s: 10.0  # Provisional; evaluate sensitivity on delivery traces.
+  startup_bandwidth_bps: null  # No guessed capacity before a fresh sample.
+  measurement: body_goodput_bps
+  eligible_traffic: [base, enhancement]
+
+adaptation:
+  budget_bins: 1024
+  safety_factor: 0.85
+  startup_policy: base_first  # External orchestration prerequisite, not scheduling.
+  visibility_representation: decoded_Q0
+  rgb_distortion_reference: decoded_Q3
+  density_normalization: decoded_Q0_solo_alpha_area
+  density_pixel_support: full_image
+  alpha_area_epsilon: 1.0e-6  # Numerical guard only; not empirically calibrated.
+
+# The caller supplies remaining transfer time after Base decode/visibility.
+# Parser/index/state adapters and enriched real profiles are separate gates.
