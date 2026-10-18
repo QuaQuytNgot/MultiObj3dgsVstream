@@ -34,6 +34,7 @@ class MPDTests(unittest.TestCase):
         frames = [{"frame": 1051 + i, "timestamp": single_timestamp + i / fps} for i in range(frame_count)]
         quality_ids = [f"Q{i}" for i in range(qualities)]
         records = []
+        state_hashes = {}
         for qi, quality in enumerate(quality_ids):
             layer = "Base" if qi == 0 else f"E{qi}"
             for frame in frames:
@@ -42,16 +43,27 @@ class MPDTests(unittest.TestCase):
                 path = object_root / relative
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_bytes(data)
+                state_hashes[(qi, frame["frame"])] = hashlib.sha256(data).hexdigest()
                 records.append({"id": f"progressive:{layer}:{frame['frame']}", "mode": "progressive",
                     "quality": quality, "layer": layer, "frame": frame["frame"], "path": relative,
                     "bytes": len(data), "sha256": hashlib.sha256(data).hexdigest(),
                     "codec": {"name": "test-lossless", "version": "1.0.0"},
-                    "decoded_state_hash": hashlib.sha256(data).hexdigest()})
+                    "decoded_state_hash": hashlib.sha256(data).hexdigest(),
+                    "parent_state_hash": state_hashes[(qi-1, frame["frame"])] if qi else None})
         config = {"gof_frames": 6, "segment_frames": 4,
                   "refresh_frames": refresh if refresh is not None else {"Base": 6, "default": 2}}
         index = package_object(object_id, frames, quality_ids, records, config, object_root)
         profile = object_root / "profiles/profile.json"
-        write_json(profile, {"rows": []})
+        write_json(profile, {"schema": "dynamic-lapisgs.quality-profile.v1",
+            "reference": "highest_quality_decoded_delivered_representation",
+            "metadata": {"reference_quality": quality_ids[-1]},
+            "rows": [{"object": object_id, "mode": "progressive", "quality": quality,
+                      "frame": frames[0]["frame"], "timestamp": frames[0]["timestamp"],
+                      "azimuth": 0, "elevation": 0, "scale": 1,
+                      "view_bin": "v0", "scale_bin": "s0", "time_bin": "t0",
+                      "reference_state": "decoded", "reference_quality": quality_ids[-1],
+                      "metrics": {"mse": (qualities-1-i)*0.01}}
+                     for i, quality in enumerate(quality_ids)]})
         manifest = build_manifest(object_id, frames, quality_ids, index,
             provenance={"config_sha256": "a" * 64, "upstream_sources": {"train.py": "b" * 64}},
             quality_profile_path="profiles/profile.json", output_dir=object_root)

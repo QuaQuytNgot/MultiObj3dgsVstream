@@ -123,7 +123,10 @@ The [synthetic integration fixtures](../tests/test_adaptation_integration.py)
 show complete index, retained Base state, view/provenance, and density-provider
 construction, including a call to `plan()` and separate actual-traffic accounting.
 
-MPD/index adapters and actual decoder availability adapters are separate work.
+The [MPD metadata adapter](MPD_METADATA_AND_PARSER.md) now constructs the existing
+`ContentIndexSnapshot` from local/HTTP metadata and exposes separate MSE/density
+references. It does not establish camera calibration, producer alpha parity,
+or verified decoder availability; those adapters/gates remain separate work.
 The existing MPD `bandwidth` is descriptive cumulative rate metadata; it must not
 be treated as an enhancement layer's incremental request cost.
 

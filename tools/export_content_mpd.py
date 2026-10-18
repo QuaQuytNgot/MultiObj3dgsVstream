@@ -20,8 +20,19 @@ def main(argv=None):
     parser.add_argument("--output", type=Path)
     parser.add_argument("--resume", action="store_true")
     parser.add_argument("--overwrite", action="store_true")
+    parser.add_argument("--metadata-only", action="store_true",
+                        help="Read JSON only; do not open or verify media/encoded/image payloads")
+    parser.add_argument("--density-profile", action="append", default=[], metavar="OBJECT=RELATIVE_JSON",
+                        help="Explicit density sidecar path relative to prepared-root; repeat per object")
     arguments = parser.parse_args(argv)
-    result = export_mpd(arguments.prepared_root, arguments.output, arguments.resume, arguments.overwrite)
+    densities = {}
+    for value in arguments.density_profile:
+        object_id, separator, path = value.partition("=")
+        if not separator or not object_id or not path or object_id in densities:
+            parser.error("--density-profile requires unique OBJECT=RELATIVE_JSON entries")
+        densities[object_id] = path
+    result = export_mpd(arguments.prepared_root, arguments.output, arguments.resume, arguments.overwrite,
+                        metadata_only=arguments.metadata_only, density_profiles=densities)
     print(json.dumps(result, sort_keys=True, indent=2))
     return 0
 
