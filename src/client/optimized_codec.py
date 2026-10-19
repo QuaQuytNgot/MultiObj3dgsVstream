@@ -75,6 +75,7 @@ class ByteCache:
         performs independent work when the in-flight table is full.
         """
         with self.lock:
+            generation = self._generation
             value = self.get(key)
             if value is not None:
                 return value, "hit"
@@ -99,7 +100,7 @@ class ByteCache:
         try:
             value = factory()
             with self.lock:
-                if flight is None or flight["generation"] == self._generation:
+                if generation == self._generation:
                     publish(value)
                 if flight is not None:
                     flight["value"] = value

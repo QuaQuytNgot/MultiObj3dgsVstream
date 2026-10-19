@@ -108,7 +108,11 @@ class PlaybackSource:
         self.decode_in_worker = decode_in_worker
         self.workers = workers
         self._pool_slots = asyncio.Semaphore(workers.pending) if workers else None
-        self._input_slots = asyncio.Semaphore(result_capacity) if workers else None
+        # Long decoded windows must not materialize the same number of large
+        # encoded chains at once. Keep I/O ahead of native work while bounding
+        # detached input and the complete containers pinned during preparation.
+        self.input_capacity = min(result_capacity,max(2,workers.pending*2)) if workers else 0
+        self._input_slots = asyncio.Semaphore(self.input_capacity) if workers else None
         self._frame_tasks = {}
         self._frame_waiters = Counter()
         self._active_requests = set()

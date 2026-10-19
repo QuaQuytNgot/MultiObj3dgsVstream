@@ -8,6 +8,15 @@ import asyncio
 import math
 from time import perf_counter
 
+MAX_PLANNING_STEPS = 4096
+
+
+def presentation_steps(duration_s, fps):
+    """Bound bookkeeping as well as unique states, without float overflow."""
+    if duration_s > MAX_PLANNING_STEPS / fps:
+        return MAX_PLANNING_STEPS, 'presentation planning limit'
+    return max(1, math.ceil(duration_s*fps-1e-9)), None
+
 
 @dataclass(frozen=True)
 class BufferWindow:
@@ -46,8 +55,7 @@ def plan_window(source, objects, clocks, quality_at, advancing, *, fps, duration
     Paused instances require their current state only. Sampling on presentation
     steps naturally deduplicates a source with a lower frame rate.
     """
-    steps = max(1, math.ceil(duration_s*fps-1e-9))
-    reason = None
+    steps, reason = presentation_steps(duration_s,fps)
     if max_steps is not None and steps > max_steps:
         steps = max(1,max_steps)
         reason = "finite presentation end"
@@ -93,7 +101,8 @@ async def prime_window(ahead, window, *, timeout_s, fallback='shrink'):
         ahead.collect()
         available=window.availability(ahead)
         if available['ready']:
-            status='capacity_limited' if window.reason else 'ready'
+            status=('capacity_limited' if 'capacity' in window.reason else
+                    'planning_limited' if 'planning' in window.reason else 'end_limited') if window.reason else 'ready'
             break
         if perf_counter()-began >= timeout_s:
             if fallback == 'error' or not available['first_ready']:

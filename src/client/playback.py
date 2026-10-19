@@ -5,7 +5,7 @@ import asyncio
 from contextlib import AsyncExitStack
 from dataclasses import asdict
 import json
-import math
+from collections import deque
 from pathlib import Path
 import time
 
@@ -17,7 +17,7 @@ from .mpd_parser import MPDParser
 from .playback_source import PlaybackSource
 from .request_api import NetworkClient
 from .scene import SceneManager
-from .playback_buffer import plan_window, prime_window
+from .playback_buffer import plan_window, prime_window, presentation_steps, MAX_PLANNING_STEPS
 from src.renderer.backend import Camera, create_renderer
 
 
@@ -60,10 +60,11 @@ async def run_playback(config):
     estimator = BandwidthEstimator(**{key: value for key, value in config.get("bandwidth", {}).items()
                                       if key in ("window_size", "max_sample_age_s", "startup_bandwidth_bps")})
     observer = None
-    rendered = frame_count = new_scene_frames = new_object_frames = repeats = misses = 0
+    rendered = frame_count = new_scene_frames = new_object_frames = repeats = misses = dropped = 0
     render_seconds = 0.
     rebuffer_events = rebuffer_seconds = 0
     rebuffer_started = underrun_since = None
+    rebuffer_history=deque(maxlen=64)
     startup = {"requested_s":options.get("startup_buffer_s",0.),"status":"disabled","wait_s":0.}
     started, cpu_started = time.perf_counter(), time.process_time()
     async with AsyncExitStack() as stack:
@@ -101,9 +102,9 @@ async def run_playback(config):
                     native=(optimization or {}).get("native","baseline"))
                 pool = DecodeWorkers(worker_count, pending=worker_count, optimization=optimization,
                                      runtime_config=config.get("decoder"))
-                window_steps = max(options.get("ahead_frames",12)+1,
-                                   math.ceil(max(options.get("startup_buffer_s",0.),options.get("target_buffer_s",0.),
-                                                 options.get("rebuffer_buffer_s",.5) if options.get("rebuffer_after_s",0.) else 0.)*options["fps"]))
+                window_steps = max(min(MAX_PLANNING_STEPS,options.get("ahead_frames",12)+1),
+                                   presentation_steps(max(options.get("startup_buffer_s",0.),options.get("target_buffer_s",0.),
+                                                          options.get("rebuffer_buffer_s",.5) if options.get("rebuffer_after_s",0.) else 0.),options["fps"])[0])
                 capacity = queue_capacity(max(qualities),worker_count,selection_policy["admission_memory_mib"],
                                           shared_mib,window_steps*len(objects),
                                           options.get("ahead_capacity"))
@@ -130,26 +131,41 @@ async def run_playback(config):
                 from .viewer import InteractiveViewer
                 viewer = InteractiveViewer(camera_sample,scene.objects,up_axis=camera_settings.get("up_axis","y"))
             clocks = {obj["id"]:float(obj.get("start_time_s",0.)) for obj in objects}
+            clock_origins=dict(clocks)
+            clock_steps={identifier:0 for identifier in clocks}
             cycle = options.get("quality_cycle",[])
             last_states, last_identities, state_cycles = {}, {}, {}
             first_ready = anchor = None
             previous_tick = 0
             skipped_slots = 0
             per_object = {obj["id"]:{"new_video_frames":0,"deadline_misses":0,"repeated_presentations":0} for obj in objects}
+            positions={name:{sample["frame"]:i for i,sample in enumerate(timeline[0])}
+                       for name,timeline in source._timelines.items()}
+            last_ordinals={}
             def quality_for(obj,step):
                 q = cycle[(step//options["quality_interval"])%len(cycle)] if cycle else obj["quality"]
                 return viewer.qualities.get(obj["id"],q) if viewer else q
             def advancing(obj):
                 return scene.objects[obj["id"]].playing and (not viewer or not viewer.paused)
-            target_s=max((options.get("ahead_frames",12)+1)/options["fps"],
+            def advance_clocks(steps):
+                # Repeated float addition drifts enough to select the previous
+                # media frame near 4.9 s at 30 Hz. Preserve arbitrary offsets
+                # and pause state with an integer step count per object.
+                for obj in objects:
+                    identifier=obj["id"]
+                    if advancing(obj):
+                        clock_steps[identifier]+=steps
+                        clocks[identifier]=clock_origins[identifier]+clock_steps[identifier]/options["fps"]
+            target_s=max(min(MAX_PLANNING_STEPS,options.get("ahead_frames",12)+1)/options["fps"],
                          options.get("startup_buffer_s",0.),options.get("target_buffer_s",0.))
             def window_for(duration,tick):
-                return plan_window(source,objects,clocks,lambda obj,offset:quality_for(obj,tick+offset),advancing,
+                peers=objects[frame_count%len(objects):]+objects[:frame_count%len(objects)]
+                return plan_window(source,peers,clocks,lambda obj,offset:quality_for(obj,tick+offset),advancing,
                                    fps=options["fps"],duration_s=duration,capacity=capacity,loop=options["loop"],
                                    max_steps=(options["frames"]-frame_count) if options["frames"] else None)
             if options.get("startup_buffer_s",0.) > 0:
                 initial=window_for(options["startup_buffer_s"],0)
-                if initial.reason == "decoded queue memory/capacity limit" and options.get("startup_fallback","shrink") == "error":
+                if initial.reason in ("decoded queue memory/capacity limit","presentation planning limit") and options.get("startup_fallback","shrink") == "error":
                     raise ValueError("Requested startup decoded buffer exceeds memory/capacity limit")
                 startup=await _responsive_wait(prime_window(ahead,initial,timeout_s=options.get("startup_timeout_s",30.),
                                                             fallback=options.get("startup_fallback","shrink")),viewer)
@@ -168,10 +184,10 @@ async def run_playback(config):
                         if rebuffer_started is None and threshold and underrun_since is not None and frame_started-underrun_since >= threshold:
                             rebuffer_started=frame_started
                             rebuffer_events+=1
+                            rebuffer_history.append({"requested_s":options.get("rebuffer_buffer_s",.5),"status":"filling"})
                         tick = previous_tick if rebuffer_started is not None else max(previous_tick+1,int((frame_started-anchor)*options["fps"]))
                         skipped_slots += max(0,tick-previous_tick-1)
-                        for obj in objects:
-                            if advancing(obj): clocks[obj["id"]] += (tick-previous_tick)/options["fps"]
+                        advance_clocks(tick-previous_tick)
                     playback_time = tick/options["fps"]
                     current, requests = {}, []
                     try:
@@ -198,12 +214,17 @@ async def run_playback(config):
                             # Rotate equal-deadline object peers before admission.
                             requests=list(window.requests)
                             peers=objects[frame_count%len(objects):]+objects[:frame_count%len(objects)]
-                            current_keys=[(obj["source"],* (current[obj["id"]][0].frame,current[obj["id"]][1])) for obj in peers]
+                            current_keys=[(obj["source"],current[obj["id"]][0].frame,current[obj["id"]][1]) for obj in peers]
                             requests=list(dict.fromkeys(current_keys+requests))
                             admit=None if options.get("prefetch",True) or rebuffer_started is not None else set(current_keys)
                             await ahead.prefetch(requests,retain_running=policy=="hold",admit=admit)
                             if rebuffer_started is not None:
-                                ready=window.availability(ahead)
+                                recovery=window_for(options.get("rebuffer_buffer_s",.5),tick)
+                                if recovery.reason in ("decoded queue memory/capacity limit","presentation planning limit") and options.get("startup_fallback","shrink") == "error":
+                                    raise ValueError("Requested rebuffer decoded window exceeds memory/capacity limit")
+                                ready=recovery.availability(ahead)
+                                rebuffer_history[-1].update(effective_target_s=recovery.effective_s,reason=recovery.reason,
+                                                            decoded_duration_s=ready["decoded_duration_s"])
                                 timed_out=time.perf_counter()-rebuffer_started >= options.get("startup_timeout_s",30.)
                                 if ready["ready"] or timed_out:
                                     if timed_out and options.get("startup_fallback","shrink") == "error":
@@ -211,6 +232,7 @@ async def run_playback(config):
                                     elapsed_rebuffer=time.perf_counter()-rebuffer_started
                                     anchor+=elapsed_rebuffer
                                     rebuffer_seconds+=elapsed_rebuffer
+                                    rebuffer_history[-1].update(status="timeout" if timed_out else "ready",wait_s=elapsed_rebuffer)
                                     rebuffer_started=underrun_since=None
                     except EOFError:
                         break
@@ -241,6 +263,11 @@ async def run_playback(config):
                         actual_cycle = state_cycles[identifier]
                         identity = (actual_cycle,decoded.frame_index)
                         fresh = last_identities.get(identifier) != identity
+                        ordinal=actual_cycle*len(positions[obj["source"]])+positions[obj["source"]][decoded.frame_index]
+                        skipped_media=max(0,ordinal-last_ordinals[identifier]-1) if fresh and identifier in last_ordinals else 0
+                        last_ordinals[identifier]=ordinal
+                        dropped+=skipped_media
+                        per_object[identifier]["dropped_video_frames"]=per_object[identifier].get("dropped_video_frames",0)+skipped_media
                         exact = decoded.frame_index == desired.frame and decoded.quality == q and actual_cycle == desired.cycle
                         missed = not exact or (policy == "wait" and lateness > 1/options["fps"])
                         per_object[identifier]["new_video_frames"] += int(fresh)
@@ -259,6 +286,7 @@ async def run_playback(config):
                         selections[identifier] = {"frame":decoded.frame_index,"quality":decoded.quality,
                             "media_time_s":decoded.timestamp,"cycle":actual_cycle,"desired_cycle":desired.cycle,"gaussians":decoded.state.count,
                             "desired_frame":desired.frame,"desired_quality":q,"new_video_frame":fresh,
+                            "dropped_video_frames":skipped_media,
                             "deadline_missed":missed,"delivery_lateness_s":lateness,
                             "media_lateness_s":max(0.,desired.media_time_s-decoded.timestamp+(desired.cycle-actual_cycle)*source._timelines[obj["source"]][2])}
                     new_scene_frames += int(all_new and any_new)
@@ -299,9 +327,7 @@ async def run_playback(config):
                     frame_count += 1
                     previous_tick = tick
                     if policy == "wait" and (not viewer or not viewer.paused):
-                        for identifier,instance in scene.objects.items():
-                            if instance.playing:
-                                clocks[identifier] = round(clocks[identifier]*options["fps"]+1)/options["fps"]
+                        advance_clocks(1)
                     if policy == "hold":
                         deadline=frame_started+1/options["fps"] if rebuffer_started is not None else anchor+(tick+1)/options["fps"]
                         await asyncio.sleep(max(0.,deadline-time.perf_counter()))
@@ -323,10 +349,13 @@ async def run_playback(config):
             summary = {"status":"passed","mode":options["mode"],"backend":None if renderer is None else rendering["backend"],
                 "presentation_ticks":frame_count,"decoded_output_frames":new_scene_frames,
                 "new_object_video_frames":new_object_frames,"repeated_object_presentations":repeats,
+                "dropped_object_video_frames":dropped,
                 "object_deadline_misses":misses,"per_object":per_object,"late_policy":policy,
                 "skipped_presentation_slots":skipped_slots,
                 "startup_buffer":startup,"prefetch_enabled":options.get("prefetch",True),
                 "target_buffer_s":target_s,"rebuffer_events":rebuffer_events,"rebuffer_seconds":rebuffer_seconds,
+                "rebuffer_history":list(rebuffer_history),"buffer_planning_step_limit":MAX_PLANNING_STEPS,
+                "encoded_input_capacity":source.input_capacity,
                 "rendered_frames":rendered,"decode_count":sum(d.decode_count for d in decoders),
                 "decode_seconds":sum(d.total_decode_seconds for d in decoders),"render_seconds":render_seconds,
                 "wall_seconds":wall,"cpu_seconds":time.process_time()-cpu_started,
@@ -347,6 +376,8 @@ async def run_playback(config):
             active_s = max(1e-9,presentation_ended-first_ready) if first_ready is not None else None
             summary["scene_tick_fps_after_startup"] = (frame_count-1)/active_s if active_s else None
             summary["new_scene_fps_after_startup"] = max(0,new_scene_frames-1)/active_s if active_s else None
+            summary["rendered_fps"] = rendered/wall
+            summary["rendered_fps_after_startup"] = max(0,rendered-1)/active_s if active_s else None
             summary["decoder_cache_bytes"] = (pool.shared.streams.size+pool.shared.arrays.size+pool.shared.idmaps.size) if pool and pool.shared else 0
             try:
                 import resource
