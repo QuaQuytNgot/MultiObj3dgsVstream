@@ -1,0 +1,27 @@
+{
+  "files": [
+    {
+      "path": "DASH-MPD.xsd",
+      "sha256": "d2cb1b300c6f45e902d129bdaf13496dca21aca879ae2b996d4886e9a2513466",
+      "source_url": "https://raw.githubusercontent.com/MPEGGroup/DASHSchema/cc941bd4e2e4fb3ea6c7b1c37d3d5edf2ef3fbfe/DASH-MPD.xsd"
+    },
+    {
+      "path": "DASH-MPD-UP.xsd",
+      "sha256": "7a3c7820b6ead75abfe338d5cdf151a1e4cc1fa8ee4a6d43ad7d71e6605477ea",
+      "source_url": "https://raw.githubusercontent.com/MPEGGroup/DASHSchema/cc941bd4e2e4fb3ea6c7b1c37d3d5edf2ef3fbfe/DASH-MPD-UP.xsd"
+    },
+    {
+      "path": "xlink.xsd",
+      "sha256": "abf0757e425bb34af4e3d6e5d7b5f296948701947a829182209db1d49ee1b5ed",
+      "source_url": "https://raw.githubusercontent.com/w3c/musicxml/master/schema/xlink.xsd"
+    },
+    {
+      "path": "MPEG-LICENSE",
+      "sha256": "140b814a00b7ee03b3f16fcb077b434bdd0f63d5990586ef77a5ab50c4ff04bd",
+      "source_url": "https://raw.githubusercontent.com/MPEGGroup/DASHSchema/cc941bd4e2e4fb3ea6c7b1c37d3d5edf2ef3fbfe/LICENSE"
+    }
+  ],
+  "mpeg_dash_commit": "cc941bd4e2e4fb3ea6c7b1c37d3d5edf2ef3fbfe",
+  "schema_version": "content-preparation.validation-schemas.v1",
+  "xlink_note": "W3C MusicXML XLink subset defines all XLink attributes used by DASH-MPD; no XLink attributes are emitted by this project. Downloaded from W3C official repository because original schema URL returns HTTP 403. Source bytes preserved."
+}
