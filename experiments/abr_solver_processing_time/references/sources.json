@@ -1,0 +1,23 @@
+{
+  "read_date": "2026-10-25",
+  "lts": {
+    "doi": "10.1145/3712676.3714445",
+    "author_pdf": "https://people.cs.nycu.edu.tw/~chuang/pubs/pdf/2025mmsys.pdf",
+    "pdf_sha256": "9c586afe414ef37db193eb72f1320395aff991553f7b865404c456ed0b1bedec",
+    "sections": [
+      "4.1",
+      "4.2 Eq. (2)",
+      "4.3"
+    ],
+    "code_availability": "https://github.com/AIINS-NTHU/LTS-DASH-Streaming-System-for-3DGS/blob/main/README.md"
+  },
+  "nava": {
+    "doi": "10.1109/ACCESS.2025.3538802",
+    "full_text": "https://www.researchgate.net/publication/388716331_NAVA_A_Network-Adaptive_View-Aware_Volumetric_Video_Streaming_Framework",
+    "sections": [
+      "III-G",
+      "Algorithm 1"
+    ],
+    "pdf_download": "403; full text read through browser"
+  }
+}

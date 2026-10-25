@@ -1,0 +1,15 @@
+{
+  "data_root": "../../data_stream/streamstgs_8i_quality_metadata",
+  "cost_root": null,
+  "object_counts": [2, 4, 8, 16, 32, 64],
+  "seeds": [2027, 2028, 2029],
+  "warmups": 3,
+  "repetitions": 30,
+  "timeout_seconds": 0.5,
+  "max_combinations": 1000000,
+  "max_labels": 100000,
+  "max_dp_cells": 50000000,
+  "delta_bps": [50000, 250000, 1000000],
+  "order_seed": 8242027,
+  "cpu": "first_allowed"
+}

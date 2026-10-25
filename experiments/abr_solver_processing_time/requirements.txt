@@ -1,0 +1,3 @@
+# Solver execution, preparation and validation use only C++17 / Python stdlib.
+# Figure generation:
+matplotlib>=3.6
