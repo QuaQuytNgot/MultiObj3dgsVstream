@@ -21,6 +21,19 @@ class SceneClock:
         self.last_lateness = 0.0
 
     @property
+    def position(self):
+        # Derive each presentation timestamp independently. Repeated addition
+        # drifts below exact frame/GOP boundaries and can repeat source frames.
+        return self._position_anchor+self._position_ticks/self.fps
+
+    @position.setter
+    def position(self,seconds):
+        # Preserve a seek's arbitrary phase and existing direct assignments.
+        # Only committed frame steps advance the integer tick counter.
+        self._position_anchor=float(seconds)
+        self._position_ticks=0
+
+    @property
     def deadline(self):
         return self._deadline
 
@@ -74,14 +87,16 @@ class SceneClock:
         now = self.clock()
         self.last_lateness = max(0.0, now - self._deadline)
         self.unstall()
-        next_time = self.position + 1 / self.fps
+        next_tick = self._position_ticks+1
+        next_time = self._position_anchor+next_tick/self.fps
         if next_time >= self.duration - 1e-9:
             if self.loop:
                 self.position = 0.0
-                self.generation += 1
+                # Immutable prefetched GOPs remain valid at a natural wrap.
+                # Only explicit seek/restart invalidates asynchronous jobs.
             else:
                 self.ended = True
                 self.playing = False
         else:
-            self.position = next_time
+            self._position_ticks = next_tick
         self._deadline = max(self._deadline + 1 / self.fps, now)

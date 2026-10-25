@@ -156,6 +156,7 @@ class PlaybackRuntime:
     def _desired(self):
         desired = {}
         required = {}
+        boundary_instances = set()
         for instance in self.catalog.instances:
             content = self.catalog.contents[instance.content_id]
             timestamp = media_time(instance, content, self.clock.position)
@@ -168,8 +169,14 @@ class PlaybackRuntime:
                 continue
             representation = self.active_representations[instance.id]
             segment = content.segment_at(representation, timestamp)
+            previous = self.jobs.get(self.required.get(instance.id))
+            # Presentation rate/seek phase need not land exactly on GOP start.
+            # Commit manual quality on the first sample of a new local GOP.
+            at_boundary = abs(timestamp-segment.start) < 1e-8 or (
+                previous is not None and previous.segment.gop_index != segment.gop_index)
+            if at_boundary:boundary_instances.add(instance.id)
             pending = self.pending_representations.get(instance.id)
-            if pending and abs(timestamp-segment.start) < 1e-8:
+            if pending and at_boundary:
                 representation = pending
                 segment = content.segment_at(representation, timestamp)
                 self.active_representations[instance.id] = pending
@@ -213,7 +220,7 @@ class PlaybackRuntime:
             instance,rep,segment,deadline = value
             target = choices.get((instance.id,segment.id),rep)
             is_current = required.get(instance.id) == key
-            if target != rep and (not is_current or abs(segment.start-media_time(instance,self.catalog.contents[instance.content_id],self.clock.position))<1e-8):
+            if target != rep and (not is_current or instance.id in boundary_instances):
                 alternative = next(s for s in self.catalog.contents[instance.content_id].representations[target].segments if s.start == segment.start)
                 updated = (instance.id,alternative.id,target,self.clock.generation)
                 desired.pop(key)
