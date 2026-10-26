@@ -112,8 +112,16 @@ class NativeWindow:
             if right or down or forward:
                 self.controller.move(right,down,forward,dt)
 
+    def _ui_diagnostics(self):
+        """Allow integrations to throttle snapshots without replacing controls."""
+        return self.runtime.diagnostics()
+
+    def _draw_extra_ui(self, diagnostic):
+        """Optional integration status inside the existing playback panel."""
+        pass
+
     def draw_ui(self):
-        diagnostic=self.runtime.diagnostics()
+        diagnostic=self._ui_diagnostics()
         self.glfw.set_window_title(self.window,
             f'StreamSTGS | t={diagnostic["scene_time"]:.2f}s | frames={diagnostic["frames"]} | '
             f'{"buffering" if diagnostic["stalled"] else "playing" if diagnostic["playing"] else "paused"} | '
@@ -144,6 +152,7 @@ class NativeWindow:
             for job in diagnostic['objects']:
                 if job['instance_id']==instance.id:
                     im.text(f'  {job["gop_id"]}: {job["state"]} ({job["representation_id"]})')
+        self._draw_extra_ui(diagnostic)
         im.end();im.render();self.ui.render(im.get_draw_data())
 
     def swap(self):
