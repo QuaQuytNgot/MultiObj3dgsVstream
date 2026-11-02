@@ -7,6 +7,8 @@ from experiments.visibility_weighted_sse import allocation as shared_allocation
 from experiments.visibility_weighted_sse.common import require
 from .methods import SUPPORTED_METHODS, SOLO_SSE, VISIBILITY_WEIGHTED_SSE, construct_utilities
 from .metadata import validate_quality_references
+from .exhaustive import EXHAUSTIVE_SEARCH, enumerate_qualities
+from .methods import VISIBILITY_PSNR
 
 
 class AdaptationPlanner:
@@ -14,11 +16,12 @@ class AdaptationPlanner:
 
     def __init__(self, profiles, trace_provider, visibility_adapter, *, baseline_metadata=None,
                  cached_resource_ids=(), allowed_quality_ids=None, solver_limits=None,
-                 expected_object_count=None):
+                 expected_object_count=None, exhaustive_limits=None):
         self.profiles, self.trace, self.visibility = profiles, trace_provider, visibility_adapter
         self.metadata = baseline_metadata
         self.cached_resource_ids, self.allowed_quality_ids = cached_resource_ids, allowed_quality_ids
         self.solver_limits, self.expected_object_count = solver_limits, expected_object_count
+        self.exhaustive_limits = exhaustive_limits
         require(visibility_adapter.trace_provider is trace_provider,
                 "Use the same frozen trace provider for every method")
         require(visibility_adapter.data["content_revision"] == profiles.content_revision,
@@ -52,10 +55,11 @@ class AdaptationPlanner:
         return self._prepared[gid]
 
     def plan(self, method, gop_id, budget_bytes):
-        require(method in SUPPORTED_METHODS, f"Unknown adaptation method: {method}")
+        require(method in (*SUPPORTED_METHODS,EXHAUSTIVE_SEARCH), f"Unknown adaptation method: {method}")
+        utility_method=VISIBILITY_PSNR if method==EXHAUSTIVE_SEARCH else method
         if method not in (SOLO_SSE, VISIBILITY_WEIGHTED_SSE):
             require(self.metadata is not None, "Selected baseline requires validated quality metadata")
-            validate_quality_references(self.metadata.get("quality_references", {}), self.profiles, [method])
+            validate_quality_references(self.metadata.get("quality_references", {}), self.profiles, [utility_method])
             provenance = self.metadata.get("provenance", {})
             require(provenance.get("information_role") == "OFFLINE_BASELINE_METADATA" and
                     provenance.get("joint_quality_used") is False, "Independent offline baseline provenance required")
@@ -64,13 +68,17 @@ class AdaptationPlanner:
         was_prepared = gid in self._prepared
         trajectory, aggregate, preparation_ms = self.prepare(gid)
         utility_started = time.perf_counter()
-        constructed = construct_utilities(method, self.profiles, gid, trajectory, aggregate, self.metadata)
+        constructed = construct_utilities(utility_method, self.profiles, gid, trajectory, aggregate, self.metadata)
         utility_ms = (time.perf_counter() - utility_started) * 1000
         utilities = constructed["per_object"]
         allocation_started = time.perf_counter()
         options = {"cached_resource_ids": self.cached_resource_ids, "solver_limits": self.solver_limits,
                    "allowed_quality_ids": self.allowed_quality_ids}
-        if method == VISIBILITY_WEIGHTED_SSE:
+        if method == EXHAUSTIVE_SEARCH:
+            solved = enumerate_qualities(self.profiles,gid,budget_bytes,utilities,
+                cached_resource_ids=self.cached_resource_ids,allowed_quality_ids=self.allowed_quality_ids,
+                limits=self.exhaustive_limits)
+        elif method == VISIBILITY_WEIGHTED_SSE:
             visible = {iid: item["A_visible"] for iid, item in aggregate["per_object"].items()}
             solved = shared_allocation.allocate(self.profiles, gid, visible, budget_bytes,
                                                 utilities=utilities, **options)

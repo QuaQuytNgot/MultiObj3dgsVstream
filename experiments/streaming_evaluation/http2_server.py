@@ -60,6 +60,7 @@ class AggregateTraceShaper:
         self._task: asyncio.Task | None = None
         self._last_s: float | None = None
         self.released_bytes = 0
+        self.pump_starts = 0
 
     def start(self, origin: float) -> None:
         if self.origin is not None:
@@ -88,6 +89,7 @@ class AggregateTraceShaper:
         if self._task is None or self._task.done():
             # Never accrue idle trace credit before a ready body appears.
             self._last_s = self.now()
+            self.pump_starts += 1
             self._task = asyncio.create_task(self._pump())
         try:
             return await future
@@ -115,6 +117,8 @@ class AggregateTraceShaper:
             delivered = sum(grants)
             self.ledger.append(dict(start_s=start, end_s=end, capacity_bits=capacity * 8,
                 delivered_bytes=delivered, active_bodies=len(demands),
+                tick_overshoot_s=max(0., end - start - self.tick_s),
+                demanded_bytes=sum(d.amount for d in demands),
                 accounting="actual_ASGI_release_grants_not_wire_or_simulated_delivery"))
             self.released_bytes += delivered
             for demand, grant in zip(demands, grants):
@@ -137,6 +141,27 @@ class AggregateTraceShaper:
         if self._task is not None:
             self._task.cancel()
             await asyncio.gather(self._task, return_exceptions=True)
+
+
+class UnshapedBodyService(AggregateTraceShaper):
+    """Explicit localhost control: no trace pacing or finite capacity claim."""
+
+    def __init__(self, trace, *, tick_s=.002):
+        # Retain the same clock/accounting API, never consult trace capacity.
+        self.trace, self.tick_s = trace, tick_s
+        self.origin = None
+        self.pending = OrderedDict()
+        self.ledger = []
+        self._task = None
+        self._last_s = None
+        self.released_bytes = self.pump_starts = 0
+
+    def capacity(self, start, end):
+        return math.inf
+
+    async def acquire(self, stream, amount):
+        self.released_bytes += amount
+        return amount
 
 
 class ResourceOrigin:
@@ -175,7 +200,8 @@ class ResourceOrigin:
             return
         event = dict(request_id=request_id, resource=str(resource), start_s=self.shaper.now(),
                      client=list(scope["client"]), http_version=scope["http_version"],
-                     bytes_released=0, completed=False)
+                     bytes_released=0, completed=False, grant_wait_s=0., file_read_wall_s=0.,
+                     body_send_await_s=0., max_body_send_await_s=0., asgi_body_calls=0)
         self.active += 1
         self.max_open_streams = max(self.max_open_streams, self.active)
         self.events.append(event)
@@ -190,6 +216,7 @@ class ResourceOrigin:
         async def send_resource():
             await asyncio.sleep(self.latency_s)
             event["ready_s"] = self.shaper.now()
+            event["latency_overshoot_s"] = max(0., event["ready_s"] - event["start_s"] - self.latency_s)
             await send({"type": "http.response.start", "status": 200, "headers": [
                 (b"content-length", str(resource.stat().st_size).encode()),
                 (b"content-type", b"application/octet-stream"),
@@ -201,6 +228,7 @@ class ResourceOrigin:
             with resource.open("rb") as source:
                 remaining = resource.stat().st_size
                 while remaining:
+                    grant_start = time.monotonic()
                     try:
                         grant = await self.shaper.acquire(request_id, min(self.chunk_bytes, remaining))
                     except EOFError:
@@ -210,10 +238,18 @@ class ResourceOrigin:
                         # an invalid end-of-body or an unhandled ASGI exception.
                         event["trace_exhausted"] = True
                         await asyncio.Future()
+                    event["grant_wait_s"] += time.monotonic() - grant_start
+                    read_start = time.monotonic()
                     data = source.read(grant)
+                    event["file_read_wall_s"] += time.monotonic() - read_start
                     if len(data) != grant:
                         raise RuntimeError("Resource changed during its HTTP response")
+                    send_start = time.monotonic()
                     await send({"type": "http.response.body", "body": data, "more_body": True})
+                    send_wait = time.monotonic() - send_start
+                    event["body_send_await_s"] += send_wait
+                    event["max_body_send_await_s"] = max(event["max_body_send_await_s"], send_wait)
+                    event["asgi_body_calls"] += 1
                     event["bytes_released"] += len(data)
                     remaining -= len(data)
             await send({"type": "http.response.body", "body": b"", "more_body": False})

@@ -19,7 +19,7 @@ import threading
 import time
 from urllib.parse import quote
 
-from .http2_server import AggregateTraceShaper, ResourceOrigin, create_local_certificate
+from .http2_server import AggregateTraceShaper, UnshapedBodyService, ResourceOrigin, create_local_certificate
 from .network import DownloadResult, NetworkLink
 
 
@@ -64,7 +64,9 @@ class RealHTTP2Link:
 
     def __init__(self, trace, resource_paths: dict[str, str | Path], *, latency_s: float = .02,
                  max_concurrent_streams: int = 16, shaping_tick_s: float = .002,
-                 chunk_bytes: int = 1048576, max_requests_per_connection: int = 1000000):
+                 chunk_bytes: int = 1048576, max_requests_per_connection: int = 1000000,
+                 shaping_enabled: bool = True, diagnostics: bool = False,
+                 profile_path: str | Path | None = None, flow_probe: bool = False):
         if isinstance(max_concurrent_streams, bool) or not isinstance(max_concurrent_streams, int) or max_concurrent_streams < 1:
             raise ValueError("max_concurrent_streams must be a positive integer")
         if not math.isfinite(latency_s) or latency_s < 0:
@@ -77,11 +79,16 @@ class RealHTTP2Link:
         self.trace, self.latency_s = trace, float(latency_s)
         self.max_concurrent_streams = max_concurrent_streams
         self.max_requests_per_connection = max_requests_per_connection
+        if not isinstance(shaping_enabled, bool):
+            raise ValueError("shaping_enabled must be boolean")
+        self.shaping_enabled = shaping_enabled
+        self._diagnostics_enabled = diagnostics or profile_path is not None or flow_probe
+        self._profile_path, self._flow_probe = profile_path, flow_probe
         self.resources = {str(key): Path(path).resolve() for key, path in resource_paths.items()}
         for path in self.resources.values():
             if not path.is_file():
                 raise ValueError(f"HTTP/2 resource does not exist: {path}")
-        self.shaper = AggregateTraceShaper(trace, tick_s=shaping_tick_s)
+        self.shaper = (AggregateTraceShaper if shaping_enabled else UnshapedBodyService)(trace, tick_s=shaping_tick_s)
         self.origin_app = ResourceOrigin(self.resources, self.shaper,
             latency_s=self.latency_s, chunk_bytes=chunk_bytes)
         self.results: list[RealDownloadResult] = []
@@ -171,6 +178,10 @@ class RealHTTP2Link:
         self.warmup_wall_s = time.monotonic() - warmup_start
         self._origin = time.monotonic()
         self.shaper.start(self._origin)
+        if self._diagnostics_enabled:
+            from .http2_profiling import HTTP2Profiler
+            self.profiler = HTTP2Profiler(self._profile_path, flow_probe=self._flow_probe)
+            await self.profiler.start()
 
     def _check_protocol(self, response) -> tuple[int, str, str]:
         if response.http_version != "HTTP/2":
@@ -261,7 +272,7 @@ class RealHTTP2Link:
 
     async def _download_batch(self, requests, deadline_s):
         import httpx
-        horizon = (self.trace.duration_s if not self.trace.loop and self.trace.duration_s is not None
+        horizon = (self.trace.duration_s if self.shaping_enabled and not self.trace.loop and self.trace.duration_s is not None
                    and self.trace.end_policy != "hold" else math.inf)
         deadline = deadline_s if deadline_s is not None else math.inf
         limit = min(horizon, deadline)
@@ -354,7 +365,9 @@ class RealHTTP2Link:
             tls_setup_and_warmup_s=getattr(self, "setup_wall_s", None),
             warmup_request_s=getattr(self, "warmup_wall_s", None),
             startup_clock="warm TLS connection; setup separately reported; planning consumes trace time",
-            shaping="aggregate_server_application_egress_trace_pacing",
+            shaping=("aggregate_server_application_egress_trace_pacing" if self.shaping_enabled
+                     else "explicit_unshaped_localhost_control_no_trace_capacity_claim"),
+            shaping_enabled=self.shaping_enabled,
             shaping_tick_s=self.shaper.tick_s, kernel_link_shaping=False,
             shaping_chunk_bytes=self.origin_app.chunk_bytes,
             shaping_granularity="actual tick-integral release; per-stream grant bounded by chunk_bytes",
@@ -367,7 +380,15 @@ class RealHTTP2Link:
             server_body_bytes_released=self.shaper.released_bytes,
             server_events=[dict(row) for row in self.origin_app.events])
 
+    def diagnostics_snapshot(self):
+        """End optional profiling after transfers; normal requests are unchanged."""
+        if not self._diagnostics_enabled:
+            return {}
+        return self._call(self.profiler.stop())
+
     async def _close(self):
+        if hasattr(self, "profiler"):
+            await self.profiler.stop()
         if hasattr(self, "_client"):
             await self._client.aclose()
         await self.shaper.close()

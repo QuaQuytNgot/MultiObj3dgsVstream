@@ -10,6 +10,7 @@ import time
 import traceback
 
 from experiments.adaptation_baselines.methods import METHODS
+from experiments.adaptation_baselines.exhaustive import EXHAUSTIVE_SEARCH
 from experiments.visibility_weighted_sse.common import digest, file_digest, read_json, require
 from .cache_upgrade import resolve
 from .metrics import summarize_metrics
@@ -187,10 +188,11 @@ class TwoPhaseRunner:
                 visibility=RuntimeVisibilityAdapter(self.engine,trace,bound)
                 planner=RuntimePlanner(bound,trace,visibility,baseline_metadata=bound_metadata,
                     expected_object_count=scene['object_count'],cached_resource_ids=(),
-                    solver_limits=self.cfg['adaptation']['solver_limits'])
+                    solver_limits=self.cfg['adaptation']['solver_limits'],
+                    exhaustive_limits=self.cfg['adaptation'].get('exhaustive_limits'))
                 self.state['current']['stage']='runtime_visibility_adaptation_network_buffer'
                 self.progress(force=True)
-                initialization_ms=planner.initialize_solver()
+                initialization_ms=0. if method==EXHAUSTIVE_SEARCH else planner.initialize_solver()
                 simulation,performance=simulate(config,timeline,scene,network,planner,method)
                 performance['shared_solver_initialization_ms']=initialization_ms
                 performance['runtime_visibility_events']=visibility.events
@@ -204,17 +206,12 @@ class TwoPhaseRunner:
         stream['quality_frames']=quality['frames']
         stream['metrics']=summarize_metrics(stream,quality)
         stream['metrics'].pop('performance',None)
+        self.prepare_streaming_export(phase,stream,performance,contexts)
         export_run(phase,stream,performance)
-        commit(phase/'played_frames.json',dict(schema='streaming-played-frames.v1',fps=30,
-            source_duration_s=6,frames=[c.to_dict() for c in contexts],
-            exact_pose_and_instances_file='../../trace.json',
-            trace_file_sha256=file_digest(parent/'trace.json'),
-            scene_configuration_sha256=file_digest(parent/'configuration.json'),
-            reconstruction='Resolve camera_sample_id in the parent trace; it includes the exact camera, '
-              'all per-instance object transforms and source conditioning. content_time_s*30 identifies source frame. '
-              'simulation.json carries continuous playback/download/buffer state; global segment and loop IDs remain distinct.'))
+        commit(phase/'played_frames.json',self.played_document(scene,trace,stream,contexts,parent))
         files=['simulation.json','metrics.json','performance.json','requests.csv','buffer.csv',
                'decisions.csv','frames.csv','played_frames.json']
+        files.extend(self.extra_streaming_files(phase))
         write_marker(phase,'completion.json',config_hash,files,method=method,imported=imported,
             scene_file_sha256=file_digest(parent/'configuration.json'),
             trace_file_sha256=file_digest(parent/'trace.json'),frame_count=len(contexts),
@@ -224,6 +221,22 @@ class TwoPhaseRunner:
         self.budget.disk_bytes=sum(p.stat().st_size for p in self.root.rglob('*') if p.is_file())
         self.progress(force=True)
         return folder
+
+    def prepare_streaming_export(self,phase,stream,performance,contexts):
+        """Extension hook for terminal diagnostic outcomes; old exports unchanged."""
+
+    def extra_streaming_files(self,phase):
+        return []
+
+    def played_document(self,scene,trace,stream,contexts,parent):
+        return dict(schema='streaming-played-frames.v1',fps=30,
+            source_duration_s=6,frames=[c.to_dict() for c in contexts],
+            exact_pose_and_instances_file='../../trace.json',
+            trace_file_sha256=file_digest(parent/'trace.json'),
+            scene_configuration_sha256=file_digest(parent/'configuration.json'),
+            reconstruction='Resolve camera_sample_id in the parent trace; it includes the exact camera, '
+              'all per-instance object transforms and source conditioning. content_time_s*30 identifies source frame. '
+              'simulation.json carries continuous playback/download/buffer state; global segment and loop IDs remain distinct.')
 
     def load_run(self,folder):
         phase=folder/'phase_a'
@@ -292,11 +305,15 @@ class TwoPhaseRunner:
         performance['native_quality_events']=provider.records
         performance['quality_schedule']='global phase_b_jobs.json; per-run events are merge cache lookups, not render times'
         performance['global_quality_job_manifest_sha256']=file_digest(self.root/'phase_b_jobs.json')
+        self.prepare_quality_export(folder,simulation,performance)
         export_run(folder,simulation,performance)
         files=['simulation.json','metrics.json','performance.json','requests.csv','buffer.csv','decisions.csv','frames.csv']
         write_marker(folder,'completion.json',config_hash,files,
             simulation_status=simulation['status'],measured_frames=len(quality['frames']))
         self.state['completed_runs']+=1
+
+    def prepare_quality_export(self,folder,simulation,performance):
+        """Extension hook for additional recorded display metadata."""
 
     def offline(self,folders):
         self.state.update(phase='B',current=dict(stage='global_job_collection'))

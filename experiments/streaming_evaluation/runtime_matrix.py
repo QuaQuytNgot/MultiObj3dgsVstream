@@ -11,6 +11,7 @@ import traceback
 
 from experiments.adaptation_baselines.metadata import load_metadata
 from experiments.adaptation_baselines.methods import METHODS
+from experiments.adaptation_baselines.exhaustive import EXHAUSTIVE_SEARCH, settings as exhaustive_settings
 from experiments.nava_mse.geometry import select_camera_record
 from experiments.nava_mse.rendering import StreamSTGSRenderer
 from experiments.visibility_weighted_sse.common import digest, file_digest, read_json, require
@@ -36,7 +37,7 @@ def load_settings(path):
     require(cfg['source_duration_s'] == 6 and cfg['gop_duration_s'] == 2 and cfg['fps'] == 30,
             'This protocol uses 180 source frames in three two-second GOPs')
     require(len(cfg['sources']) == 2 and len(set(cfg['sources'])) == 2, 'Two unique sources required')
-    require(cfg['methods'] and len(cfg['methods'])==len(set(cfg['methods'])) and set(cfg['methods'])<=set(METHODS),
+    require(cfg['methods'] and len(cfg['methods'])==len(set(cfg['methods'])) and set(cfg['methods'])<=set((*METHODS,EXHAUSTIVE_SEARCH)),
             'Choose unique unchanged methods')
     require(cfg['adaptation']['resource_sharing'] == 'per_instance', 'Inter-instance deduplication forbidden')
     require(cfg['quality'] == dict(mode='frame_grid', fps=30, mask_mode='full_viewport',
@@ -55,6 +56,8 @@ def load_settings(path):
     require(cfg['network'].get('transport','virtual') in ('virtual','real_http2'), 'Unknown transport mode')
     from experiments.visibility_weighted_sse.allocation import solver_settings
     solver_settings(cfg['adaptation'].get('solver_limits'))
+    if EXHAUSTIVE_SEARCH in cfg['methods']:
+        exhaustive_settings(cfg['adaptation'].get('exhaustive_limits'))
     return cfg
 
 
@@ -112,6 +115,9 @@ def validate_inputs(cfg):
         PROJECT/'experiments/abr_network_evaluation/network.py',
         PROJECT/'experiments/abr_network_evaluation/predictor.py']
     code += [p for p in (Path(__file__).parent/'real_http2.py', Path(__file__).parent/'http2_server.py') if p.exists()]
+    if EXHAUSTIVE_SEARCH in cfg['methods']:
+        code += [PROJECT/'experiments/adaptation_baselines/exhaustive.py',Path(__file__).parent/'two_phase.py',
+            Path(__file__).parent/'http2_dp015_evaluation.py',Path(__file__).parent/'evaluation_report.py']
     science = {k:v for k,v in cfg.items() if k != 'limits'}
     identity = dict(config=science, profiles_sha256=file_digest(profile_path),
         baseline_metadata_sha256=file_digest(metadata_path), network_sha256=file_digest(source),
