@@ -1,0 +1,19 @@
+# Install a compatible CUDA-enabled Torch separately, then this file.
+# Validated host: torch==2.3.1+cu118, CUDA toolkit 11.8, CPython 3.11.
+-r requirements.txt
+curl_cffi==0.16.3
+PyYAML==6.0.3
+Pillow==11.3.0
+imagecodecs==2026.1.14
+plyfile==0.8.1
+cuda-python==12.9.10
+glfw==2.11.0
+imgui==2.0.0
+PyOpenGL==3.1.10
+PyGLM==2.8.3
+rich==15.0.0
+pdbr==0.9.8
+ujson==6.0.0
+ruamel.yaml==0.19.1
+tqdm==4.70.1
+ninja==1.13.2

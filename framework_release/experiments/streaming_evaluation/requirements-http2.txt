@@ -1,0 +1,5 @@
+# Optional real_http2 experiment transport. Install in a scoped environment.
+httpx[http2]==0.28.1
+httpcore==1.0.9
+hypercorn==0.17.3
+cryptography>=43,<50

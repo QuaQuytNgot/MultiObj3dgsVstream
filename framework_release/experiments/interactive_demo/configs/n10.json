@@ -1,0 +1,25 @@
+{
+  "mode": "native",
+  "contents": [
+    "longdress",
+    "soldier",
+    "loot",
+    "redandblack"
+  ],
+  "abr_mode": "proposed-dp",
+  "quality_metadata": "data_stream/streamstgs_8i_quality_metadata",
+  "safety_factor": 0.85,
+  "delta_mbps": 0.15,
+  "startup_mbps": 80,
+  "fetch_concurrency": 2,
+  "workers": 2,
+  "prefetch": 1,
+  "visibility_interval_s": 2.0,
+  "analysis_width": 256,
+  "diagnostics": true,
+  "server_mbps": null,
+  "placement": "random_spatial",
+  "seed": 238019,
+  "mse_profiles": "experiments/offline_profiles/runs/full_source_v1/prepared",
+  "objects": 10
+}

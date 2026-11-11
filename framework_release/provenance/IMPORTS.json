@@ -1,0 +1,880 @@
+{
+  "release": ".",
+  "python": "3.11.16 (main, Sep  2 2026, 23:39:52) [GCC 15.3.0]",
+  "module_count": 174,
+  "ok": 174,
+  "errors": [],
+  "outside_release_project_imports": [],
+  "imports": [
+    {
+      "module": "experiments.abr_network_evaluation",
+      "status": "ok",
+      "origin": "experiments/abr_network_evaluation/__init__.py"
+    },
+    {
+      "module": "experiments.abr_network_evaluation.nava_visibility",
+      "status": "ok",
+      "origin": "experiments/abr_network_evaluation/nava_visibility.py"
+    },
+    {
+      "module": "experiments.abr_network_evaluation.network",
+      "status": "ok",
+      "origin": "experiments/abr_network_evaluation/network.py"
+    },
+    {
+      "module": "experiments.abr_network_evaluation.predictor",
+      "status": "ok",
+      "origin": "experiments/abr_network_evaluation/predictor.py"
+    },
+    {
+      "module": "experiments.abr_network_evaluation.visibility",
+      "status": "ok",
+      "origin": "experiments/abr_network_evaluation/visibility.py"
+    },
+    {
+      "module": "experiments.adaptation_baselines",
+      "status": "ok",
+      "origin": "experiments/adaptation_baselines/__init__.py"
+    },
+    {
+      "module": "experiments.adaptation_baselines.exhaustive",
+      "status": "ok",
+      "origin": "experiments/adaptation_baselines/exhaustive.py"
+    },
+    {
+      "module": "experiments.adaptation_baselines.interface",
+      "status": "ok",
+      "origin": "experiments/adaptation_baselines/interface.py"
+    },
+    {
+      "module": "experiments.adaptation_baselines.metadata",
+      "status": "ok",
+      "origin": "experiments/adaptation_baselines/metadata.py"
+    },
+    {
+      "module": "experiments.adaptation_baselines.methods",
+      "status": "ok",
+      "origin": "experiments/adaptation_baselines/methods.py"
+    },
+    {
+      "module": "experiments.adaptation_baselines.runner",
+      "status": "ok",
+      "origin": "experiments/adaptation_baselines/runner.py"
+    },
+    {
+      "module": "experiments.interactive_demo",
+      "status": "ok",
+      "origin": "experiments/interactive_demo/__init__.py"
+    },
+    {
+      "module": "experiments.interactive_demo.abr",
+      "status": "ok",
+      "origin": "experiments/interactive_demo/abr/__init__.py"
+    },
+    {
+      "module": "experiments.interactive_demo.abr.binding",
+      "status": "ok",
+      "origin": "experiments/interactive_demo/abr/binding.py"
+    },
+    {
+      "module": "experiments.interactive_demo.abr.camera",
+      "status": "ok",
+      "origin": "experiments/interactive_demo/abr/camera.py"
+    },
+    {
+      "module": "experiments.interactive_demo.abr.capture",
+      "status": "ok",
+      "origin": "experiments/interactive_demo/abr/capture.py"
+    },
+    {
+      "module": "experiments.interactive_demo.abr.catalog",
+      "status": "ok",
+      "origin": "experiments/interactive_demo/abr/catalog.py"
+    },
+    {
+      "module": "experiments.interactive_demo.abr.config",
+      "status": "ok",
+      "origin": "experiments/interactive_demo/abr/config.py"
+    },
+    {
+      "module": "experiments.interactive_demo.abr.diagnostics",
+      "status": "ok",
+      "origin": "experiments/interactive_demo/abr/diagnostics.py"
+    },
+    {
+      "module": "experiments.interactive_demo.abr.metrics",
+      "status": "ok",
+      "origin": "experiments/interactive_demo/abr/metrics.py"
+    },
+    {
+      "module": "experiments.interactive_demo.abr.mse_metadata",
+      "status": "ok",
+      "origin": "experiments/interactive_demo/abr/mse_metadata.py"
+    },
+    {
+      "module": "experiments.interactive_demo.abr.network",
+      "status": "ok",
+      "origin": "experiments/interactive_demo/abr/network.py"
+    },
+    {
+      "module": "experiments.interactive_demo.abr.network_delivery",
+      "status": "ok",
+      "origin": "experiments/interactive_demo/abr/network_delivery.py"
+    },
+    {
+      "module": "experiments.interactive_demo.abr.objectives",
+      "status": "ok",
+      "origin": "experiments/interactive_demo/abr/objectives.py"
+    },
+    {
+      "module": "experiments.interactive_demo.abr.planner",
+      "status": "ok",
+      "origin": "experiments/interactive_demo/abr/planner.py"
+    },
+    {
+      "module": "experiments.interactive_demo.abr.quality_metadata",
+      "status": "ok",
+      "origin": "experiments/interactive_demo/abr/quality_metadata.py"
+    },
+    {
+      "module": "experiments.interactive_demo.abr.runner",
+      "status": "ok",
+      "origin": "experiments/interactive_demo/abr/runner.py"
+    },
+    {
+      "module": "experiments.interactive_demo.abr.runtime",
+      "status": "ok",
+      "origin": "experiments/interactive_demo/abr/runtime.py"
+    },
+    {
+      "module": "experiments.interactive_demo.abr.solver",
+      "status": "ok",
+      "origin": "experiments/interactive_demo/abr/solver.py"
+    },
+    {
+      "module": "experiments.interactive_demo.abr.validated",
+      "status": "ok",
+      "origin": "experiments/interactive_demo/abr/validated/__init__.py"
+    },
+    {
+      "module": "experiments.interactive_demo.abr.validated.allocation",
+      "status": "ok",
+      "origin": "experiments/interactive_demo/abr/validated/allocation.py"
+    },
+    {
+      "module": "experiments.interactive_demo.abr.validated.baseline_metadata",
+      "status": "ok",
+      "origin": "experiments/interactive_demo/abr/validated/baseline_metadata.py"
+    },
+    {
+      "module": "experiments.interactive_demo.abr.validated.common",
+      "status": "ok",
+      "origin": "experiments/interactive_demo/abr/validated/common.py"
+    },
+    {
+      "module": "experiments.interactive_demo.abr.validated.profiles",
+      "status": "ok",
+      "origin": "experiments/interactive_demo/abr/validated/profiles.py"
+    },
+    {
+      "module": "experiments.interactive_demo.abr.visibility",
+      "status": "ok",
+      "origin": "experiments/interactive_demo/abr/visibility.py"
+    },
+    {
+      "module": "experiments.interactive_demo.cache",
+      "status": "ok",
+      "origin": "experiments/interactive_demo/cache/__init__.py"
+    },
+    {
+      "module": "experiments.interactive_demo.cache.resources",
+      "status": "ok",
+      "origin": "experiments/interactive_demo/cache/resources.py"
+    },
+    {
+      "module": "experiments.interactive_demo.placement",
+      "status": "ok",
+      "origin": "experiments/interactive_demo/placement.py"
+    },
+    {
+      "module": "experiments.interactive_demo.run_demo",
+      "status": "ok",
+      "origin": "experiments/interactive_demo/run_demo.py"
+    },
+    {
+      "module": "experiments.interactive_demo.runtime",
+      "status": "ok",
+      "origin": "experiments/interactive_demo/runtime/__init__.py"
+    },
+    {
+      "module": "experiments.interactive_demo.runtime.clock",
+      "status": "ok",
+      "origin": "experiments/interactive_demo/runtime/clock.py"
+    },
+    {
+      "module": "experiments.interactive_demo.runtime.io",
+      "status": "ok",
+      "origin": "experiments/interactive_demo/runtime/io.py"
+    },
+    {
+      "module": "experiments.interactive_demo.runtime.memory",
+      "status": "ok",
+      "origin": "experiments/interactive_demo/runtime/memory.py"
+    },
+    {
+      "module": "experiments.interactive_demo.runtime.playback",
+      "status": "ok",
+      "origin": "experiments/interactive_demo/runtime/playback.py"
+    },
+    {
+      "module": "experiments.interactive_demo.runtime.scheduler",
+      "status": "ok",
+      "origin": "experiments/interactive_demo/runtime/scheduler.py"
+    },
+    {
+      "module": "experiments.interactive_demo.tools.native_smoke",
+      "status": "ok",
+      "origin": "experiments/interactive_demo/tools/native_smoke.py"
+    },
+    {
+      "module": "experiments.nava_mse",
+      "status": "ok",
+      "origin": "experiments/nava_mse/__init__.py"
+    },
+    {
+      "module": "experiments.nava_mse.common",
+      "status": "ok",
+      "origin": "experiments/nava_mse/common.py"
+    },
+    {
+      "module": "experiments.nava_mse.evaluation",
+      "status": "ok",
+      "origin": "experiments/nava_mse/evaluation.py"
+    },
+    {
+      "module": "experiments.nava_mse.geometry",
+      "status": "ok",
+      "origin": "experiments/nava_mse/geometry.py"
+    },
+    {
+      "module": "experiments.nava_mse.metrics",
+      "status": "ok",
+      "origin": "experiments/nava_mse/metrics.py"
+    },
+    {
+      "module": "experiments.nava_mse.policies",
+      "status": "ok",
+      "origin": "experiments/nava_mse/policies.py"
+    },
+    {
+      "module": "experiments.nava_mse.profiles",
+      "status": "ok",
+      "origin": "experiments/nava_mse/profiles.py"
+    },
+    {
+      "module": "experiments.nava_mse.rendering",
+      "status": "ok",
+      "origin": "experiments/nava_mse/rendering.py"
+    },
+    {
+      "module": "experiments.nava_mse.solvers",
+      "status": "ok",
+      "origin": "experiments/nava_mse/solvers.py"
+    },
+    {
+      "module": "experiments.nava_mse.storage",
+      "status": "ok",
+      "origin": "experiments/nava_mse/storage.py"
+    },
+    {
+      "module": "experiments.nava_mse.workflow",
+      "status": "ok",
+      "origin": "experiments/nava_mse/workflow.py"
+    },
+    {
+      "module": "experiments.occlusion_joint_sse",
+      "status": "ok",
+      "origin": "experiments/occlusion_joint_sse/__init__.py"
+    },
+    {
+      "module": "experiments.occlusion_joint_sse.metrics",
+      "status": "ok",
+      "origin": "experiments/occlusion_joint_sse/metrics.py"
+    },
+    {
+      "module": "experiments.occlusion_joint_sse.rendering",
+      "status": "ok",
+      "origin": "experiments/occlusion_joint_sse/rendering.py"
+    },
+    {
+      "module": "experiments.occlusion_joint_sse.scenes",
+      "status": "ok",
+      "origin": "experiments/occlusion_joint_sse/scenes.py"
+    },
+    {
+      "module": "experiments.occlusion_joint_sse.visibility",
+      "status": "ok",
+      "origin": "experiments/occlusion_joint_sse/visibility.py"
+    },
+    {
+      "module": "experiments.streaming_evaluation",
+      "status": "ok",
+      "origin": "experiments/streaming_evaluation/__init__.py"
+    },
+    {
+      "module": "experiments.streaming_evaluation.analyze_runtime_results",
+      "status": "ok",
+      "origin": "experiments/streaming_evaluation/analyze_runtime_results.py"
+    },
+    {
+      "module": "experiments.streaming_evaluation.cache_upgrade",
+      "status": "ok",
+      "origin": "experiments/streaming_evaluation/cache_upgrade.py"
+    },
+    {
+      "module": "experiments.streaming_evaluation.config",
+      "status": "ok",
+      "origin": "experiments/streaming_evaluation/config.py"
+    },
+    {
+      "module": "experiments.streaming_evaluation.evaluation_report",
+      "status": "ok",
+      "origin": "experiments/streaming_evaluation/evaluation_report.py"
+    },
+    {
+      "module": "experiments.streaming_evaluation.http2_dp015_evaluation",
+      "status": "ok",
+      "origin": "experiments/streaming_evaluation/http2_dp015_evaluation.py"
+    },
+    {
+      "module": "experiments.streaming_evaluation.http2_profiling",
+      "status": "ok",
+      "origin": "experiments/streaming_evaluation/http2_profiling.py"
+    },
+    {
+      "module": "experiments.streaming_evaluation.http2_server",
+      "status": "ok",
+      "origin": "experiments/streaming_evaluation/http2_server.py"
+    },
+    {
+      "module": "experiments.streaming_evaluation.image_cache",
+      "status": "ok",
+      "origin": "experiments/streaming_evaluation/image_cache.py"
+    },
+    {
+      "module": "experiments.streaming_evaluation.inputs",
+      "status": "ok",
+      "origin": "experiments/streaming_evaluation/inputs.py"
+    },
+    {
+      "module": "experiments.streaming_evaluation.metrics",
+      "status": "ok",
+      "origin": "experiments/streaming_evaluation/metrics.py"
+    },
+    {
+      "module": "experiments.streaming_evaluation.network",
+      "status": "ok",
+      "origin": "experiments/streaming_evaluation/network.py"
+    },
+    {
+      "module": "experiments.streaming_evaluation.playback",
+      "status": "ok",
+      "origin": "experiments/streaming_evaluation/playback.py"
+    },
+    {
+      "module": "experiments.streaming_evaluation.quality",
+      "status": "ok",
+      "origin": "experiments/streaming_evaluation/quality.py"
+    },
+    {
+      "module": "experiments.streaming_evaluation.real_http2",
+      "status": "ok",
+      "origin": "experiments/streaming_evaluation/real_http2.py"
+    },
+    {
+      "module": "experiments.streaming_evaluation.runtime_adapter",
+      "status": "ok",
+      "origin": "experiments/streaming_evaluation/runtime_adapter.py"
+    },
+    {
+      "module": "experiments.streaming_evaluation.runtime_matrix",
+      "status": "ok",
+      "origin": "experiments/streaming_evaluation/runtime_matrix.py"
+    },
+    {
+      "module": "experiments.streaming_evaluation.runtime_native",
+      "status": "ok",
+      "origin": "experiments/streaming_evaluation/runtime_native.py"
+    },
+    {
+      "module": "experiments.streaming_evaluation.runtime_results",
+      "status": "ok",
+      "origin": "experiments/streaming_evaluation/runtime_results.py"
+    },
+    {
+      "module": "experiments.streaming_evaluation.runtime_scenes",
+      "status": "ok",
+      "origin": "experiments/streaming_evaluation/runtime_scenes.py"
+    },
+    {
+      "module": "experiments.streaming_evaluation.scenarios",
+      "status": "ok",
+      "origin": "experiments/streaming_evaluation/scenarios.py"
+    },
+    {
+      "module": "experiments.streaming_evaluation.simulator",
+      "status": "ok",
+      "origin": "experiments/streaming_evaluation/simulator.py"
+    },
+    {
+      "module": "experiments.streaming_evaluation.timeline",
+      "status": "ok",
+      "origin": "experiments/streaming_evaluation/timeline.py"
+    },
+    {
+      "module": "experiments.streaming_evaluation.two_phase",
+      "status": "ok",
+      "origin": "experiments/streaming_evaluation/two_phase.py"
+    },
+    {
+      "module": "experiments.streaming_evaluation.two_phase_report",
+      "status": "ok",
+      "origin": "experiments/streaming_evaluation/two_phase_report.py"
+    },
+    {
+      "module": "experiments.visibility_guided_sse",
+      "status": "ok",
+      "origin": "experiments/visibility_guided_sse/__init__.py"
+    },
+    {
+      "module": "experiments.visibility_guided_sse.backend",
+      "status": "ok",
+      "origin": "experiments/visibility_guided_sse/backend.py"
+    },
+    {
+      "module": "experiments.visibility_guided_sse.cache",
+      "status": "ok",
+      "origin": "experiments/visibility_guided_sse/cache.py"
+    },
+    {
+      "module": "experiments.visibility_guided_sse.visibility",
+      "status": "ok",
+      "origin": "experiments/visibility_guided_sse/visibility.py"
+    },
+    {
+      "module": "experiments.visibility_weighted_sse",
+      "status": "ok",
+      "origin": "experiments/visibility_weighted_sse/__init__.py"
+    },
+    {
+      "module": "experiments.visibility_weighted_sse.allocation",
+      "status": "ok",
+      "origin": "experiments/visibility_weighted_sse/allocation.py"
+    },
+    {
+      "module": "experiments.visibility_weighted_sse.common",
+      "status": "ok",
+      "origin": "experiments/visibility_weighted_sse/common.py"
+    },
+    {
+      "module": "experiments.visibility_weighted_sse.profiles",
+      "status": "ok",
+      "origin": "experiments/visibility_weighted_sse/profiles.py"
+    },
+    {
+      "module": "experiments.visibility_weighted_sse.runner",
+      "status": "ok",
+      "origin": "experiments/visibility_weighted_sse/runner.py"
+    },
+    {
+      "module": "experiments.visibility_weighted_sse.trace",
+      "status": "ok",
+      "origin": "experiments/visibility_weighted_sse/trace.py"
+    },
+    {
+      "module": "experiments.visibility_weighted_sse.visibility",
+      "status": "ok",
+      "origin": "experiments/visibility_weighted_sse/visibility.py"
+    },
+    {
+      "module": "src_final.multiobj3dgs",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/__init__.py"
+    },
+    {
+      "module": "multiobj3dgs",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/__init__.py"
+    },
+    {
+      "module": "src_final.multiobj3dgs.client",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/client/__init__.py"
+    },
+    {
+      "module": "multiobj3dgs.client",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/client/__init__.py"
+    },
+    {
+      "module": "src_final.multiobj3dgs.client.abr",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/client/abr/__init__.py"
+    },
+    {
+      "module": "multiobj3dgs.client.abr",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/client/abr/__init__.py"
+    },
+    {
+      "module": "src_final.multiobj3dgs.client.abr.config",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/client/abr/config.py"
+    },
+    {
+      "module": "multiobj3dgs.client.abr.config",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/client/abr/config.py"
+    },
+    {
+      "module": "src_final.multiobj3dgs.client.abr.solver",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/client/abr/solver.py"
+    },
+    {
+      "module": "multiobj3dgs.client.abr.solver",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/client/abr/solver.py"
+    },
+    {
+      "module": "src_final.multiobj3dgs.client.adaptation",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/client/adaptation/__init__.py"
+    },
+    {
+      "module": "multiobj3dgs.client.adaptation",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/client/adaptation/__init__.py"
+    },
+    {
+      "module": "src_final.multiobj3dgs.client.adaptation.interfaces",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/client/adaptation/interfaces.py"
+    },
+    {
+      "module": "multiobj3dgs.client.adaptation.interfaces",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/client/adaptation/interfaces.py"
+    },
+    {
+      "module": "src_final.multiobj3dgs.client.metadata",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/client/metadata/__init__.py"
+    },
+    {
+      "module": "multiobj3dgs.client.metadata",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/client/metadata/__init__.py"
+    },
+    {
+      "module": "src_final.multiobj3dgs.client.network",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/client/network/__init__.py"
+    },
+    {
+      "module": "multiobj3dgs.client.network",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/client/network/__init__.py"
+    },
+    {
+      "module": "src_final.multiobj3dgs.client.network.bandwidth",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/client/network/bandwidth.py"
+    },
+    {
+      "module": "multiobj3dgs.client.network.bandwidth",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/client/network/bandwidth.py"
+    },
+    {
+      "module": "src_final.multiobj3dgs.client.network.transport",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/client/network/transport.py"
+    },
+    {
+      "module": "multiobj3dgs.client.network.transport",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/client/network/transport.py"
+    },
+    {
+      "module": "src_final.multiobj3dgs.client.rendering",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/client/rendering/__init__.py"
+    },
+    {
+      "module": "multiobj3dgs.client.rendering",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/client/rendering/__init__.py"
+    },
+    {
+      "module": "src_final.multiobj3dgs.client.rendering.fast",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/client/rendering/fast.py"
+    },
+    {
+      "module": "multiobj3dgs.client.rendering.fast",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/client/rendering/fast.py"
+    },
+    {
+      "module": "src_final.multiobj3dgs.client.scene",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/client/scene/__init__.py"
+    },
+    {
+      "module": "multiobj3dgs.client.scene",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/client/scene/__init__.py"
+    },
+    {
+      "module": "src_final.multiobj3dgs.client.scene.timeline",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/client/scene/timeline.py"
+    },
+    {
+      "module": "multiobj3dgs.client.scene.timeline",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/client/scene/timeline.py"
+    },
+    {
+      "module": "src_final.multiobj3dgs.client.viewer",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/client/viewer/__init__.py"
+    },
+    {
+      "module": "multiobj3dgs.client.viewer",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/client/viewer/__init__.py"
+    },
+    {
+      "module": "src_final.multiobj3dgs.client.viewer.camera",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/client/viewer/camera.py"
+    },
+    {
+      "module": "multiobj3dgs.client.viewer.camera",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/client/viewer/camera.py"
+    },
+    {
+      "module": "src_final.multiobj3dgs.client.viewer.window",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/client/viewer/window.py"
+    },
+    {
+      "module": "multiobj3dgs.client.viewer.window",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/client/viewer/window.py"
+    },
+    {
+      "module": "src_final.multiobj3dgs.client.visibility",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/client/visibility/__init__.py"
+    },
+    {
+      "module": "multiobj3dgs.client.visibility",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/client/visibility/__init__.py"
+    },
+    {
+      "module": "src_final.multiobj3dgs.client.visibility.analyzer",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/client/visibility/analyzer.py"
+    },
+    {
+      "module": "multiobj3dgs.client.visibility.analyzer",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/client/visibility/analyzer.py"
+    },
+    {
+      "module": "src_final.multiobj3dgs.client.visibility.prediction",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/client/visibility/prediction.py"
+    },
+    {
+      "module": "multiobj3dgs.client.visibility.prediction",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/client/visibility/prediction.py"
+    },
+    {
+      "module": "src_final.multiobj3dgs.codecs",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/codecs/__init__.py"
+    },
+    {
+      "module": "multiobj3dgs.codecs",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/codecs/__init__.py"
+    },
+    {
+      "module": "src_final.multiobj3dgs.codecs.streamstgs",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/codecs/streamstgs/__init__.py"
+    },
+    {
+      "module": "multiobj3dgs.codecs.streamstgs",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/codecs/streamstgs/__init__.py"
+    },
+    {
+      "module": "src_final.multiobj3dgs.codecs.streamstgs.adapter",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/codecs/streamstgs/adapter.py"
+    },
+    {
+      "module": "multiobj3dgs.codecs.streamstgs.adapter",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/codecs/streamstgs/adapter.py"
+    },
+    {
+      "module": "src_final.multiobj3dgs.codecs.streamstgs.vendor",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/codecs/streamstgs/vendor.py"
+    },
+    {
+      "module": "multiobj3dgs.codecs.streamstgs.vendor",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/codecs/streamstgs/vendor.py"
+    },
+    {
+      "module": "src_final.multiobj3dgs.content",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/content/__init__.py"
+    },
+    {
+      "module": "multiobj3dgs.content",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/content/__init__.py"
+    },
+    {
+      "module": "src_final.multiobj3dgs.content.containers",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/content/containers/__init__.py"
+    },
+    {
+      "module": "multiobj3dgs.content.containers",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/content/containers/__init__.py"
+    },
+    {
+      "module": "src_final.multiobj3dgs.content.streamstgs",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/content/streamstgs/__init__.py"
+    },
+    {
+      "module": "multiobj3dgs.content.streamstgs",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/content/streamstgs/__init__.py"
+    },
+    {
+      "module": "src_final.multiobj3dgs.content.streamstgs.archive",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/content/streamstgs/archive.py"
+    },
+    {
+      "module": "multiobj3dgs.content.streamstgs.archive",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/content/streamstgs/archive.py"
+    },
+    {
+      "module": "src_final.multiobj3dgs.content.streamstgs.materialize",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/content/streamstgs/materialize.py"
+    },
+    {
+      "module": "multiobj3dgs.content.streamstgs.materialize",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/content/streamstgs/materialize.py"
+    },
+    {
+      "module": "src_final.multiobj3dgs.shared",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/shared/__init__.py"
+    },
+    {
+      "module": "multiobj3dgs.shared",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/shared/__init__.py"
+    },
+    {
+      "module": "src_final.multiobj3dgs.shared.dash",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/shared/dash/__init__.py"
+    },
+    {
+      "module": "multiobj3dgs.shared.dash",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/shared/dash/__init__.py"
+    },
+    {
+      "module": "src_final.multiobj3dgs.shared.gaussian",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/shared/gaussian.py"
+    },
+    {
+      "module": "multiobj3dgs.shared.gaussian",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/shared/gaussian.py"
+    },
+    {
+      "module": "src_final.multiobj3dgs.shared.geometry",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/shared/geometry.py"
+    },
+    {
+      "module": "multiobj3dgs.shared.geometry",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/shared/geometry.py"
+    },
+    {
+      "module": "src_final.multiobj3dgs.shared.metadata",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/shared/metadata/__init__.py"
+    },
+    {
+      "module": "multiobj3dgs.shared.metadata",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/shared/metadata/__init__.py"
+    },
+    {
+      "module": "src_final.multiobj3dgs.shared.metadata.serialization",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/shared/metadata/serialization.py"
+    },
+    {
+      "module": "multiobj3dgs.shared.metadata.serialization",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/shared/metadata/serialization.py"
+    },
+    {
+      "module": "src_final.multiobj3dgs.shared.telemetry",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/shared/telemetry.py"
+    },
+    {
+      "module": "multiobj3dgs.shared.telemetry",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/shared/telemetry.py"
+    },
+    {
+      "module": "src_final.multiobj3dgs.shared.transfer",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/shared/transfer.py"
+    },
+    {
+      "module": "multiobj3dgs.shared.transfer",
+      "status": "ok",
+      "origin": "src_final/multiobj3dgs/shared/transfer.py"
+    }
+  ]
+}

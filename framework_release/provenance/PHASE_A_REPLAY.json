@@ -1,0 +1,685 @@
+{
+  "case": "camera_rotation/N03/10s",
+  "checked_local_modules": 54,
+  "configuration_sha256": "9b4d9034cc81906550f37891cea1541b15b2bfce8b1ee813206e1f24f9619fc4",
+  "decisions_compared": 25,
+  "excluded_allocation_fields": [
+    "diagnostics.enumeration_peak_rss_bytes",
+    "diagnostics.enumeration_extra_peak_rss_bytes"
+  ],
+  "excluded_field_reason": "Measured process RSS depends on the executing process; numerical allocations and deterministic diagnostics are compared exactly",
+  "local_module_origins": {
+    "experiments.abr_network_evaluation": "experiments/abr_network_evaluation/__init__.py",
+    "experiments.abr_network_evaluation.nava_visibility": "experiments/abr_network_evaluation/nava_visibility.py",
+    "experiments.abr_network_evaluation.network": "experiments/abr_network_evaluation/network.py",
+    "experiments.abr_network_evaluation.predictor": "experiments/abr_network_evaluation/predictor.py",
+    "experiments.abr_network_evaluation.visibility": "experiments/abr_network_evaluation/visibility.py",
+    "experiments.adaptation_baselines": "experiments/adaptation_baselines/__init__.py",
+    "experiments.adaptation_baselines.exhaustive": "experiments/adaptation_baselines/exhaustive.py",
+    "experiments.adaptation_baselines.interface": "experiments/adaptation_baselines/interface.py",
+    "experiments.adaptation_baselines.metadata": "experiments/adaptation_baselines/metadata.py",
+    "experiments.adaptation_baselines.methods": "experiments/adaptation_baselines/methods.py",
+    "experiments.adaptation_baselines.runner": "experiments/adaptation_baselines/runner.py",
+    "experiments.nava_mse": "experiments/nava_mse/__init__.py",
+    "experiments.nava_mse.geometry": "experiments/nava_mse/geometry.py",
+    "experiments.nava_mse.metrics": "experiments/nava_mse/metrics.py",
+    "experiments.nava_mse.policies": "experiments/nava_mse/policies.py",
+    "experiments.nava_mse.rendering": "experiments/nava_mse/rendering.py",
+    "experiments.nava_mse.solvers": "experiments/nava_mse/solvers.py",
+    "experiments.streaming_evaluation": "experiments/streaming_evaluation/__init__.py",
+    "experiments.streaming_evaluation.cache_upgrade": "experiments/streaming_evaluation/cache_upgrade.py",
+    "experiments.streaming_evaluation.config": "experiments/streaming_evaluation/config.py",
+    "experiments.streaming_evaluation.image_cache": "experiments/streaming_evaluation/image_cache.py",
+    "experiments.streaming_evaluation.inputs": "experiments/streaming_evaluation/inputs.py",
+    "experiments.streaming_evaluation.metrics": "experiments/streaming_evaluation/metrics.py",
+    "experiments.streaming_evaluation.network": "experiments/streaming_evaluation/network.py",
+    "experiments.streaming_evaluation.playback": "experiments/streaming_evaluation/playback.py",
+    "experiments.streaming_evaluation.quality": "experiments/streaming_evaluation/quality.py",
+    "experiments.streaming_evaluation.runtime_adapter": "experiments/streaming_evaluation/runtime_adapter.py",
+    "experiments.streaming_evaluation.runtime_matrix": "experiments/streaming_evaluation/runtime_matrix.py",
+    "experiments.streaming_evaluation.runtime_native": "experiments/streaming_evaluation/runtime_native.py",
+    "experiments.streaming_evaluation.runtime_scenes": "experiments/streaming_evaluation/runtime_scenes.py",
+    "experiments.streaming_evaluation.scenarios": "experiments/streaming_evaluation/scenarios.py",
+    "experiments.streaming_evaluation.simulator": "experiments/streaming_evaluation/simulator.py",
+    "experiments.streaming_evaluation.timeline": "experiments/streaming_evaluation/timeline.py",
+    "experiments.visibility_weighted_sse": "experiments/visibility_weighted_sse/__init__.py",
+    "experiments.visibility_weighted_sse.allocation": "experiments/visibility_weighted_sse/allocation.py",
+    "experiments.visibility_weighted_sse.common": "experiments/visibility_weighted_sse/common.py",
+    "experiments.visibility_weighted_sse.profiles": "experiments/visibility_weighted_sse/profiles.py",
+    "experiments.visibility_weighted_sse.runner": "experiments/visibility_weighted_sse/runner.py",
+    "experiments.visibility_weighted_sse.trace": "experiments/visibility_weighted_sse/trace.py",
+    "experiments.visibility_weighted_sse.visibility": "experiments/visibility_weighted_sse/visibility.py",
+    "src_final.multiobj3dgs": "src_final/multiobj3dgs/__init__.py",
+    "src_final.multiobj3dgs.client": "src_final/multiobj3dgs/client/__init__.py",
+    "src_final.multiobj3dgs.client.abr": "src_final/multiobj3dgs/client/abr/__init__.py",
+    "src_final.multiobj3dgs.client.abr.config": "src_final/multiobj3dgs/client/abr/config.py",
+    "src_final.multiobj3dgs.client.abr.solver": "src_final/multiobj3dgs/client/abr/solver.py",
+    "src_final.multiobj3dgs.client.metadata": "src_final/multiobj3dgs/client/metadata/__init__.py",
+    "src_final.multiobj3dgs.client.visibility": "src_final/multiobj3dgs/client/visibility/__init__.py",
+    "src_final.multiobj3dgs.client.visibility.analyzer": "src_final/multiobj3dgs/client/visibility/analyzer.py",
+    "src_final.multiobj3dgs.client.visibility.prediction": "src_final/multiobj3dgs/client/visibility/prediction.py",
+    "src_final.multiobj3dgs.shared": "src_final/multiobj3dgs/shared/__init__.py",
+    "src_final.multiobj3dgs.shared.dash": "src_final/multiobj3dgs/shared/dash/__init__.py",
+    "src_final.multiobj3dgs.shared.geometry": "src_final/multiobj3dgs/shared/geometry.py",
+    "src_final.multiobj3dgs.shared.metadata": "src_final/multiobj3dgs/shared/metadata/__init__.py",
+    "src_final.multiobj3dgs.shared.metadata.serialization": "src_final/multiobj3dgs/shared/metadata/serialization.py"
+  },
+  "methods": [
+    {
+      "gops": [
+        {
+          "budget_bytes": 17162500,
+          "checks": {
+            "allocation_except_measured_rss": true,
+            "estimated_total_utility": true,
+            "estimated_utility_per_object": true,
+            "method_diagnostics": true,
+            "selected_quality": true,
+            "total_required_bytes": true,
+            "utilities": true
+          },
+          "estimated_total_utility": 5.5933903951844615,
+          "global_segment_index": 0,
+          "measured_memory": {},
+          "selected_quality": {
+            "instance-0000": "CRF20",
+            "instance-0001": "CRF40",
+            "instance-0002": "CRF40"
+          },
+          "total_required_bytes": 15546833
+        },
+        {
+          "budget_bytes": 94397378,
+          "checks": {
+            "allocation_except_measured_rss": true,
+            "estimated_total_utility": true,
+            "estimated_utility_per_object": true,
+            "method_diagnostics": true,
+            "selected_quality": true,
+            "total_required_bytes": true,
+            "utilities": true
+          },
+          "estimated_total_utility": 0.0,
+          "global_segment_index": 1,
+          "measured_memory": {},
+          "selected_quality": {
+            "instance-0000": "CRF40",
+            "instance-0001": "CRF40",
+            "instance-0002": "CRF40"
+          },
+          "total_required_bytes": 5774360
+        },
+        {
+          "budget_bytes": 75788436,
+          "checks": {
+            "allocation_except_measured_rss": true,
+            "estimated_total_utility": true,
+            "estimated_utility_per_object": true,
+            "method_diagnostics": true,
+            "selected_quality": true,
+            "total_required_bytes": true,
+            "utilities": true
+          },
+          "estimated_total_utility": 0.0,
+          "global_segment_index": 2,
+          "measured_memory": {},
+          "selected_quality": {
+            "instance-0000": "CRF40",
+            "instance-0001": "CRF40",
+            "instance-0002": "CRF40"
+          },
+          "total_required_bytes": 6863014
+        },
+        {
+          "budget_bytes": 74028063,
+          "checks": {
+            "allocation_except_measured_rss": true,
+            "estimated_total_utility": true,
+            "estimated_utility_per_object": true,
+            "method_diagnostics": true,
+            "selected_quality": true,
+            "total_required_bytes": true,
+            "utilities": true
+          },
+          "estimated_total_utility": 5.593390395184454,
+          "global_segment_index": 3,
+          "measured_memory": {},
+          "selected_quality": {
+            "instance-0000": "CRF20",
+            "instance-0001": "CRF40",
+            "instance-0002": "CRF40"
+          },
+          "total_required_bytes": 15546833
+        },
+        {
+          "budget_bytes": 78064985,
+          "checks": {
+            "allocation_except_measured_rss": true,
+            "estimated_total_utility": true,
+            "estimated_utility_per_object": true,
+            "method_diagnostics": true,
+            "selected_quality": true,
+            "total_required_bytes": true,
+            "utilities": true
+          },
+          "estimated_total_utility": 0.0,
+          "global_segment_index": 4,
+          "measured_memory": {},
+          "selected_quality": {
+            "instance-0000": "CRF40",
+            "instance-0001": "CRF40",
+            "instance-0002": "CRF40"
+          },
+          "total_required_bytes": 5774360
+        }
+      ],
+      "method": "NAVA",
+      "reference_checkpoint_sha256": "b3ccced6df4deef9459211268cd1dd5c0941fe348744b6590b36cdcc925baed9",
+      "reference_simulation_sha256": "a0bc4c6c745cdd61443a900f5f20d4cf0cc1244fd46070927a6e120103f00840",
+      "visibility_cache_hits": 300
+    },
+    {
+      "gops": [
+        {
+          "budget_bytes": 17162500,
+          "checks": {
+            "allocation_except_measured_rss": true,
+            "estimated_total_utility": true,
+            "estimated_utility_per_object": true,
+            "method_diagnostics": true,
+            "selected_quality": true,
+            "total_required_bytes": true,
+            "utilities": true
+          },
+          "estimated_total_utility": 30.15455845030371,
+          "global_segment_index": 0,
+          "measured_memory": {},
+          "selected_quality": {
+            "instance-0000": "CRF20",
+            "instance-0001": "CRF36",
+            "instance-0002": "CRF36"
+          },
+          "total_required_bytes": 16009988
+        },
+        {
+          "budget_bytes": 95222362,
+          "checks": {
+            "allocation_except_measured_rss": true,
+            "estimated_total_utility": true,
+            "estimated_utility_per_object": true,
+            "method_diagnostics": true,
+            "selected_quality": true,
+            "total_required_bytes": true,
+            "utilities": true
+          },
+          "estimated_total_utility": 31.378563083795747,
+          "global_segment_index": 1,
+          "measured_memory": {},
+          "selected_quality": {
+            "instance-0000": "CRF20",
+            "instance-0001": "CRF20",
+            "instance-0002": "CRF20"
+          },
+          "total_required_bytes": 24847894
+        },
+        {
+          "budget_bytes": 100319944,
+          "checks": {
+            "allocation_except_measured_rss": true,
+            "estimated_total_utility": true,
+            "estimated_utility_per_object": true,
+            "method_diagnostics": true,
+            "selected_quality": true,
+            "total_required_bytes": true,
+            "utilities": true
+          },
+          "estimated_total_utility": 32.54423585735388,
+          "global_segment_index": 2,
+          "measured_memory": {},
+          "selected_quality": {
+            "instance-0000": "CRF40",
+            "instance-0001": "CRF20",
+            "instance-0002": "CRF20"
+          },
+          "total_required_bytes": 26980666
+        },
+        {
+          "budget_bytes": 102913136,
+          "checks": {
+            "allocation_except_measured_rss": true,
+            "estimated_total_utility": true,
+            "estimated_utility_per_object": true,
+            "method_diagnostics": true,
+            "selected_quality": true,
+            "total_required_bytes": true,
+            "utilities": true
+          },
+          "estimated_total_utility": 30.6720144452895,
+          "global_segment_index": 3,
+          "measured_memory": {},
+          "selected_quality": {
+            "instance-0000": "CRF20",
+            "instance-0001": "CRF20",
+            "instance-0002": "CRF20"
+          },
+          "total_required_bytes": 34956550
+        },
+        {
+          "budget_bytes": 105490862,
+          "checks": {
+            "allocation_except_measured_rss": true,
+            "estimated_total_utility": true,
+            "estimated_utility_per_object": true,
+            "method_diagnostics": true,
+            "selected_quality": true,
+            "total_required_bytes": true,
+            "utilities": true
+          },
+          "estimated_total_utility": 31.378563083795747,
+          "global_segment_index": 4,
+          "measured_memory": {},
+          "selected_quality": {
+            "instance-0000": "CRF20",
+            "instance-0001": "CRF20",
+            "instance-0002": "CRF20"
+          },
+          "total_required_bytes": 24847894
+        }
+      ],
+      "method": "VISIBILITY_PSNR",
+      "reference_checkpoint_sha256": "1f84eb4a7143612822a519571cd4bfffd95f9a56c30c0f013bda5383b1e9a5fd",
+      "reference_simulation_sha256": "1c6a87e9935402c936846ddb34619b8ca81451199a05255f1772bf07caf85f9b",
+      "visibility_cache_hits": 300
+    },
+    {
+      "gops": [
+        {
+          "budget_bytes": 17162500,
+          "checks": {
+            "allocation_except_measured_rss": true,
+            "estimated_total_utility": true,
+            "estimated_utility_per_object": true,
+            "method_diagnostics": true,
+            "selected_quality": true,
+            "total_required_bytes": true,
+            "utilities": true
+          },
+          "estimated_total_utility": 11729.657129775027,
+          "global_segment_index": 0,
+          "measured_memory": {},
+          "selected_quality": {
+            "instance-0000": "CRF20",
+            "instance-0001": "CRF36",
+            "instance-0002": "CRF36"
+          },
+          "total_required_bytes": 16009988
+        },
+        {
+          "budget_bytes": 95445373,
+          "checks": {
+            "allocation_except_measured_rss": true,
+            "estimated_total_utility": true,
+            "estimated_utility_per_object": true,
+            "method_diagnostics": true,
+            "selected_quality": true,
+            "total_required_bytes": true,
+            "utilities": true
+          },
+          "estimated_total_utility": 15836.332259362016,
+          "global_segment_index": 1,
+          "measured_memory": {},
+          "selected_quality": {
+            "instance-0000": "CRF20",
+            "instance-0001": "CRF20",
+            "instance-0002": "CRF20"
+          },
+          "total_required_bytes": 24847894
+        },
+        {
+          "budget_bytes": 102144986,
+          "checks": {
+            "allocation_except_measured_rss": true,
+            "estimated_total_utility": true,
+            "estimated_utility_per_object": true,
+            "method_diagnostics": true,
+            "selected_quality": true,
+            "total_required_bytes": true,
+            "utilities": true
+          },
+          "estimated_total_utility": 9418.049862975033,
+          "global_segment_index": 2,
+          "measured_memory": {},
+          "selected_quality": {
+            "instance-0000": "CRF40",
+            "instance-0001": "CRF20",
+            "instance-0002": "CRF20"
+          },
+          "total_required_bytes": 26980666
+        },
+        {
+          "budget_bytes": 103548625,
+          "checks": {
+            "allocation_except_measured_rss": true,
+            "estimated_total_utility": true,
+            "estimated_utility_per_object": true,
+            "method_diagnostics": true,
+            "selected_quality": true,
+            "total_required_bytes": true,
+            "utilities": true
+          },
+          "estimated_total_utility": 12886.503291256638,
+          "global_segment_index": 3,
+          "measured_memory": {},
+          "selected_quality": {
+            "instance-0000": "CRF20",
+            "instance-0001": "CRF20",
+            "instance-0002": "CRF20"
+          },
+          "total_required_bytes": 34956550
+        },
+        {
+          "budget_bytes": 106533778,
+          "checks": {
+            "allocation_except_measured_rss": true,
+            "estimated_total_utility": true,
+            "estimated_utility_per_object": true,
+            "method_diagnostics": true,
+            "selected_quality": true,
+            "total_required_bytes": true,
+            "utilities": true
+          },
+          "estimated_total_utility": 15836.332259362021,
+          "global_segment_index": 4,
+          "measured_memory": {},
+          "selected_quality": {
+            "instance-0000": "CRF20",
+            "instance-0001": "CRF20",
+            "instance-0002": "CRF20"
+          },
+          "total_required_bytes": 24847894
+        }
+      ],
+      "method": "VISIBILITY_WEIGHTED_SSE",
+      "reference_checkpoint_sha256": "737b07bb1b961487d35a014c4198bfb5848295ebc4f184c2c4a7925d60bb42fc",
+      "reference_simulation_sha256": "45595b5a78b665d6dd33e19aea420ad44ed5b01eb68fa191e79a7ebf33d0c5b8",
+      "visibility_cache_hits": 300
+    },
+    {
+      "gops": [
+        {
+          "budget_bytes": 17162500,
+          "checks": {
+            "allocation_except_measured_rss": true,
+            "estimated_total_utility": true,
+            "estimated_utility_per_object": true,
+            "method_diagnostics": true,
+            "selected_quality": true,
+            "total_required_bytes": true,
+            "utilities": true
+          },
+          "estimated_total_utility": 0.027383560852495655,
+          "global_segment_index": 0,
+          "measured_memory": {},
+          "selected_quality": {
+            "instance-0000": "CRF20",
+            "instance-0001": "CRF36",
+            "instance-0002": "CRF36"
+          },
+          "total_required_bytes": 16009988
+        },
+        {
+          "budget_bytes": 97406605,
+          "checks": {
+            "allocation_except_measured_rss": true,
+            "estimated_total_utility": true,
+            "estimated_utility_per_object": true,
+            "method_diagnostics": true,
+            "selected_quality": true,
+            "total_required_bytes": true,
+            "utilities": true
+          },
+          "estimated_total_utility": 0.0215340352989076,
+          "global_segment_index": 1,
+          "measured_memory": {},
+          "selected_quality": {
+            "instance-0000": "CRF20",
+            "instance-0001": "CRF20",
+            "instance-0002": "CRF20"
+          },
+          "total_required_bytes": 24847894
+        },
+        {
+          "budget_bytes": 101884081,
+          "checks": {
+            "allocation_except_measured_rss": true,
+            "estimated_total_utility": true,
+            "estimated_utility_per_object": true,
+            "method_diagnostics": true,
+            "selected_quality": true,
+            "total_required_bytes": true,
+            "utilities": true
+          },
+          "estimated_total_utility": 0.012091843380458201,
+          "global_segment_index": 2,
+          "measured_memory": {},
+          "selected_quality": {
+            "instance-0000": "CRF40",
+            "instance-0001": "CRF20",
+            "instance-0002": "CRF20"
+          },
+          "total_required_bytes": 26980666
+        },
+        {
+          "budget_bytes": 104583998,
+          "checks": {
+            "allocation_except_measured_rss": true,
+            "estimated_total_utility": true,
+            "estimated_utility_per_object": true,
+            "method_diagnostics": true,
+            "selected_quality": true,
+            "total_required_bytes": true,
+            "utilities": true
+          },
+          "estimated_total_utility": 0.029177688212491067,
+          "global_segment_index": 3,
+          "measured_memory": {},
+          "selected_quality": {
+            "instance-0000": "CRF20",
+            "instance-0001": "CRF20",
+            "instance-0002": "CRF20"
+          },
+          "total_required_bytes": 34956550
+        },
+        {
+          "budget_bytes": 106884301,
+          "checks": {
+            "allocation_except_measured_rss": true,
+            "estimated_total_utility": true,
+            "estimated_utility_per_object": true,
+            "method_diagnostics": true,
+            "selected_quality": true,
+            "total_required_bytes": true,
+            "utilities": true
+          },
+          "estimated_total_utility": 0.021534035298907604,
+          "global_segment_index": 4,
+          "measured_memory": {},
+          "selected_quality": {
+            "instance-0000": "CRF20",
+            "instance-0001": "CRF20",
+            "instance-0002": "CRF20"
+          },
+          "total_required_bytes": 24847894
+        }
+      ],
+      "method": "VISIBILITY_MSE",
+      "reference_checkpoint_sha256": "80393308d353b548d61b558aeb432b71689cbc2168cfef5e7b6436827434eb2c",
+      "reference_simulation_sha256": "c28b32d83cabc0f6f4bc2296687898ca6b7e5c864d7a970a4d80ba6abb7cf6bb",
+      "visibility_cache_hits": 300
+    },
+    {
+      "gops": [
+        {
+          "budget_bytes": 17162500,
+          "checks": {
+            "allocation_except_measured_rss": true,
+            "estimated_total_utility": true,
+            "estimated_utility_per_object": true,
+            "method_diagnostics": true,
+            "selected_quality": true,
+            "total_required_bytes": true,
+            "utilities": true
+          },
+          "estimated_total_utility": 30.15455845030371,
+          "global_segment_index": 0,
+          "measured_memory": {
+            "enumeration_extra_peak_rss_bytes": {
+              "recorded": 0,
+              "replay": 0
+            },
+            "enumeration_peak_rss_bytes": {
+              "recorded": 851140608,
+              "replay": 69152768
+            }
+          },
+          "selected_quality": {
+            "instance-0000": "CRF20",
+            "instance-0001": "CRF36",
+            "instance-0002": "CRF36"
+          },
+          "total_required_bytes": 16009988
+        },
+        {
+          "budget_bytes": 93038608,
+          "checks": {
+            "allocation_except_measured_rss": true,
+            "estimated_total_utility": true,
+            "estimated_utility_per_object": true,
+            "method_diagnostics": true,
+            "selected_quality": true,
+            "total_required_bytes": true,
+            "utilities": true
+          },
+          "estimated_total_utility": 31.378563083795747,
+          "global_segment_index": 1,
+          "measured_memory": {
+            "enumeration_extra_peak_rss_bytes": {
+              "recorded": 0,
+              "replay": 0
+            },
+            "enumeration_peak_rss_bytes": {
+              "recorded": 851140608,
+              "replay": 69152768
+            }
+          },
+          "selected_quality": {
+            "instance-0000": "CRF20",
+            "instance-0001": "CRF20",
+            "instance-0002": "CRF20"
+          },
+          "total_required_bytes": 24847894
+        },
+        {
+          "budget_bytes": 99551445,
+          "checks": {
+            "allocation_except_measured_rss": true,
+            "estimated_total_utility": true,
+            "estimated_utility_per_object": true,
+            "method_diagnostics": true,
+            "selected_quality": true,
+            "total_required_bytes": true,
+            "utilities": true
+          },
+          "estimated_total_utility": 32.54423585735388,
+          "global_segment_index": 2,
+          "measured_memory": {
+            "enumeration_extra_peak_rss_bytes": {
+              "recorded": 0,
+              "replay": 0
+            },
+            "enumeration_peak_rss_bytes": {
+              "recorded": 852475904,
+              "replay": 69152768
+            }
+          },
+          "selected_quality": {
+            "instance-0000": "CRF40",
+            "instance-0001": "CRF20",
+            "instance-0002": "CRF20"
+          },
+          "total_required_bytes": 26980666
+        },
+        {
+          "budget_bytes": 102702335,
+          "checks": {
+            "allocation_except_measured_rss": true,
+            "estimated_total_utility": true,
+            "estimated_utility_per_object": true,
+            "method_diagnostics": true,
+            "selected_quality": true,
+            "total_required_bytes": true,
+            "utilities": true
+          },
+          "estimated_total_utility": 30.6720144452895,
+          "global_segment_index": 3,
+          "measured_memory": {
+            "enumeration_extra_peak_rss_bytes": {
+              "recorded": 0,
+              "replay": 0
+            },
+            "enumeration_peak_rss_bytes": {
+              "recorded": 852475904,
+              "replay": 69152768
+            }
+          },
+          "selected_quality": {
+            "instance-0000": "CRF20",
+            "instance-0001": "CRF20",
+            "instance-0002": "CRF20"
+          },
+          "total_required_bytes": 34956550
+        },
+        {
+          "budget_bytes": 103907910,
+          "checks": {
+            "allocation_except_measured_rss": true,
+            "estimated_total_utility": true,
+            "estimated_utility_per_object": true,
+            "method_diagnostics": true,
+            "selected_quality": true,
+            "total_required_bytes": true,
+            "utilities": true
+          },
+          "estimated_total_utility": 31.378563083795747,
+          "global_segment_index": 4,
+          "measured_memory": {
+            "enumeration_extra_peak_rss_bytes": {
+              "recorded": 0,
+              "replay": 0
+            },
+            "enumeration_peak_rss_bytes": {
+              "recorded": 852475904,
+              "replay": 69152768
+            }
+          },
+          "selected_quality": {
+            "instance-0000": "CRF20",
+            "instance-0001": "CRF20",
+            "instance-0002": "CRF20"
+          },
+          "total_required_bytes": 24847894
+        }
+      ],
+      "method": "EXHAUSTIVE_SEARCH",
+      "reference_checkpoint_sha256": "1cf0d1d58c39b980d1b8b16985a7ea6de800183e969cea76863476d1e08339d5",
+      "reference_simulation_sha256": "c08ff0e4b3e43aec9e0c6aec0de0b478e6af53de98332cb7ddc45a72c4144c59",
+      "visibility_cache_hits": 300
+    }
+  ],
+  "phase_b_rendered": false,
+  "protocol": "Existing RuntimePlanner.plan, original per-method recorded byte budgets, exact native visibility cache; no network or rendering",
+  "reference_manifest_sha256": "946b48e13e676360ac40704591a01a15c14b8cc2dc1fadb9a09f4f5f2377c3bb",
+  "schema": "framework-release-recorded-budget-replay.v1",
+  "status": "passed",
+  "validation_script_sha256": "bcfd91b6c94cf1f260d34f5f7bda74394155338516559bdfc54a2bd86d42e6a0"
+}

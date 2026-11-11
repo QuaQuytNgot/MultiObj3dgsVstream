@@ -1,0 +1,8 @@
+# CPU Phase A, including the original TLS/HTTP/2 transport.
+# Verified with CPython 3.11.16; native DP also requires g++ (C++17).
+numpy==1.26.4
+httpx[http2]==0.28.1
+httpcore==1.0.9
+h2==4.4.1
+hypercorn==0.17.3
+cryptography==49.0.0

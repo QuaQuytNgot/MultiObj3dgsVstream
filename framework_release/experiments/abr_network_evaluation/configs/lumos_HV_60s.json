@@ -1,0 +1,33 @@
+{
+  "duration_seconds": 60,
+  "loop_content": true,
+  "loop_cache_policy": "repeated_streaming",
+  "network_trace_loop": true,
+  "object_count": 4,
+  "safety_factor": 0.85,
+  "delta_mbps": 0.25,
+  "startup_bandwidth_mbps": 80,
+  "concurrent_requests": 2,
+  "latency_s": 0.02,
+  "prefetch_gops": 1,
+  "bandwidth_window": 5,
+  "bandwidth_max_age_s": 30,
+  "solver_timeout_s": 0.5,
+  "solver_max_nodes": 1000000,
+  "seed": 2027,
+  "visibility": {
+    "mode": "synthetic",
+    "seed": 2027
+  },
+  "sample_interval_s": 0.25,
+  "network": {
+    "path": "../inputs/lumos5g/processed/HV.csv",
+    "duration_s": 120,
+    "end_policy": "error"
+  },
+  "resource_order": "production_sequential",
+  "estimator_poll_interval_s": 0.25,
+  "solver_max_dp_cells": 50000000,
+  "trace_category": "HV",
+  "trace_source": "official Lumos5G-v1.0; measured continuous 120s window"
+}

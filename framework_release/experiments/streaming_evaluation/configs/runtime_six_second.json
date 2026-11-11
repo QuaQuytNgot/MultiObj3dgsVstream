@@ -1,0 +1,87 @@
+{
+  "schema": "streaming-evaluation.runtime-matrix.v1",
+  "sources": [
+    "longdress",
+    "soldier"
+  ],
+  "source_duration_s": 6,
+  "gop_duration_s": 2,
+  "fps": 30,
+  "object_counts": [
+    3,
+    5,
+    7,
+    8,
+    10,
+    12,
+    15
+  ],
+  "playback_durations_s": [
+    10,
+    20,
+    30
+  ],
+  "scenarios": [
+    "camera_rotation",
+    "long_line",
+    "random_spatial"
+  ],
+  "methods": [
+    "NAVA",
+    "VISIBILITY_PSNR",
+    "VISIBILITY_MSE",
+    "SOLO_SSE",
+    "VISIBILITY_WEIGHTED_SSE"
+  ],
+  "seed": 238019,
+  "profiles": "experiments/offline_profiles/runs/full_source_v1/prepared/profiles.json",
+  "baseline_metadata": "experiments/offline_profiles/runs/full_source_v1/prepared/baseline_metadata.json",
+  "packages_root": "experiments/nava_mse/runs/gop0_v1/assets",
+  "metadata_root": "data_stream/streamstgs_8i_quality_metadata",
+  "bounds_source": "experiments/abr_network_evaluation/inputs/empirical_visibility_v1/bundle/geometry.json",
+  "network": {
+    "path": "experiments/abr_network_evaluation/inputs/lumos5g/processed/HV.csv",
+    "offset_s": 18,
+    "source_duration_s": 120,
+    "request_latency_s": 0.02,
+    "max_concurrent_streams": 16,
+    "estimator": {
+      "startup_bps": 80000000,
+      "window": 5,
+      "stale_s": 30
+    }
+  },
+  "adaptation": {
+    "safety_factor": 0.9,
+    "resource_sharing": "per_instance",
+    "solver_limits": {
+      "max_dp_cells": 100000000
+    }
+  },
+  "playback": {
+    "startup_buffer_s": 2,
+    "max_buffer_s": 6
+  },
+  "renderer": {
+    "max_resident_models": 8,
+    "width": 640,
+    "height": 480,
+    "matmul_allow_tf32": false,
+    "cudnn_allow_tf32": false,
+    "image_write_workers": 1,
+    "max_pending_image_writes": 2
+  },
+  "quality": {
+    "mode": "frame_grid",
+    "fps": 30,
+    "mask_mode": "full_viewport",
+    "reference": "joint_CRF20",
+    "normalization": "clip"
+  },
+  "limits": {
+    "max_wall_seconds": 3600,
+    "max_native_seconds": 3000,
+    "max_storage_bytes": 34359738368,
+    "minimum_free_bytes": 5368709120
+  }
+}

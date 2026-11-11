@@ -1,0 +1,173 @@
+{
+  "schema": "interactive-demo.copied-sources.v1",
+  "files": {
+    "abr/camera.py": {
+      "source": "src_final/multiobj3dgs/client/abr/camera.py",
+      "source_sha256": "029b34510a2fe577b99ac52f44532baa94eaec1312b59c9aca6bfaf9e8f4db08",
+      "copied_then_modified": false
+    },
+    "abr/__main__.py": {
+      "source": "src_final/multiobj3dgs/client/abr/__main__.py",
+      "source_sha256": "d5da8394bfdb639dadbf8821a44dffc806c73c81b9398e3077a822c26c8f7087",
+      "copied_then_modified": false
+    },
+    "abr/diagnostics.py": {
+      "source": "src_final/multiobj3dgs/client/abr/diagnostics.py",
+      "source_sha256": "e645b1d14cee270fbe63dfe1adadc20be3429e3598fbfe9db65c2dc96bb5328b",
+      "copied_then_modified": true
+    },
+    "abr/solver.py": {
+      "source": "src_final/multiobj3dgs/client/abr/solver.py",
+      "source_sha256": "f7e8e1fa46a2e8f1d234399995ca910b7ad0879ad6bc56e09287cd78e3073157",
+      "copied_then_modified": true
+    },
+    "abr/network.py": {
+      "source": "src_final/multiobj3dgs/client/abr/network.py",
+      "source_sha256": "3f1e056e125fd4ecbe79c562f42691f31d4e65be13a6caed68db18f467fb6da0",
+      "copied_then_modified": true
+    },
+    "abr/catalog.py": {
+      "source": "src_final/multiobj3dgs/client/abr/catalog.py",
+      "source_sha256": "a7107ea6ddc7aea75b8ae34c1b1031160c4a227d4c05694d86b1dbee3df9d38c",
+      "copied_then_modified": true
+    },
+    "abr/planner.py": {
+      "source": "src_final/multiobj3dgs/client/abr/planner.py",
+      "source_sha256": "ee7f96652924d0b67073a4a893351314c4546d5bf739eca935f1d8eb2302cba2",
+      "copied_then_modified": true
+    },
+    "abr/__init__.py": {
+      "source": "src_final/multiobj3dgs/client/abr/__init__.py",
+      "source_sha256": "b50e033f19bb239ca398b8b3dd5ead5d401910639ba554b1084e62ef304d68df",
+      "copied_then_modified": false
+    },
+    "abr/visibility.py": {
+      "source": "src_final/multiobj3dgs/client/abr/visibility.py",
+      "source_sha256": "cee19dfe2b1d3f6a4054ad61270dda03eb695016d48b1ecda9463fec4fce2f0f",
+      "copied_then_modified": false
+    },
+    "abr/runtime.py": {
+      "source": "src_final/multiobj3dgs/client/abr/runtime.py",
+      "source_sha256": "99471a5e5f69f980e4c91afb9d3cdea1960d4a436dab8a8ddae47d889ba677f9",
+      "copied_then_modified": true
+    },
+    "abr/runner.py": {
+      "source": "src_final/multiobj3dgs/client/abr/runner.py",
+      "source_sha256": "c42c4b46b52d2641ae567c0d9824edee0aca96ff331750b0db94b60922195ae9",
+      "copied_then_modified": true
+    },
+    "abr/network_delivery.py": {
+      "source": "src_final/multiobj3dgs/client/abr/network_delivery.py",
+      "source_sha256": "256064fa54044ac73afe959ee084750235cc6764ac053094bd884c3ebd4b8f01",
+      "copied_then_modified": false
+    },
+    "abr/config.py": {
+      "source": "src_final/multiobj3dgs/client/abr/config.py",
+      "source_sha256": "7150c891a7e906c6699764058e2253b0cf390183c76e2b4f82b0a7e388396d66",
+      "copied_then_modified": true
+    },
+    "abr/binding.py": {
+      "source": "src_final/multiobj3dgs/client/abr/binding.py",
+      "source_sha256": "e302414948b409bbdc2ebe4e7b7dcedd7cc3ad5668bfeb5831ba051ebdd51d97",
+      "copied_then_modified": true
+    },
+    "abr/capture.py": {
+      "source": "src_final/multiobj3dgs/client/abr/capture.py",
+      "source_sha256": "71fdcf6d6a4aa41f4ccb1891c8c1fbdeaad81d750ae0997236ab2fd6eacd31ab",
+      "copied_then_modified": false
+    },
+    "abr/quality_metadata.py": {
+      "source": "src_final/multiobj3dgs/client/abr/quality_metadata.py",
+      "source_sha256": "085def0229b025cf60430144410f00e9da684e423fcd414ff36a531ee87c63d8",
+      "copied_then_modified": false
+    },
+    "abr/metrics.py": {
+      "source": "src_final/multiobj3dgs/client/abr/metrics.py",
+      "source_sha256": "2199e61d87cc7cc95005a089dbc7bb16ec1a5ce8122293eaa6526a0c7e654f15",
+      "copied_then_modified": true
+    },
+    "runtime/__init__.py": {
+      "source": "src_final/multiobj3dgs/client/runtime/__init__.py",
+      "source_sha256": "55aaca51aff0690369dadeb947e9818d85dc3c78254ed830291cc5b8ab322271",
+      "copied_then_modified": false
+    },
+    "runtime/scheduler.py": {
+      "source": "src_final/multiobj3dgs/client/runtime/scheduler.py",
+      "source_sha256": "8755c168b8ab3ab183542fa72dcb33c1820f92086d84753d6b92d39d75c16974",
+      "copied_then_modified": false
+    },
+    "runtime/clock.py": {
+      "source": "src_final/multiobj3dgs/client/runtime/clock.py",
+      "source_sha256": "5dbcd6b8eeef6b007def52c037c0665db53c364fbfadbf697e40be597adc5178",
+      "copied_then_modified": false
+    },
+    "runtime/io.py": {
+      "source": "src_final/multiobj3dgs/client/runtime/io.py",
+      "source_sha256": "384acb35fcc2293b94d1f33e2036298d631248300df622f5007260e4eb0b1579",
+      "copied_then_modified": false
+    },
+    "runtime/playback.py": {
+      "source": "src_final/multiobj3dgs/client/runtime/playback.py",
+      "source_sha256": "ac5c2b5ae66c4470df9082f2b77228e4a6cb05648dc1f08daec4cc7cf16f1f14",
+      "copied_then_modified": true
+    },
+    "runtime/memory.py": {
+      "source": "src_final/multiobj3dgs/client/runtime/memory.py",
+      "source_sha256": "66c3844845ad0070f46bf78799e7f6d8fcedffd5c0836575142c8222637ec6b9",
+      "copied_then_modified": false
+    },
+    "cache/__init__.py": {
+      "source": "src_final/multiobj3dgs/client/cache/__init__.py",
+      "source_sha256": "e43f922fff30a32211a175a10b24d43b298008a91fb384e3c085daba11e6c22b",
+      "copied_then_modified": false
+    },
+    "cache/resources.py": {
+      "source": "src_final/multiobj3dgs/client/cache/resources.py",
+      "source_sha256": "b888219f1177b1872c6daf5229e954ce60e9a86764b63535bb80a28c4e4268d7",
+      "copied_then_modified": true
+    },
+    "abr/validated/allocation.py": {
+      "source": "experiments/visibility_weighted_sse/allocation.py",
+      "source_sha256": "e2536a69f4c2d16f035dcf0a578a646cf4a01b52e3dca920e14ca81d35e6b3fa",
+      "copied_then_modified": true
+    },
+    "abr/validated/profiles.py": {
+      "source": "experiments/visibility_weighted_sse/profiles.py",
+      "source_sha256": "b49c798485fca9ce2981510ae718f63eda500389bbabfede87ab2b832b0a85d2",
+      "copied_then_modified": true
+    },
+    "abr/validated/common.py": {
+      "source": "experiments/visibility_weighted_sse/common.py",
+      "source_sha256": "3f2b251e6465bce34134295bf236fb5995abfb889a5b17e360da75373b570ee3",
+      "copied_then_modified": false
+    },
+    "abr/validated/baseline_metadata.py": {
+      "source": "experiments/adaptation_baselines/metadata.py",
+      "source_sha256": "298cbf214998f176e63d1851dfefcb2ddf6a52f4f16965a66a163f89a894ee41",
+      "copied_then_modified": true
+    },
+    "tools/native_smoke.py": {
+      "source": "tools/smoke_abr_migration_native.py",
+      "source_sha256": "588ed5a0b883f0be90eb7eed78b2e2512d8a39e9ab7e3dbc4d90db47d3caf3a2",
+      "copied_then_modified": true
+    }
+  },
+  "adapted_fragments": {
+    "abr/objectives.py": [
+      "experiments/adaptation_baselines/methods.py::construct_utilities",
+      "experiments/nava_mse/policies.py::projected_aabb_importance"
+    ],
+    "placement.py": [
+      "experiments/streaming_evaluation/runtime_scenes.py::make_scene"
+    ]
+  },
+  "reused_read_only": [
+    "src_final/multiobj3dgs/codecs",
+    "src_final/multiobj3dgs/client/rendering",
+    "src_final/multiobj3dgs/client/viewer",
+    "src_final/multiobj3dgs/shared",
+    "src_final/multiobj3dgs/content",
+    "src_final/multiobj3dgs/client/abr/native",
+    "existing publications and prepared profile/media banks"
+  ]
+}

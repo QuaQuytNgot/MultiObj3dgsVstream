@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fast_gauss"
+version = "0.1.0"
+description = "A geometry-shader-based, global CUDA sorted high-performance 3D Gaussian Splatting rasterizer. Can achieve a 5-10x speedup in rendering compared to the vanialla diff-gaussian-rasterization."
+readme = "readme.md"
+license = { file = "license" }
+authors = [{ email = "zhenx@zju.edu.cn" }, { name = "Zhen Xu" }]
+requires-python = ">=3.8"
+dynamic = ["dependencies"]
+
+[project.urls]
+homepage = "https://github.com/dendenxu/fast-gaussian-rasterization"
+
+[tool.setuptools.package-data]
+"*" = ["*.*"]
+
+[tool.setuptools.dynamic]
+dependencies = { file = ["requirements.txt"] }

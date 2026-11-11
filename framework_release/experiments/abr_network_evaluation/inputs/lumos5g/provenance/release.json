@@ -1,0 +1,47 @@
+{
+  "dataset": "Lumos5G-v1.0",
+  "official_page": "https://networking.umn.edu/lumos5g",
+  "official_page_download_link": "https://drive.google.com/file/d/1spFuxOe5VFyWOHdeJsBeHPHbHiGidw22/view?usp=sharing",
+  "resolved_download_url": "https://drive.usercontent.google.com/download?id=1spFuxOe5VFyWOHdeJsBeHPHbHiGidw22&export=download&confirm=t",
+  "download_date": "2026-10-26",
+  "archive_bytes": 1604062,
+  "archive_sha256": "1ea8770b3090735f987d4ef7b248188de7c667bf6be5716e4891daf9e8d331e8",
+  "archive_path": "inputs/lumos5g/raw/Lumos5G-v1.0.zip",
+  "files": [
+    {
+      "zip_member": "Lumos5G-v1.0/Lumos5G-v1.0.csv",
+      "path": "inputs/lumos5g/raw/Lumos5G-v1.0.csv",
+      "bytes": 8480348,
+      "sha256": "0ecebcbb61172dccbb552519970de8bd5aaa7e3e4771bc0ff43cd20e3f013f9a"
+    },
+    {
+      "zip_member": "Lumos5G-v1.0/README.md",
+      "path": "inputs/lumos5g/raw/README.md",
+      "bytes": 6783,
+      "sha256": "f8659fbae9814063f7a5013610887d6378578622465633c96580c8f816228391"
+    },
+    {
+      "zip_member": "Lumos5G-v1.0/LICENSE",
+      "path": "inputs/lumos5g/raw/LICENSE",
+      "bytes": 260,
+      "sha256": "922125163406db1f7126068189ce3fa2cac72f2664dc513b09ef319efcc3432f"
+    }
+  ],
+  "zip_crc_passed": true,
+  "source": "official Google Drive file linked by UMN",
+  "license": "Creative Commons Attribution 4.0 International",
+  "citation_doi": "10.1145/3419394.3423629",
+  "csv_git_blob_sha1": "55aa243f1476e3c3bc97ffee8ca88b4e725f0686",
+  "public_research_mirror_csv_blob_sha1": "55aa243f1476e3c3bc97ffee8ca88b4e725f0686",
+  "mirror_byte_identity_check": true,
+  "units": {
+    "Throughput": "Mbps (decimal Mbit/s)",
+    "seq_num": "per-second index; no absolute timestamp supplied",
+    "sources": [
+      "raw/README.md: per-second TCP downlink, iPerf 3.7",
+      "provenance/Lumos5G_IMC2020.pdf: throughput plots in Mbps"
+    ],
+    "conversion": "identity; Throughput copied as bandwidth_mbps without multiplication/division"
+  },
+  "network_attempt_note": "Sandbox DNS failed; alternate official usercontent endpoint succeeded. See provenance/download_attempts.json."
+}

@@ -1,0 +1,1043 @@
+{
+  "schema": "multiobj3dgs.release-validation.v1",
+  "date": "2026-11-09",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "copied_files": {
+    "count": 661,
+    "bytes": 5606591,
+    "mismatches": []
+  },
+  "original_preservation": {
+    "files_snapshotted": 3568,
+    "changed": []
+  },
+  "imports": {
+    "count": 174,
+    "passed": 174,
+    "outside_release": 0,
+    "details": "IMPORTS.json"
+  },
+  "vendor": {
+    "manifest_files": 475,
+    "all_sha256_match": true,
+    "commit": "ca8602516352efd83e9e69e665b2e26ed03cb5cc"
+  },
+  "native_dp": {
+    "rebuilt": true,
+    "validation_selection": [
+      0,
+      2
+    ],
+    "cost": 5,
+    "utility": 4
+  },
+  "cpu_isolation": {
+    "python": "3.11.16",
+    "mode": "-I -S, explicit standard-library + selected CPU dependency paths",
+    "numpy": "1.26.4",
+    "httpx": "0.28.1",
+    "http2_modules_and_rsa_certificate_primitive_imported": true,
+    "torch_cuda_imagecodecs_curl_cffi_exposed": false,
+    "virtual_phase_a": "streaming_complete"
+  },
+  "phase_a": {
+    "schema": "framework-release-phase-a-smoke.v1",
+    "case": "camera_rotation/N03/10s/VISIBILITY_MSE",
+    "original_vs_release_virtual": {
+      "simulation.json": {
+        "equal": true,
+        "sha256": "968a39364c57b399be39d2d04c3b1791d42a0b2d4590429fcddd9302ca7c7ffb"
+      },
+      "metrics.json": {
+        "equal": true,
+        "sha256": "e194e60c360731b6072a6c76be11a24f6766f1f17af0881687ccf67ea0439b85"
+      },
+      "requests.csv": {
+        "equal": true,
+        "sha256": "1005104e83b0ae2430f4ac7a91e8eb45b0ae09622836cb7456bd0dcb2d2f34a3"
+      },
+      "buffer.csv": {
+        "equal": true,
+        "sha256": "2f579e3b7f42988580217306d6dfc9fd0a5b7e1d502c02d5bb9ae52c1c326dce"
+      },
+      "decisions.csv": {
+        "equal": true,
+        "sha256": "bfe60c63ad1e32d0e93bdb1e9626e6d87885512b18083d596b3acfda1dab81c8"
+      },
+      "frames.csv": {
+        "equal": true,
+        "sha256": "740922b2ffa5cef491573e3a1da3df52e742f2f2ff760b3bebe1c5dc7fac34bf"
+      },
+      "played_frames.json": {
+        "equal": true,
+        "sha256": "686d70b6e6c53258a9f67bfec3c8109e920ecf6d84b6a30d867b7ff1de8b67bf"
+      }
+    },
+    "real_http2": {
+      "status": "completed",
+      "checks": {
+        "tls_h2": true,
+        "persistent_connection": true,
+        "multiplexing": true,
+        "stream_limit": true,
+        "bytes_reconcile": true,
+        "all_requests_completed": true,
+        "no_rendered_quality": true,
+        "source_first_decision_selection_matches": true,
+        "all_historical_quality_selections_match": true
+      },
+      "request_count": 255,
+      "decision_count": 5,
+      "bytes": 127642992,
+      "played_frames": 300,
+      "playback": {
+        "buffer_s": 0.0,
+        "completion_wall_time_s": 10.52127515990287,
+        "media_duration_s": 10.0,
+        "played_duration_s": 10.0,
+        "stall_count": 0,
+        "startup_delay_s": 0.5212751599028707,
+        "total_rebuffering_s": 0.0,
+        "wall_time_s": 10.528623485937715
+      },
+      "historical_playback": {
+        "buffer_s": 0.0,
+        "completion_wall_time_s": 10.316552202915773,
+        "media_duration_s": 10.0,
+        "played_duration_s": 10.0,
+        "stall_count": 0,
+        "startup_delay_s": 0.3165522029157728,
+        "total_rebuffering_s": 0.0,
+        "wall_time_s": 10.32280675903894
+      },
+      "timing_note": "Actual monotonic wall-clock values vary by machine/load; historical budgets replayed separately for exact numerical comparison.",
+      "simulation_sha256": "b91c7f60132ed6d28a805fa64592f3a063bfade322635a3baf1ddc454b5c1900"
+    }
+  },
+  "recorded_budget_replay": {
+    "status": "passed",
+    "decisions": 25,
+    "methods": 5,
+    "details": "PHASE_A_REPLAY.json",
+    "only_excluded_fields": [
+      "diagnostics.enumeration_peak_rss_bytes",
+      "diagnostics.enumeration_extra_peak_rss_bytes"
+    ]
+  },
+  "derived_configs": [
+    {
+      "path": "configs/phase_a_HS.json",
+      "sha256": "36d4f223956fe8f19d8cdb15340b4f53f1d323dbb673bebd03f805919bed9a77",
+      "original_config": "experiments/streaming_evaluation/configs/streaming_http2_dp015.json",
+      "changed_top_level_fields": [
+        "methods",
+        "network"
+      ],
+      "network_fields": {
+        "path": "experiments/abr_network_evaluation/inputs/lumos5g/processed/HS.csv",
+        "offset_s": 0,
+        "loop": true,
+        "end_policy": "error"
+      },
+      "methods": [
+        "NAVA",
+        "VISIBILITY_MSE",
+        "VISIBILITY_PSNR",
+        "EXHAUSTIVE_SEARCH"
+      ]
+    },
+    {
+      "path": "configs/phase_a_LS.json",
+      "sha256": "3054f3339e5ec0aec1141df108b3579e939dac1ab11956b8b788c1a232546cfc",
+      "original_config": "experiments/streaming_evaluation/configs/streaming_http2_dp015.json",
+      "changed_top_level_fields": [
+        "methods",
+        "network"
+      ],
+      "network_fields": {
+        "path": "experiments/abr_network_evaluation/inputs/lumos5g/processed/LS.csv",
+        "offset_s": 0,
+        "loop": true,
+        "end_policy": "error"
+      },
+      "methods": [
+        "NAVA",
+        "VISIBILITY_MSE",
+        "VISIBILITY_PSNR",
+        "EXHAUSTIVE_SEARCH"
+      ]
+    },
+    {
+      "path": "configs/phase_a_LV.json",
+      "sha256": "4bcf66f1bf4d31a8bc753a762c241872c57ac97e1b6a897ea255fd9df07604b7",
+      "original_config": "experiments/streaming_evaluation/configs/streaming_http2_dp015.json",
+      "changed_top_level_fields": [
+        "methods",
+        "network"
+      ],
+      "network_fields": {
+        "path": "experiments/abr_network_evaluation/inputs/lumos5g/processed/LV.csv",
+        "offset_s": 0,
+        "loop": true,
+        "end_policy": "error"
+      },
+      "methods": [
+        "NAVA",
+        "VISIBILITY_MSE",
+        "VISIBILITY_PSNR",
+        "EXHAUSTIVE_SEARCH"
+      ]
+    }
+  ],
+  "native_demo": {
+    "schema": "multiobj3dgs.release-native-validation.v1",
+    "validation_date": "2026-11-09",
+    "checkout": "/tmp/framework-demo-validation",
+    "scope": "Fresh unmodified-source native smoke and 30-frame captures; no sustained-performance or Phase B quality claim",
+    "graphics": {
+      "vendor": "NVIDIA Corporation",
+      "renderer": "NVIDIA GeForce GTX 1660/PCIe/SSE2",
+      "opengl_version": "4.6.0 NVIDIA 595.99.02"
+    },
+    "runs": [
+      {
+        "name": "release_native_n3",
+        "objects": 3,
+        "command": "env PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src_final:. DISPLAY=:1 XAUTHORITY=/run/user/1000/gdm/Xauthority __NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia timeout 65s /home/fil/miniconda3/envs/Hoang/bin/python -u experiments/interactive_demo/tools/native_smoke.py --objects 3 --wall-time-s 45 --output experiments/interactive_demo/output/release_native_n3",
+        "exit_code": 0,
+        "status": "completed",
+        "fresh_frames": 8,
+        "native_fresh_swaps": 8,
+        "scene_time_range_s": [
+          0.0,
+          2.2333333333333334
+        ],
+        "captures": 2,
+        "all_capture_hashes_match": true,
+        "report_sha256": "5e224b4b647d9c51ebb6a79c6b66caf67968fc6734372346604f19dd585b9447",
+        "event_log_sha256": "48462e135553a81b074b9dd158fb3ccb9c9dcf678df3180779519c74dccc1de4",
+        "report_path": "/tmp/framework-demo-validation/experiments/interactive_demo/output/release_native_n3/report.json",
+        "publication_revision": "5574ad5abf7e3ee2624c0583d16ada98630501ad404488d1305bb0dbe74f3f91",
+        "spool_after_cleanup": {
+          "materialization_count": 6,
+          "http_request_count": 90,
+          "http_requested_bytes": 31228361,
+          "verified_resource_count": 90,
+          "verified_bytes": 31228361,
+          "used_bytes": 0,
+          "reserved_bytes": 0,
+          "live_packages": 0,
+          "live_resources": 0,
+          "pending_resources": 0,
+          "pending_expected_bytes": 0,
+          "policy": "cold_per_instance_GOP_representation; session_spool_only"
+        },
+        "gpu": {
+          "gpu_name": "NVIDIA GeForce GTX 1660",
+          "total_vram_bytes": 6027608064,
+          "torch_version": "2.3.1+cu118",
+          "cuda_runtime": "11.8",
+          "device": 0
+        },
+        "capture_inventory": [
+          {
+            "frame_id": 0,
+            "sha256": "13834e4c009fb13a7a84df4f1e515aaf75e56df8ee976c08b5c28c31393bc436",
+            "shape": [
+              192,
+              256,
+              3
+            ]
+          },
+          {
+            "frame_id": 7,
+            "sha256": "89e6d65bb6e028e16dff58fa7f6603f00522ba6dce8715e2a0bee8c6958f1adf",
+            "shape": [
+              192,
+              256,
+              3
+            ]
+          }
+        ],
+        "native_smoke_checks": {
+          "completed": true,
+          "eight_fresh_frames": true,
+          "eight_native_swaps": true,
+          "controls": true,
+          "all_instances_in_each_frame": true,
+          "manual_representation_applied_after_seek": true,
+          "no_shared_cpu_preparation": true,
+          "all_instance_transfers": true,
+          "original_sha_preserved": true,
+          "mse_dp_rows": true,
+          "grid_150000": true
+        }
+      },
+      {
+        "name": "release_native_n4",
+        "objects": 4,
+        "command": "env PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src_final:. DISPLAY=:1 XAUTHORITY=/run/user/1000/gdm/Xauthority __NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia timeout 65s /home/fil/miniconda3/envs/Hoang/bin/python -u experiments/interactive_demo/tools/native_smoke.py --objects 4 --wall-time-s 45 --output experiments/interactive_demo/output/release_native_n4",
+        "exit_code": 0,
+        "status": "completed",
+        "fresh_frames": 8,
+        "native_fresh_swaps": 8,
+        "scene_time_range_s": [
+          0.0,
+          2.2333333333333334
+        ],
+        "captures": 2,
+        "all_capture_hashes_match": true,
+        "report_sha256": "d891cab39dd6e64aa8ee2cd965a17504285bbf8a61c1302b8d52f5c5130d10d2",
+        "event_log_sha256": "4318c33e41e3bc7b0f518492812dbaa1f88d16f0bd6b6f66ade36b2933e7d54c",
+        "report_path": "/tmp/framework-demo-validation/experiments/interactive_demo/output/release_native_n4/report.json",
+        "publication_revision": "5574ad5abf7e3ee2624c0583d16ada98630501ad404488d1305bb0dbe74f3f91",
+        "spool_after_cleanup": {
+          "materialization_count": 8,
+          "http_request_count": 120,
+          "http_requested_bytes": 42868381,
+          "verified_resource_count": 120,
+          "verified_bytes": 42868381,
+          "used_bytes": 0,
+          "reserved_bytes": 0,
+          "live_packages": 0,
+          "live_resources": 0,
+          "pending_resources": 0,
+          "pending_expected_bytes": 0,
+          "policy": "cold_per_instance_GOP_representation; session_spool_only"
+        },
+        "gpu": {
+          "gpu_name": "NVIDIA GeForce GTX 1660",
+          "total_vram_bytes": 6027608064,
+          "torch_version": "2.3.1+cu118",
+          "cuda_runtime": "11.8",
+          "device": 0
+        },
+        "capture_inventory": [
+          {
+            "frame_id": 0,
+            "sha256": "0fe7c11616bb884cea86fd222b052a4e9d99469a1a36318067696eb906dd0916",
+            "shape": [
+              192,
+              256,
+              3
+            ]
+          },
+          {
+            "frame_id": 7,
+            "sha256": "bd6477e6fe471ab8ffd29cfbd84c5086be89b153f1470d792bb6527a73fa256a",
+            "shape": [
+              192,
+              256,
+              3
+            ]
+          }
+        ],
+        "native_smoke_checks": {
+          "completed": true,
+          "eight_fresh_frames": true,
+          "eight_native_swaps": true,
+          "controls": true,
+          "all_instances_in_each_frame": true,
+          "manual_representation_applied_after_seek": true,
+          "no_shared_cpu_preparation": true,
+          "all_instance_transfers": true,
+          "original_sha_preserved": true,
+          "mse_dp_rows": true,
+          "grid_150000": true
+        }
+      },
+      {
+        "name": "gif_camera_rotation",
+        "objects": 3,
+        "command": "env PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src_final:. DISPLAY=:1 XAUTHORITY=/run/user/1000/gdm/Xauthority __NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia timeout 65s /home/fil/miniconda3/envs/Hoang/bin/python -u experiments/interactive_demo/run_demo.py --config experiments/interactive_demo/configs/n3.json --placement camera_rotation --unthrottled --startup-mbps 24 --prefetch 0 --frames 30 --width 512 --height 384 --analysis-width 64 --wall-time-s 45 --startup-timeout 45 --cache experiments/interactive_demo/output/gif_camera_rotation/cache --report experiments/interactive_demo/output/gif_camera_rotation/report.json --capture-dir experiments/interactive_demo/output/gif_camera_rotation/captures --capture-frames 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29",
+        "exit_code": 0,
+        "status": "completed",
+        "fresh_frames": 30,
+        "native_fresh_swaps": 30,
+        "scene_time_range_s": [
+          0.0,
+          0.9666666666666667
+        ],
+        "captures": 30,
+        "all_capture_hashes_match": true,
+        "report_sha256": "597861380ed51767b557ad04f03b51d46e967d75abc2f36752893e585e5de277",
+        "event_log_sha256": "4d79ea7414d4ae63ac85e36c224b5f9a26c92b438a20c899d9fd9ec88feb1b0d",
+        "report_path": "/tmp/framework-demo-validation/experiments/interactive_demo/output/gif_camera_rotation/report.json",
+        "publication_revision": "5574ad5abf7e3ee2624c0583d16ada98630501ad404488d1305bb0dbe74f3f91",
+        "spool_after_cleanup": {
+          "materialization_count": 3,
+          "http_request_count": 45,
+          "http_requested_bytes": 7273830,
+          "verified_resource_count": 45,
+          "verified_bytes": 7273830,
+          "used_bytes": 0,
+          "reserved_bytes": 0,
+          "live_packages": 0,
+          "live_resources": 0,
+          "pending_resources": 0,
+          "pending_expected_bytes": 0,
+          "policy": "cold_per_instance_GOP_representation; session_spool_only"
+        },
+        "gpu": {
+          "gpu_name": "NVIDIA GeForce GTX 1660",
+          "total_vram_bytes": 6027608064,
+          "torch_version": "2.3.1+cu118",
+          "cuda_runtime": "11.8",
+          "device": 0
+        },
+        "capture_inventory": [
+          {
+            "frame_id": 0,
+            "sha256": "53ae6466e73f9d1de0c6a340b25509726e327f10c1b36840471926f167bdaf48",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 1,
+            "sha256": "4062c63bdfb3959e3abeb5fa263ae15325ee08872b0820d61a20fc8529b950f8",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 2,
+            "sha256": "0914b257706073c0aedc9a9d76314561dcd3dc26dd5a1a3715672d8d1af0c406",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 3,
+            "sha256": "f6160210ef2054a17a831960f49da54ea45ea1a6f2ce201751b08d13776793c8",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 4,
+            "sha256": "c80c0e55e7c090e8642af794007c3c8fbfc1d602aa5568d76e4ec59e7a86e90c",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 5,
+            "sha256": "c7a42161a18dcc2ccbbc3fea400f915418cbf2667d0a50d702677c95b7789c5c",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 6,
+            "sha256": "ad9be2dcbf2f8190ec64640e168e1a8ab2a260f7aa11830415812455aac83e39",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 7,
+            "sha256": "ecec93b696a5a48912150188a6f6551ac2efbcff1f63b8b220ac4ffc05a84fa7",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 8,
+            "sha256": "bb59f610f53e9a6f7a9f05e9dddb40244d05d7b86eefbbb01fc69c34ae414c54",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 9,
+            "sha256": "2ff0ccfce14e5f4c039c720c47186991659737120e7e647a898fdb57be6a012a",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 10,
+            "sha256": "782ed7fffb94cc0308196f997fad40afc34d936d8f64298219a946639e7a6ead",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 11,
+            "sha256": "d8f13271892ed2bb8117f37a43aba0390d58c704929b1fe2efdb73ba87f50a2a",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 12,
+            "sha256": "777daa209633746b7c159c65111c629c6af6558f3f24e70d0f042c10fcdfaf7a",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 13,
+            "sha256": "26fed5d0d9712e4e70c11fc54f9564f5ad99b2366d0acd36f6c252188cb4ed31",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 14,
+            "sha256": "824c719eb435a81b23e3627bf7fce0f80073c36b42f1710114dc577bfedbaa80",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 15,
+            "sha256": "194501cd36acf00486d03c92e1b0e8b74b5796de43433fb297d924002cfcb644",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 16,
+            "sha256": "fb0c2e3d22f6bb2d7f3c903a6835488f053b347164f1bf0078281b0d50ac000c",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 17,
+            "sha256": "2d7b763044f41253eff53416f13476a3d41b4488f41f816a85f47edb37e1e3f5",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 18,
+            "sha256": "c8f435316cddfef62ae4187549afd709fa1e1e21a6f8a1492dca10915c2a8805",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 19,
+            "sha256": "e3b542b0828e57009a4a853349a513ecf233d3f5bc2bb6bdf50a1eb50c573fb9",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 20,
+            "sha256": "9d0cd5a8c56855d6c4e2ad8b72bce5cab1b0b1f9cdc8e386566349d8f51e83ff",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 21,
+            "sha256": "36543438c7c8bac676ea1bc6641bb702b96c8283e1ebcf60c7d2160d9af91cd9",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 22,
+            "sha256": "a1f76cd56a18bbed15deb662798917e9a862cfe3a34f6e2d0af22d370968773f",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 23,
+            "sha256": "b91d814db5cecbac5f04bf996eaf728ba14efe9ee96672da2b454cc9ca6f79fd",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 24,
+            "sha256": "dfe7c6dd76894e3828fd996bd458117010fd717f86e8933081f559febfb6dd79",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 25,
+            "sha256": "45a9dea31b622489e6b55ff9cd02c09a3fdf43ec85905465710607c6319fd115",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 26,
+            "sha256": "300d2259ad21d69316e98f5b2b73c134d9e66b9ce49f2b3047bae7c0acb39449",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 27,
+            "sha256": "212f5db0137a1ef7556a3d982975807fdd40b83ba69e6f45ffac571fcc7506ad",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 28,
+            "sha256": "942d11e97ea1e7db44e9c686f7197f16ba7a5939c06955b694abaa1914562a18",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 29,
+            "sha256": "5798b69ab25ec376b0a342e7799cdb28e95fe7d0cf633362bc900cca0ef5122d",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          }
+        ]
+      },
+      {
+        "name": "gif_long_line",
+        "objects": 3,
+        "command": "env PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src_final:. DISPLAY=:1 XAUTHORITY=/run/user/1000/gdm/Xauthority __NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia timeout 65s /home/fil/miniconda3/envs/Hoang/bin/python -u experiments/interactive_demo/run_demo.py --config experiments/interactive_demo/configs/n3.json --placement long_line --unthrottled --startup-mbps 24 --prefetch 0 --frames 30 --width 512 --height 384 --analysis-width 64 --wall-time-s 45 --startup-timeout 45 --cache experiments/interactive_demo/output/gif_long_line/cache --report experiments/interactive_demo/output/gif_long_line/report.json --capture-dir experiments/interactive_demo/output/gif_long_line/captures --capture-frames 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29",
+        "exit_code": 0,
+        "status": "completed",
+        "fresh_frames": 30,
+        "native_fresh_swaps": 30,
+        "scene_time_range_s": [
+          0.0,
+          0.9666666666666667
+        ],
+        "captures": 30,
+        "all_capture_hashes_match": true,
+        "report_sha256": "58d1e5106dff7d21d77164e4fb47cc84e05d1c737b9f80b1c74a8166270c60e4",
+        "event_log_sha256": "44bfb5208b0b11969bcb62f50149171075ed9e0835dbc4f969104bde9c5dc967",
+        "report_path": "/tmp/framework-demo-validation/experiments/interactive_demo/output/gif_long_line/report.json",
+        "publication_revision": "5574ad5abf7e3ee2624c0583d16ada98630501ad404488d1305bb0dbe74f3f91",
+        "spool_after_cleanup": {
+          "materialization_count": 3,
+          "http_request_count": 45,
+          "http_requested_bytes": 7273830,
+          "verified_resource_count": 45,
+          "verified_bytes": 7273830,
+          "used_bytes": 0,
+          "reserved_bytes": 0,
+          "live_packages": 0,
+          "live_resources": 0,
+          "pending_resources": 0,
+          "pending_expected_bytes": 0,
+          "policy": "cold_per_instance_GOP_representation; session_spool_only"
+        },
+        "gpu": {
+          "gpu_name": "NVIDIA GeForce GTX 1660",
+          "total_vram_bytes": 6027608064,
+          "torch_version": "2.3.1+cu118",
+          "cuda_runtime": "11.8",
+          "device": 0
+        },
+        "capture_inventory": [
+          {
+            "frame_id": 0,
+            "sha256": "7b5e73b5432cf3e59cd33610b75c7516a49c93b59cbc0f564875da095170eb43",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 1,
+            "sha256": "5a1ca66417264a3b44833f9e824151322533167a60adde0aaaf98072b122b052",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 2,
+            "sha256": "442a47522c854acd3eaf17be4f8127967eecd9f6ddb7f7efd153dadd7649bb35",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 3,
+            "sha256": "92fb80434497c1fb34d9dedd30774166c897c4d64ca750900b4cc9490ed0f081",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 4,
+            "sha256": "cddecf8f5b93bc84ef79b8784a2ece46b407b7c65f1f9091e12ff21cb174ea6b",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 5,
+            "sha256": "e332b3597a08ca7e8d8005833c69c2459980cf53b365a2ab85e3171a1405daa0",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 6,
+            "sha256": "f7fbeb28020f7fd1d97ee0b367760465c534114ee0e66469ed3989c6a31d3508",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 7,
+            "sha256": "1f400b9702c5131dbb0e271b905056f73d02fd003ebffa1cfaf6c91cb7d4bb3c",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 8,
+            "sha256": "bcdfc7441d9609da102b87a0039b66b353f5dcc173dae0e27a694c320ba814d6",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 9,
+            "sha256": "1edf601db272788aa1a74a2d0b7d1d74126d584e551cefdd978bd9462e38f4cf",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 10,
+            "sha256": "305ca66fc3a02d5e2b8550d3602ef47c838735a9b08b55f99de55a5acecd0b11",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 11,
+            "sha256": "9db31c305aab75d9a8ec7401e187f0398f12c96af3e91876ba8134c395f1fb95",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 12,
+            "sha256": "1e4675ef009e06fc87d3fd636bc10a31e8af6210807a592df19c85536af0fd28",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 13,
+            "sha256": "71aede11869b270f7350d6652ba5bd63e7053ceb898e0b264df38eaf5dbbbbd9",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 14,
+            "sha256": "c35be4bddb179d4c5d19bed90dbcd8ce8af9d47a9f1541020b517f05e94654d9",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 15,
+            "sha256": "e700bae879477c0dce04a9ee2ee58d70074096e09495b651bba76c40b6e799ab",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 16,
+            "sha256": "710b5f7bb21cc7a618c467c4e3dc462ef719a3e82041748a111131e247f82574",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 17,
+            "sha256": "33d29fc77cb7fd45a70739b349e7d007e43555dd4d0a763b079aa6273b3b61cd",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 18,
+            "sha256": "b5506bfe6ec2b123bbcef512f737f011f8065d2940e494a4c5d07bb1ecc147e6",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 19,
+            "sha256": "094846613f3d17631003ba4afa81d629ae6b25d1f8d34a298a3af77a42b2d023",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 20,
+            "sha256": "2e06d0db6c5db7eef9cadccf4af8061251e1ab26c91f6e9bda1a2d43c6d9db4b",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 21,
+            "sha256": "da7257d259204f1dc43dc8540d54961434eb79b57dfb89f5e8ebba3149be85de",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 22,
+            "sha256": "d23f9cab99a0b5f14ea699dc01572fdd89eb504e3f2e0ff720703dc11ddedcc8",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 23,
+            "sha256": "b07dbee03ea4f801e69852366735da19b1986c9f785bc66860526ee8df1f28db",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 24,
+            "sha256": "11b7d8a188aa64345cabc0eab28f5e0608d19742145db20b8c3ce458c9c0e941",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 25,
+            "sha256": "e9421f5c980b6c94f583d9c04d499d161a039a8664dc35841828667db04a61ab",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 26,
+            "sha256": "7f9935e7c1b641a885ec5634853455e4cde28f36925d5935b51ed4ec53cf30b3",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 27,
+            "sha256": "7eab19a24c0ce45b585fe1250a25c06360c6fac5e8aff1632ae85a2440b2c621",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 28,
+            "sha256": "5cf2708e613135384c9927ea04e342a9f0b46576658bb8e4dca62bf54b825307",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          },
+          {
+            "frame_id": 29,
+            "sha256": "45633485d0358183380320e8a9af60cf441509ea2c8a2d55c793777e785dfe5b",
+            "shape": [
+              384,
+              512,
+              3
+            ]
+          }
+        ]
+      }
+    ],
+    "source_copy_verification": {
+      "files_checked": 550,
+      "mismatches": [],
+      "canonical_source_inventory_sha256": "3219903b3c96b4133f49c5348e20fc8692917ac177337b1a61ec1f6155e48719",
+      "entrypoint_hashes": {
+        "experiments/interactive_demo/run_demo.py": "fdbd131bba3edde8af0b44c2e92111ba42edcdd9833e25dacde0a111648fd537",
+        "experiments/interactive_demo/tools/native_smoke.py": "1e01c79b5ebc102aeb8f4e5210e12143ff7d94100acf97a7e79346c2f97ce72c",
+        "experiments/interactive_demo/abr/runner.py": "4e6fda8a4fa82480ea5ac47b6a28ba39e8a5b54ef31e8b5bd68134715c3da948"
+      }
+    },
+    "gifs": [
+      {
+        "release_path": "docs/demo-camera-rotation.gif",
+        "sha256": "96557075f8700c684dd9a901930421ac6d6ed26bea08d1b2df8e8a34f4005a39",
+        "bytes": 302084,
+        "frames": 30,
+        "dimensions": [
+          512,
+          384
+        ],
+        "duration_ms": 1990,
+        "presentation_fps": 15,
+        "source_scene_duration_s": 1,
+        "source_frame_times_s": [
+          0,
+          0.9666666666666667
+        ],
+        "source_layout": "camera_rotation"
+      },
+      {
+        "release_path": "docs/demo-long-line.gif",
+        "sha256": "003539b04aef450c7d8354b719c10b6ad21488f28f17f226edf59304405db131",
+        "bytes": 352477,
+        "frames": 30,
+        "dimensions": [
+          512,
+          384
+        ],
+        "duration_ms": 1990,
+        "presentation_fps": 15,
+        "source_scene_duration_s": 1,
+        "source_frame_times_s": [
+          0,
+          0.9666666666666667
+        ],
+        "source_layout": "long_line"
+      }
+    ],
+    "external_assets": {
+      "quality_metadata_path": "/home/fil/Hoang/MultiObj3dgsVstream/data_stream/streamstgs_8i_quality_metadata",
+      "quality_metadata_inventory_sha256": "519a69e1a9aeaa0549eeac18ed8631d3df23aa3e8bcd6d9b2051157094f7222f",
+      "publication_mount": "/home/fil/Hoang/MultiObj3dgsVstream/output/abr_publications",
+      "access": "Read-only source symlinks; HTTP serving does not mutate assets",
+      "prepared_profiles_sha256": "27b60c29ca12e3c941849e1784a21a5d13b3a4434b0c51faf84df90ad8b951a3"
+    }
+  },
+  "docker": {
+    "installed": false,
+    "built": false,
+    "note": "Provided CPU-only recipe; no GPU container build claimed."
+  },
+  "limitations": [
+    "Original absolute frozen-profile media prefix requires a documented data mount alias for real HTTP/2.",
+    "Exact visibility cache required for CPU execution; new visibility requires native CUDA.",
+    "Live HTTP/2 timestamps and budgets depend on measured host timing.",
+    "Native rasterizer preinstalled for smoke; CUDA extension rebuild not repeated.",
+    "No Phase B rendering or rendered PSNR claimed.",
+    "Own-code license absent from original checkout; authors must select license before publication."
+  ]
+}

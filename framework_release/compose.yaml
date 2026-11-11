@@ -1,0 +1,51 @@
+services:
+  phase-a:
+    build: .
+    working_dir: /opt/framework_release
+    volumes:
+      - type: bind
+        source: ${MEDIA_ROOT:?Set MEDIA_ROOT to the encoded assets directory}
+        target: /opt/framework_release/experiments/nava_mse/runs/gop0_v1/assets
+        read_only: true
+      # Original profiles contain this absolute prefix. It is data only.
+      - type: bind
+        source: ${MEDIA_ROOT:?Set MEDIA_ROOT}
+        target: /home/fil/Hoang/MultiObj3dgsVstream/experiments/nava_mse/runs/gop0_v1/assets
+        read_only: true
+      - type: bind
+        source: ${QUALITY_METADATA_ROOT:?Set QUALITY_METADATA_ROOT to the complete quality bundle}
+        target: /opt/framework_release/data_stream/streamstgs_8i_quality_metadata
+        read_only: true
+      - type: bind
+        source: ${VISIBILITY_ROOT:?Set VISIBILITY_ROOT to the historical native run root}
+        target: /assets/visibility
+        read_only: true
+      - type: bind
+        source: ${RESULTS_ROOT:?Set RESULTS_ROOT to an existing writable directory}
+        target: /results
+    command:
+      - python
+      - -m
+      - experiments.streaming_evaluation.two_phase
+      - --config
+      - experiments/streaming_evaluation/configs/streaming_http2_dp015.json
+      - --phase
+      - A
+      - --root
+      - /results/phase_a_hv_n3
+      - --object-counts
+      - "3"
+      - --playback-durations
+      - "10"
+      - --scenarios
+      - camera_rotation
+      - --methods
+      - VISIBILITY_MSE
+      - --visibility-cache-from
+      - /assets/visibility
+      - --max-wall-seconds
+      - "120"
+      - --max-native-seconds
+      - "60"
+      - --max-storage-gib
+      - "1"
